@@ -1,0 +1,20 @@
+@import '../../../variable';
+.esh-identity {
+    display: flex;
+    padding: 10px 0;
+}
+
+.esh-identity-unauthenticate {
+    display: flex;
+}
+
+.identity-content-block {
+    display: flex;
+    cursor: pointer;
+    color: $color-foreground-dark;
+    padding-right: 1rem;
+}
+
+.esh-identity-name {
+    margin: 0 10px;
+}

@@ -1,0 +1,274 @@
+<div class="row" *ngIf="user">
+    <div class="row"> <button class="btn btn-sm btn-primary" (click)="openAddressForm(content)">New Address</button></div>
+    <table class="table" *ngIf="user?.address.length != 0">
+        <thead class="table-header">
+            <tr>
+                <th class="table-cell table-header-node">
+                    <div class="table-cell-wrapper">
+                        Street
+                    </div>
+                </th>
+                <th class="table-cell table-header-node">
+                    <div class="table-cell-wrapper">
+                        Province/City
+                    </div>
+                </th>
+                <th class="table-cell table-header-node">
+                    <div class="table-cell-wrapper">
+
+                    </div>
+                </th>
+                <th class="table-cell table-header-node">
+
+                    <div class="table-cell-wrapper">
+
+                    </div>
+                </th>
+                <th class="table-cell table-header-node">
+
+                    <div class="table-cell-wrapper">
+
+                    </div>
+                </th>
+                <th class="table-cell table-header-node">
+                    <div class="table-cell-wrapper">
+                        Actions
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container class="row" *ngFor="let address of user?.address">
+                <tr class="default-address" *ngIf="address.isDefault">
+                    <td>
+                        <p> {{address.street}}</p>
+                    </td>
+                    <td>
+                        <p>{{address.address1}}</p>
+                    </td>
+                    <td>
+                        <p>{{address.address2}}</p>
+                    </td>
+                    <td>
+                        <p>{{address.address3}}</p>
+                    </td>
+                    <td>
+                        <small class="badge rounded-pill bg-primary">default</small>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-info" (click)="openAddressForm(content, address)">
+                        Modify
+                    </button>
+                    </td>
+                </tr>
+
+            </ng-container>
+            <ng-container *ngFor="let address of user.address">
+                <tr *ngIf="!address.isDefault">
+                    <td><span>{{address.street}}</span></td>
+                    <td><span>{{address.address1}}</span></td>
+                    <td><span>{{address.address2}}</span></td>
+                    <td><span>{{address.address3}}</span></td>
+                    <td></td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" (click)="setAsDefault(address.id)">
+                        Set as default
+                    </button>
+                        <button class="btn btn-sm btn-info" (click)="openAddressForm(content, address)">
+                        Modify
+                    </button>
+                        <button class="btn btn-sm btn-danger" (click)="deleteAddress(address.id)">
+                        Delete
+                    </button>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+    <ng-template #content let-modal>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">Address update</h4>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+            </div>
+            <div class="modal-body d-flex align-items-center justify-content-around">
+                <ng-container *ngIf="addressForm">
+                    <form *ngIf="addressForm" [formGroup]="addressForm" class="row">
+                        <div class="mb-3 col-10">
+                            <label class="form-label">Street</label>
+                            <input type="text" class="form-control" formControlName="street">
+                        </div>
+                        <div class="mb-3 col-10">
+                            <label class="form-label">Address1</label>
+                            <select formControlName="address1" class="form-control custom-select">
+                        <option *ngFor="let address1 of address1s" [value]="address1.name">{{address1.name}}</option>
+                    </select>
+                        </div>
+                        <div class="mb-3 col-10">
+                            <label class="form-label">Address2</label>
+                            <select formControlName="address2" class="form-control custom-select">
+                        <ng-container *ngIf="address1s">
+                        <option *ngFor="let address2 of address2s" [value]="address2.name">{{address2.name}}</option>
+                        </ng-container>
+                    </select>
+                        </div>
+                        <div class="mb-3 col-10">
+                            <label class="form-label">Address3</label>
+                            <select formControlName="address3" class="form-control custom-select">
+                        <ng-container *ngIf="address2s && address1s">
+                        <option *ngFor="let address3 of address3s" [value]="address3.name">{{address3.name}}</option>
+                        </ng-container>
+                    </select>
+                        </div>
+                    </form>
+                </ng-container>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-dark" (click)="modal.dismiss('Cross click')">Cancel</button>
+                <button type="button" class="btn btn-outline-dark" (click)="modal.close('result')">Save</button>
+            </div>
+        </div>
+    </ng-template>
+    <!-- 
+    <ng-container *ngIf="address">
+        <div class="address-modify" [ngClass]="{'hidden':currentAddress==null && address.length != 0}">
+            <div class="col-md-8 col-12">
+                <div class="form-group">
+                    <label>
+                    Street
+                </label>
+                    <input class="form-control select-address" type="text" (change)="changeStreet($event)" [ngModel]="currentAddress?.street" name="street" id="street">
+                </div>
+                <div class="form-group">
+                    <label>
+                    City/Province
+                </label>
+                    <select class="select-address form-control" name="address1" id="address1" (change)="changeCurrentAddress1($event)">
+                    <option *ngFor="let address1 of addressList; index as i" [value]="i">
+                        {{address1.name}}
+                    </option>
+                </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                    District/Town
+                </label>
+                    <select class="select-address form-control" name="address2" id="address2" (change)="changeCurrentAddress2($event)">
+                    <option *ngFor="let address2 of currentAddress?.level2s; index as i" [value]="i">
+                        {{address2.name}}
+                    </option>
+                </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                    Sub-district/Village
+                </label>
+                    <select class="select-address form-control" name="address3" id="address3" (change)="changeCurrentAddress3($event)">
+                    <option *ngFor="let address3 of currentAddress?.address2?.level3s; index as i" [value]="i">
+                        {{address3.name}}
+                    </option>
+                </select>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-secondary btn-sm" style="margin-right: 2em;" (click)="createAddress()">
+                    Save as new
+                </button>
+                    <ng-template>
+                        <button class="btn btn-secondary btn-sm" style="margin-right: 2em;" (click)="modifySelectedAddress()">
+                        Save
+                    </button>
+                        <button class="btn btn-secondary btn-sm" (click)="cancelAddress()">
+                        Cancel
+                    </button>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+        <div class="address-book" [ngClass]="{'hidden':currentAddress!=null}">
+            <div class="table">
+                <div class="table-header">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th rowspan="1" class="table-header-node first">
+                                    <div class="table-cell-wrapper">
+                                        Name
+                                    </div>
+                                </th>
+                                <th rowspan="1" class="table-header-node ">
+                                    <div class="table-cell-wrapper">
+                                        Address
+                                    </div>
+                                </th>
+                                <th rowspan="1" class="table-header-node ">
+                                    <div class="table-cell-wrapper">
+                                        Postcode
+                                    </div>
+                                </th>
+                                <th rowspan="1" class="table-header-node ">
+                                    <div class="table-cell-wrapper">
+                                        Phone Number
+                                    </div>
+                                </th>
+                                <th rowspan="1" class="table-header-node last">
+                                    <div class="table-cell-wrapper">
+                                        Action
+                                    </div>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-body">
+                    <table>
+                        <tbody>
+                            <tr class="table-row" *ngFor="let item of address">
+                                <td class="table-cell">
+                                    <div class="table-cell-wrapper">
+                                    </div>
+                                </td>
+                                <td class="table-cell">
+                                    <div class="table-cell-wrapper">
+                                        {{item.street + ', ' + item.address3 + ', ' + item.address2 + ', ' + item.address1}}
+                                    </div>
+                                </td>
+                                <td class="table-cell">
+                                    <div class="table-cell-wrapper">
+                                        {{item.address1 + ', ' + item.address2 + ', ' + item.address3}}
+                                    </div>
+                                </td>
+                                <td class="table-cell">
+                                    <div class="table-cell-wrapper">
+
+                                    </div>
+                                </td>
+                                <td class="table-cell">
+                                    <div class="table-cell-wrapper">
+                                        <button class="btn btn-secondary btn-sm modify-address" (click)="changeAddress(item.id)">Update</button>
+                                        <button class="btn btn-danger btn-sm" (click)="open(content, item.id)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <ng-template #content let-modal>
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <h3> Delete address </h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-dark" (click)="modal.close('result')">Save</button>
+            </div>
+        </ng-template>
+    </ng-container> -->

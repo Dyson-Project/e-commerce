@@ -1,0 +1,62 @@
+@import '../../variable';
+.address-modify,
+.address-book {
+    background-color: $color-background-bright;
+    padding: 20px 40px;
+}
+
+.hidden {
+    display: none;
+}
+
+.table-inner {}
+
+.table-body,
+.table-header {
+    overflow: auto;
+    font-size: 14px;
+}
+
+.table-body {
+    font-size: 14px;
+    overflow: auto;
+}
+
+.table table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    table-layout: fixed;
+    background: #fff;
+}
+
+.table-row {
+    transition: all .3s ease;
+}
+
+.table-cell-wrapper {
+    padding: 16px 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    font-size: 12px;
+    padding: 12px 0 12px 10px!important;
+}
+
+.table th {
+    padding: 0;
+    background: #fafafa;
+    color: #757575;
+    text-align: left;
+    font-weight: 400;
+    border: 1px solid #eff0f5;
+}
+
+.input-address {
+    padding-bottom: 10px;
+}
+
+.select-address {
+    width: 200px;
+    line-height: normal;
+}

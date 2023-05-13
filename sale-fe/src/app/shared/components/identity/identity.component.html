@@ -1,0 +1,32 @@
+<div class="esh-identity">
+    <div *ngIf="!authenticated" class="esh-identity-unauthenticate">
+        <div class="identity-content-block">
+            <a routerLink="/sign-up">
+                Sign-up <i class="fas fa-user"></i>
+            </a>
+        </div>
+        <div class="identity-content-block">
+            <a routerLink="/sign-in">
+                 Sign-in <i class="fas fa-sign-in-alt"></i>
+            </a>
+        </div>
+    </div>
+    <ng-container *ngIf="authenticated">
+        <section class="esh-identity-section identity-content-block">
+            <a [routerLink]="'account/orders'" style="display: flex;">
+                <div class="esh-identity-name">Hello, {{customer.name}}</div>
+                <p>
+                    <i class="fas fa-user"></i>
+                </p>
+            </a>
+        </section>
+        <section class="identity-content-block">
+            <div class="esh-identity-item identity-content-block" (click)="logout()">
+                <div class="esh-identity-name esh-identity-name--upper">Log out</div>
+                <p>
+                    <i class="fas fa-sign-out-alt"></i>
+                </p>
+            </div>
+        </section>
+    </ng-container>
+</div>

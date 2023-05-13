@@ -1,0 +1,102 @@
+<div class="container">
+    <h3>Order Details</h3>
+
+    <div *ngIf="order">
+
+        <div *ngFor="let orderDetail of order.orderItems" class="order-item row">
+            <div class="item-pic">
+                <a [href]="orderDetail.image | prependHost">
+                    <img [src]="orderDetail.image|prependHost" style="width: 100px; height: 100px;">
+                </a>
+            </div>
+            <div class="item-main">
+                <div class="text title item-title">
+                    <span>{{orderDetail.name}}</span>
+                </div>
+                <p class="info text desc">{{orderDetail.variation}}</p>
+            </div>
+            <div class="col-md-1 item-quantity">
+                <span class="desc text info multiply">Qty:</span>
+                <span>{{orderDetail.quantity}}</span>
+            </div>
+            <div class="col-md-1 item-price">
+                <span>{{orderDetail.price | currency}}</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="order-info col-6">
+                <p><span class="orderSpan">OrderId: </span> <strong>{{order.id}}</strong></p>
+                <p><span class="orderSpan">ShippingAddress:</span> <strong>{{order.shippingAddress}}</strong></p>
+                <p><span class="orderSpan">Date Placed:</span> <strong>{{order.createDate | date }}</strong></p>
+                <p><span class="orderSpan">Status:</span> <strong>{{order.status}}</strong></p>
+            </div>
+            <div class="total-summary col-6">
+                <div class="d-flex justify-content-between">
+                    <div class="text pull-left">
+                        <span>
+                        Subtotal
+                    </span>
+                    </div>
+                    <span class="text price pull-right">
+                    {{(order.totalPrice - order.shippingFee) | currency}}
+                </span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div class="text pull-left">
+                        <span>
+                       Shipping Fee 
+                    </span>
+                    </div>
+                    <span class="text price pull-right">
+                    {{order.shippingFee | currency}}
+                </span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <div class="text bold pull-left">
+                        Total
+                    </div>
+                    <div class="text bold total-price pull-right">
+                        {{order.totalPrice|currency}}
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div class="text desc info">
+                        Payment Method
+                    </div>
+                    <div class="text desc info">
+                        {{order.paymentMethod}}
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" [class.d-none]="order?.status !== EORderStatus.Unpaid">
+        <div class="col-6"></div>
+        <div class="col-6">
+            <h2>Payment</h2>
+            <div class="input-group mb-3">
+                <input #cardName="ngModel" type="text" class="form-control" placeholder="Name on card" ngModel required [class.is-invalid]="cardName.invalid && cardName.touched">
+                <small [class.d-none]="cardName.valid || cardName.untouched" class="text-danger"> Card Name is required</small>
+            </div>
+            <div #cardNumber class="cardTextBox" style="height: 40; width: 155px;color: rgb(204, 19, 19);"></div>
+            <div #cardExpiry class="cardTextBox" style="height: 30; width: 72px;"></div>
+            <div #cardCvc class="cardTextBox" style="width: 46px;"></div>
+            <div *ngIf="cardError">
+                <span class="text-danger">{{cardError}}</span>
+            </div>
+            <div class="d-flex">
+                <button class="btn btn-info btn-sm" style="margin-right: 1em;" routerLink="/account/orders"> Back to Order List</button>
+                <button class="btn btn-primary btn-sm" type="submit" [disabled]="processing || cardName.invalid || cardInfoInvalid" (click)="onSubmit()">Submit</button>
+                <span [class.d-none]="!processing" style="font-size: 14px;">Processing... please wait!</span>
+            </div>
+        </div>
+    </div>
+
+
+    <button class="btn btn-info" *ngIf="order?.status !== EORderStatus.Unpaid " routerLink="/account/orders" style="margin-top: 15px; margin-bottom: 20px; margin-right: 10px;">
+    Back to Order List</button>
+</div>

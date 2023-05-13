@@ -1,0 +1,14 @@
+{
+    "/api/*": "/$1",
+    "/products/:productId": "/products/:productId?_expand=category&_embed=skus",
+
+    "/products": "/products?_expand=category&_embed=skus",
+    "/products*": "/products$1&_expand=category&_embed=skus",
+
+    "/orders/:orderId": "/orders/:orderId?_embed=orderItem&_expand=customerId",
+    "/orders": "/orders?_embed=orderItems&_expand=customerId",
+    "/orders*": "/orders$1&_embed=orderItems&_expand=customerId",
+
+    "/Home/Configuration*": "/configuration",
+    "/customer/cart/:id": "/cart/:id"
+}

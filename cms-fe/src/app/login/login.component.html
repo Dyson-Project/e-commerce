@@ -1,0 +1,30 @@
+<div class="login-background">
+    <div #login class="login-form" [formGroup]="authForm">
+        <h1>Login</h1>
+        <div class="form-input-material">
+            <input type="text" name="username" id="username" formControlName="username" class="form-control-material" />
+            <label for="username">Phone number</label>
+        </div>
+        <small *ngIf="username.invalid && (username.dirty || username.touched)" class="alert-sm"> Invalid phone number </small>
+        <div class="form-input-material">
+            <input type="password" name="password" id="password" formControlName="password" class="form-control-material" />
+            <label for="password">Password</label>
+        </div>
+        <span *ngIf="password.invalid && (password.dirty || password.touched)" class="alert-sm"> Invalid password </span>
+        <button type="button" (click)="loginn()" class="btn btn-ghost">Login</button>
+    </div>
+</div>
+<ng-template #errorModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Login false</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+        <h3> Wrong info </h3>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('result')">OK</button>
+    </div>
+</ng-template>

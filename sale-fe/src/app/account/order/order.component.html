@@ -1,0 +1,100 @@
+<div class="container">
+    <ul class="nav nav-tabs">
+        <li class="nav-item" *ngFor="let statusObj of OrderStatus">
+            <p class="nav-link" (click)="changeTab(statusObj.value)" [ngClass]="{'active':selectedTab==statusObj.value}">
+                {{statusObj.name}}</p>
+        </li>
+    </ul>
+    <div class="table-container-tab">
+        <div class="search-section d-flex align-items-center">
+            <form class="search-form row" *ngIf="searchFormGroup" [formGroup]="searchFormGroup">
+                <div class="mb-4 col-4">
+                    <label class="form-label">Order id</label>
+                    <input type="text" class="form-control" formControlName="id">
+                </div>
+                <div class="mb-4 col-4">
+                    <label class="form-label">Create date</label>
+                    <input type="date" class="form-control" formControlName="createDate">
+                </div>
+                <div class="mb-4 col-4">
+                    <label class="form-label">Payment method</label>
+                    <select class="form-control custom-select" formControlName="paymentMethod">
+                        <option *ngFor="let paymentMethod of Object.values(EPaymentMethod)" [value]="paymentMethod">
+                            {{paymentMethod}} </option>
+                    </select>
+                </div>
+            </form>
+            <button class="btn btn-primary" (click)="searchOrder()"> Search </button>
+            <button class="btn clear-btn" (click)="loadSearchForm()"><i class="fas fa-times"></i> </button>
+        </div>
+        <div class="orders">
+            <div class="order" *ngFor="let order of orders">
+                <div class="order-info">
+                    <div class="pull-left">
+                        <p class="info-order-left-text">
+                            Order #:
+                            <a class="link">
+                                {{order.id}}
+                            </a>
+                        </p>
+                        <p class="text info desc">
+                            Create at: {{order.createDate}}
+                        </p>
+                    </div>
+                    <div class="pull-cont d-flex align-items-end justify-content-end">
+                        <button class="btn btn-warning btn-sm" *ngIf="order.status==='pending'" (click)="cancelOrder(order.id)">Cancel</button>
+                        <a [href]="'/checkout/'+order.id">
+                            <button class="btn btn-secondary btn-sm" *ngIf="order.status===EOrderStatus.Unpaid">Pay</button>
+                        </a>
+                        <a [href]="'/checkout/'+order.id">
+                            <button class="btn btn-info btn-sm"> Detail</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="row order-item" *ngFor="let orderItem of order.orderItems">
+                    <div class="col-md-2 item-pic">
+                        <a href="#">
+                            <img [src]="orderItem.image|prependHost">
+                        </a>
+                    </div>
+                    <div class="col-md-4 item-main item-main-mini">
+                        <div class="text title item-title">
+                            {{orderItem.name}}
+                        </div>
+                        <span class="text info">
+                            {{orderItem.variation}}
+                        </span>
+                    </div>
+                    <div class="col-md-1 item-quantity">
+                        <span>
+                            <span class="text desc info multiply">Qty:</span>
+                        <span class="text"> {{orderItem.quantity}} </span>
+                        </span>
+                    </div>
+                    <div class="col-md-2 item-quantity">
+                        <span class="text"> {{orderItem.price|currency}} </span>
+                    </div>
+                    <div class="col-md-1 item-status item-capsule">
+                        <p class="capsule"> {{order.status}} </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-pager [model]="paginationInfo" (changed)="onPageChanged($event)"></app-pager>
+</div>
+
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="change-pwd">Cancel order</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <h3> Cancel your order? </h3>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.close()">Save</button>
+    </div>
+</ng-template>

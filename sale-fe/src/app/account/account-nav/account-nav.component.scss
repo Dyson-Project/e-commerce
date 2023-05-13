@@ -1,0 +1,41 @@
+@import '../../variable';
+.nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: $color-background-bright;
+    width: 80%;
+    // margin: 20px auto;
+}
+
+.nav li {
+    display: inline-block;
+    display: inline-block;
+    zoom: 1;
+    margin: 0px;
+    width: 100%;
+}
+
+.nav li a {
+    display: block;
+    padding: 10px;
+    transition: all 0.1s;
+    color: $color-foreground-dark;
+    text-decoration: none;
+    padding: 20px 25px;
+    margin: 0;
+}
+
+.nav.nav-vertical li {
+    display: block;
+}
+
+.nav li a:hover,
+.nav li a.active {
+    color: white;
+    background: $color-background-dark;
+}
+
+.nav.nav-vertical {
+    width: 100%;
+}

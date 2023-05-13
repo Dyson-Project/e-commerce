@@ -1,0 +1,35 @@
+@import '../variable';
+.esh-catalog-filters {
+    // display: flex;
+}
+
+.filter-row {
+    padding-left: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+.product-card {
+    box-shadow: 0 0.4px 0.4px rgb(128 128 128 / 11%), 0 1px 1px rgb(128 128 128 / 16%), 0 2.1px 2.1px rgb(128 128 128 / 20%), 0 4.4px 4.4px rgb(128 128 128 / 24%), 0 12px 12px rgb(128 128 128 / 35%);
+    // padding-bottom: 1rem;
+    padding: .5rem;
+}
+
+.esh-catalog-name {
+    color: $color-foreground-darker;
+    font-weight: 600;
+    padding-top: .4rem;
+    padding-left: 1rem;
+}
+
+.esh-catalog-price {
+    padding-top: .2rem;
+    color: $color-primary-dark;
+    font-size: 18px;
+    line-height: 22px;
+    padding-left: 1rem;
+}
+
+.esh-catalog-thumnail {
+    max-height: 210px;
+}
