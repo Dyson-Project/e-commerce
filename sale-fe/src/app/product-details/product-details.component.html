@@ -33,7 +33,7 @@
         <!-- Product detail -->
         <div class="product-detail col-md-8 col-sm-12">
             <h1>{{product.productName}}</h1>
-            <p> Brand: {{product?.brand?.name}}</p>
+            <p> Brand: {{product.brand.name}}</p>
             <div class="row">
                 <div class="product-info col-md-6 col-sm-12">
                     <div class="module-price">
@@ -49,7 +49,7 @@
                                 </h6>
                                 <div class="sku-content-header">
                                     <span class="sku-name">
-                                        {{selectedSku?.color}}-Size:{{selectedSku?.size}}
+                                        {{selectedSku.color}}-Size:{{selectedSku.size}}
                                     </span>
                                 </div>
                                 <div class="sku-content">
@@ -71,7 +71,7 @@
                                     </button>
                                 </a>
                                 </span>
-                                <input type="text" class="input-stock" [disabled]="selectedSku.available > 0 ? null : true" (keypress)="numberOnly($event)" (keyup)="onQuantityChanged()" [(ngModel)]="quantity" name="sku-quantity">
+                                <input type="text" class="input-stock" [disabled]="selectedSku.available > 0 ? false : true" (keypress)="numberOnly($event)" (keyup)="onQuantityChanged()" [(ngModel)]="quantity" name="sku-quantity">
                                 <span>
                                 <a class="next-number-picker-handler next-number-picker-handler-down">
                                     <button class="btn btn-light next-number-pick-handler-down-inner" [disabled]="(quantity==selectedSku.available)" (click)="onQuantityChangedUp()">

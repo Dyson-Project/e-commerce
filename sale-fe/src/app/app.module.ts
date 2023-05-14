@@ -14,6 +14,8 @@ import {AccountModule} from "./account/account.module";
 import {CartModule} from "./cart/cart.module";
 import {CatalogModule} from "./catalog/catalog.module";
 import {ProductDetailsModule} from "./product-details/productDetails.module";
+import { SlickCarouselModule } from 'ngx-slick-carousel';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
     declarations: [
@@ -23,6 +25,7 @@ import {ProductDetailsModule} from "./product-details/productDetails.module";
         ReactiveFormsModule,
         BrowserModule,
         NgbModule,
+        ToastrModule.forRoot(),
         routing,
         HttpClientModule,
         SharedModule.forRoot(),
@@ -32,7 +35,8 @@ import {ProductDetailsModule} from "./product-details/productDetails.module";
         AccountModule,
         CartModule,
         CatalogModule,
-        ProductDetailsModule
+        ProductDetailsModule,
+        SlickCarouselModule
     ],
     providers: [],
     bootstrap: [AppComponent]

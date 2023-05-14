@@ -13,20 +13,19 @@ import { FormBuilder } from '@angular/forms';
 import numberOnly from '../shared/util/validate';
 import { ICartItem } from '../shared/models/cartItem.model';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
-import * as $ from "jquery";
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.scss']
 })
 export class ProductDetailsComponent implements OnInit {
-  authSubscription: Subscription;
+  authSubscription: Subscription = new Subscription();
   authenticated: boolean;
-  product: IProduct;
-  selectedSku: ISku;
-  selectedImageUrl: string;
+  product!: IProduct;
+  selectedSku!: ISku;
+  selectedImageUrl!: string;
   quantity: number = 0;
-  skuForm: FormGroup;
+  skuForm!: FormGroup;
   slideConfig = {
     slidesToShow: 3,
     slidesToScroll: 1,

@@ -1,7 +1,5 @@
-import org.ajoberstar.grgit.Grgit
-import java.nio.charset.StandardCharsets
-
 buildscript {
+    ext.kotlin_version = '1.8.21'
     repositories {
         mavenCentral()
     }
@@ -9,6 +7,7 @@ buildscript {
     dependencies {
         // For Apache Rat plugin to ignore non-Git files
         classpath "org.ajoberstar.grgit:grgit-core:$versions.grgit"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -31,6 +30,7 @@ plugins {
 }
 
 apply from: file('wrapper.gradle')
+apply plugin: 'kotlin'
 
 ext {
     gradleVersion = versions.gradle
@@ -69,8 +69,6 @@ ext {
     userEnableTestCoverage = project.hasProperty("enableTestCoverage") ? enableTestCoverage : false
     userShowStandardStreams = project.hasProperty("showStandardStreams") ? showStandardStreams : null
 
-    generatedDocsDir = new File("${project.rootDir}/docs/generated")
-    commitId = determineCommitId()
 }
 
 allprojects {
@@ -79,10 +77,6 @@ allprojects {
     }
     task printAllDependencies(type: DependencyReportTask) {}
 }
-
-
-println("Starting build with version $version (commit id ${commitId == null ? "null" : commitId.take(8)}) using Gradle $gradleVersion, Java ${JavaVersion.current()} and Scala ${versions.scala}")
-println("Build properties: maxParallelForks=$maxTestForks,  maxTestRetries=$userMaxTestRetries")
 
 
 subprojects {
@@ -161,69 +155,6 @@ subprojects {
     // hooks into the output and logs it (so we don't have to buffer it all in memory) and only
     // saves the output for failing tests. Directory and filenames are such that you can, e.g.,
     // create a Jenkins rule to collect failed test output.
-    def logTestStdout = {
-        def testId = { TestDescriptor descriptor ->
-            "${descriptor.className}.${descriptor.name}".toString()
-        }
-
-        def logFiles = new HashMap<String, File>()
-        def logStreams = new HashMap<String, FileOutputStream>()
-        beforeTest { TestDescriptor td ->
-            def tid = testId(td)
-            // truncate the file name if it's too long
-            def logFile = new File(
-                    "${projectDir}/build/reports/testOutput/${tid.substring(0, Math.min(tid.size(), 240))}.test.stdout"
-            )
-            logFile.parentFile.mkdirs()
-            logFiles.put(tid, logFile)
-            logStreams.put(tid, new FileOutputStream(logFile))
-        }
-        onOutput { TestDescriptor td, TestOutputEvent toe ->
-            def tid = testId(td)
-            // Some output can happen outside the context of a specific test (e.g. at the class level)
-            // and beforeTest/afterTest seems to not be invoked for these cases (and similarly, there's
-            // a TestDescriptor hierarchy that includes the thread executing the test, Gradle tasks,
-            // etc). We see some of these in practice and it seems like something buggy in the Gradle
-            // test runner since we see it *before* any tests and it is frequently not related to any
-            // code in the test (best guess is that it is tail output from last test). We won't have
-            // an output file for these, so simply ignore them. If they become critical for debugging,
-            // they can be seen with showStandardStreams.
-            if (td.name == td.className || td.className == null) {
-                // silently ignore output unrelated to specific test methods
-                return
-            } else if (logStreams.get(tid) == null) {
-                println "WARNING: unexpectedly got output for a test [${tid}]" +
-                        " that we didn't previously see in the beforeTest hook." +
-                        " Message for debugging: [" + toe.message + "]."
-                return
-            }
-            try {
-                logStreams.get(tid).write(toe.message.getBytes(StandardCharsets.UTF_8))
-            } catch (Exception e) {
-                println "ERROR: Failed to write output for test ${tid}"
-                e.printStackTrace()
-            }
-        }
-        afterTest { TestDescriptor td, TestResult tr ->
-            def tid = testId(td)
-            try {
-                logStreams.get(tid).close()
-                if (tr.resultType != TestResult.ResultType.FAILURE) {
-                    logFiles.get(tid).delete()
-                } else {
-                    def file = logFiles.get(tid)
-                    println "${tid} failed, log available in ${file}"
-                }
-            } catch (Exception e) {
-                println "ERROR: Failed to close stdout file for ${tid}"
-                e.printStackTrace()
-            } finally {
-                logFiles.remove(tid)
-                logStreams.remove(tid)
-            }
-        }
-    }
-
     // The suites are for running sets of tests in IDEs.
     // Gradle will run each test class, so we exclude the suites to avoid redundantly running the tests twice.
     def testsToExclude = ['**/*Suite.class']
@@ -240,137 +171,6 @@ subprojects {
         ])
     }
 
-    test {
-        maxParallelForks = maxTestForks
-        ignoreFailures = userIgnoreFailures
-
-        maxHeapSize = defaultMaxHeapSize
-        jvmArgs = defaultJvmArgs
-
-        testLogging {
-            events = userTestLoggingEvents ?: testLoggingEvents
-            showStandardStreams = userShowStandardStreams ?: testShowStandardStreams
-            exceptionFormat = testExceptionFormat
-            displayGranularity = 0
-        }
-        logTestStdout.rehydrate(delegate, owner, this)()
-
-        exclude testsToExclude
-
-        if (shouldUseJUnit5)
-            useJUnitPlatform()
-
-        retry {
-            maxRetries = userMaxTestRetries
-            maxFailures = userMaxTestRetryFailures
-        }
-
-        // Allows devs to run tests in a loop to debug flaky tests. See README.
-        if (project.hasProperty("rerun-tests")) {
-            outputs.upToDateWhen { false }
-        }
-    }
-
-    task integrationTest(type: Test, dependsOn: compileJava) {
-        maxParallelForks = maxTestForks
-        ignoreFailures = userIgnoreFailures
-
-        // Increase heap size for integration tests
-        maxHeapSize = "2560m"
-        jvmArgs = defaultJvmArgs
-
-
-        testLogging {
-            events = userTestLoggingEvents ?: testLoggingEvents
-            showStandardStreams = userShowStandardStreams ?: testShowStandardStreams
-            exceptionFormat = testExceptionFormat
-            displayGranularity = 0
-        }
-        logTestStdout.rehydrate(delegate, owner, this)()
-
-        exclude testsToExclude
-
-        if (shouldUseJUnit5) {
-            if (project.name == 'streams') {
-                useJUnitPlatform {
-                    includeTags "integration"
-                    includeTags "org.apache.kafka.test.IntegrationTest"
-                    // Both engines are needed to run JUnit 4 tests alongside JUnit 5 tests.
-                    // junit-vintage (JUnit 4) can be removed once the JUnit 4 migration is complete.
-                    includeEngines "junit-vintage", "junit-jupiter"
-                }
-            } else {
-                useJUnitPlatform {
-                    includeTags "integration"
-                }
-            }
-        } else {
-            useJUnit {
-                includeCategories 'org.apache.kafka.test.IntegrationTest'
-            }
-        }
-
-        retry {
-            maxRetries = userMaxTestRetries
-            maxFailures = userMaxTestRetryFailures
-        }
-
-        // Allows devs to run tests in a loop to debug flaky tests. See README.
-        if (project.hasProperty("rerun-tests")) {
-            outputs.upToDateWhen { false }
-        }
-    }
-
-    task unitTest(type: Test, dependsOn: compileJava) {
-        maxParallelForks = maxTestForks
-        ignoreFailures = userIgnoreFailures
-
-        maxHeapSize = defaultMaxHeapSize
-        jvmArgs = defaultJvmArgs
-
-        testLogging {
-            events = userTestLoggingEvents ?: testLoggingEvents
-            showStandardStreams = userShowStandardStreams ?: testShowStandardStreams
-            exceptionFormat = testExceptionFormat
-            displayGranularity = 0
-        }
-        logTestStdout.rehydrate(delegate, owner, this)()
-
-        exclude testsToExclude
-
-        if (shouldUseJUnit5) {
-            if (project.name == 'streams') {
-                useJUnitPlatform {
-                    excludeTags "integration"
-                    excludeTags "org.apache.kafka.test.IntegrationTest"
-                    // Both engines are needed to run JUnit 4 tests alongside JUnit 5 tests.
-                    // junit-vintage (JUnit 4) can be removed once the JUnit 4 migration is complete.
-                    includeEngines "junit-vintage", "junit-jupiter"
-                }
-            } else {
-                useJUnitPlatform {
-                    excludeTags "integration"
-                }
-            }
-        } else {
-            useJUnit {
-                excludeCategories 'org.apache.kafka.test.IntegrationTest'
-            }
-        }
-
-        retry {
-            maxRetries = userMaxTestRetries
-            maxFailures = userMaxTestRetryFailures
-        }
-    }
-
-    // remove test output from all test types
-    tasks.withType(Test).all { t ->
-        cleanTest {
-            delete t.reports.junitXml.outputLocation
-            delete t.reports.html.outputLocation
-        }
-    }
 
     jar {
         from "$rootDir/LICENSE"
@@ -426,12 +226,6 @@ subprojects {
 
     }
 
-    checkstyle {
-        configFile = new File(rootDir, "checkstyle/checkstyle.xml")
-        configProperties = checkstyleConfigProperties("import-control.xml")
-        toolVersion = versions.checkstyle
-    }
-
     configure(checkstyleMain) {
         group = 'Verification'
         description = 'Run checkstyle on all main Java sources'
@@ -484,4 +278,20 @@ project(':restapi') {
         compileOnly 'org.projectlombok:lombok'
         implementation project(':security')
     }
+}
+project(':sale'){
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+    }
+}
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+kotlin {
+    jvmToolchain(11)
 }
