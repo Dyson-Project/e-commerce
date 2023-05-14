@@ -1,18 +1,13 @@
-import { ICategory } from '../shared/models/category.model';
-import { ICatalog } from '../shared/models/catalog.model';
-import { IPager } from '../shared/models/pager.model';
-import { Subscription, throwError, Observable, of } from 'rxjs';
-import { CatalogService } from './catalog.service';
-import { ConfigurationService } from '../shared/services/configuration.service';
-import { SecurityService } from '../shared/services/security.service';
-import { Component, OnInit } from '@angular/core';
-import { catchError } from 'rxjs/operators';
-import { IProduct } from '../shared/models/product.model';
-import { ISku } from '../shared/models/sku.model';
-import { CartWrapperService } from '../shared/services/cart.wrapper.service';
-import { IBrand } from '../shared/models/brand.model';
-import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
-import { EProductStatus } from '../shared/models/productStatus.const';
+import {ICategory} from '../shared/models/category.model';
+import {ICatalog} from '../shared/models/catalog.model';
+import {IPager} from '../shared/models/pager.model';
+import {Subscription, throwError} from 'rxjs';
+import {CatalogService} from './catalog.service';
+import {ConfigurationService} from '../shared/services/configuration.service';
+import {Component, OnInit} from '@angular/core';
+import {IProduct} from '../shared/models/product.model';
+import {IBrand} from '../shared/models/brand.model';
+import {EProductStatus} from '../shared/models/productStatus.const';
 import numberOnly from '../shared/util/validate';
 
 @Component({
@@ -21,17 +16,17 @@ import numberOnly from '../shared/util/validate';
   styleUrls: ['./catalog.component.scss']
 })
 export class CatalogComponent implements OnInit {
-  numberOnly:Function = numberOnly;
+  numberOnly: Function = numberOnly;
   brands!: IBrand[];
   categories!: ICategory[];
-  categorySelected: number;
-  brandSelected: string;
-  catalog: ICatalog<IProduct>;
-  paginationInfo: IPager;
+  categorySelected?: number;
+  brandSelected?: string;
+  catalog?: ICatalog<IProduct>;
+  paginationInfo!: IPager;
   authenticated: boolean = false;
-  authSubscription: Subscription;
-  errorRecieved: boolean;
-  currentQuery = {
+  authSubscription?: Subscription;
+  errorReceived: boolean = false;
+  currentQuery: any = {
     pageIndex: 0,
     pageSize: 10,
     status: EProductStatus.Active,
@@ -41,6 +36,7 @@ export class CatalogComponent implements OnInit {
     minPrice: null,
     maxPrice: null
   };
+
   //Fontawesome
   constructor(
     private service: CatalogService,
@@ -65,33 +61,35 @@ export class CatalogComponent implements OnInit {
     this.getCatalog(this.currentQuery);
   }
 
-  getCategories(){
-    this.service.getCategories().subscribe(categories =>{
+  getCategories() {
+    this.service.getCategories().subscribe(categories => {
       this.categories = categories;
     })
   }
 
-  getBrands(){
-    this.service.getBrands().subscribe(brands =>{
+  getBrands() {
+    this.service.getBrands().subscribe(brands => {
       this.brands = brands;
     })
   }
 
-  onFilterApplied(event: any){
+  onFilterApplied(event: any) {
     this.getCatalog(this.currentQuery);
   }
 
-  onBrandFilterChanged(event: any, value: string){
+  onBrandFilterChanged(event: Event) {
+    const value = (event.target as HTMLInputElement).value
     this.brandSelected = value;
     this.currentQuery.brandId = value;
   }
 
-  onCategoryFilterChanged(event: any, value: number){
+  onCategoryFilterChanged(event: Event) {
+    const value = Number((event.target as HTMLInputElement).value)
     this.categorySelected = value;
     this.currentQuery.brandId = value;
   }
 
-  onPageChanged(value: any){
+  onPageChanged(value: any) {
     this.currentQuery.pageIndex = value;
     this.getCatalog(this.currentQuery);
   }
@@ -111,7 +109,7 @@ export class CatalogComponent implements OnInit {
   }
 
   private handleError(error: any){
-    this.errorRecieved = true;
+    this.errorReceived = true;
     if (error.error instanceof ErrorEvent) {
       console.log('Client side network error occurred', error.error.message);
     } else {

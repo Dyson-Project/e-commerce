@@ -1,22 +1,18 @@
-import { Injectable } from "@angular/core";
-import { Subject, Observable, observable, combineLatest } from 'rxjs';
-import { DataService } from '../shared/services/data.service';
-import { SecurityService } from '../shared/services/security.service';
-import { CartWrapperService } from '../shared/services/cart.wrapper.service';
-import { ConfigurationService } from "../shared/services/configuration.service";
-import { StorageService } from '../shared/services/storage.service';
-import { map, tap } from "rxjs/operators";
-import { ICart } from '../shared/models/cart.model';
-import { ICartItem } from '../shared/models/cartItem.model';
-import { ISku } from '../shared/models/sku.model';
-import { IOrder } from '../shared/models/order.model';
-import { Router } from '@angular/router';
-import { DateFormat } from "../shared/util/date.format";
-import { IAddress } from '../shared/models/address.model';
-import { ICustomer } from '../shared/models/customer.model';
-import { error } from 'protractor';
-import { EOrderStatus } from '../shared/models/orderStatus.const';
-import { IOrderItem } from '../shared/models/orderItem.model';
+import {Injectable} from "@angular/core";
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {DataService} from '../shared/services/data.service';
+import {SecurityService} from '../shared/services/security.service';
+import {CartWrapperService} from '../shared/services/cart.wrapper.service';
+import {ConfigurationService} from "../shared/services/configuration.service";
+import {StorageService} from '../shared/services/storage.service';
+import {map, tap} from "rxjs/operators";
+import {ICart} from '../shared/models/cart.model';
+import {ICartItem} from '../shared/models/cartItem.model';
+import {ISku} from '../shared/models/sku.model';
+import {IOrder} from '../shared/models/order.model';
+import {Router} from '@angular/router';
+import {IAddress} from '../shared/models/address.model';
+import {IOrderItem} from '../shared/models/orderItem.model';
 
 @Injectable({
   providedIn: 'root'
@@ -25,16 +21,10 @@ export class CartService {
   private cartUrl: string = '';
   private orderUrl: string = '';
   private purchaseUrl: string = '';
-  cart: ICart = {
-    id: null,
-    customerId: null,
-    shippingFee: null,
-    totalPrice: null,
-    items: []
-  };
+  cart: ICart;
 
-  private cartDropedSource = new Subject();
-  cartDroped$ = this.cartDropedSource.asObservable();
+  private cartDroppedSource = new Subject();
+  cartDropped$ = this.cartDroppedSource.asObservable();
 
   constructor(
     private service: DataService,
@@ -44,22 +34,22 @@ export class CartService {
     private configurationService: ConfigurationService,
     private storageService: StorageService
   ) {
+    this.cart = {
+      id: 0,
+      customerId: 0,
+      items: [],
+      shippingFee: 0,
+      totalPrice: 0
+    }
     if (this.securityService.IsAuthorized) {
-        // this.cart.customerId = this.authService.UserData.sub;
-        this.cart.customerId = this.securityService.UserData.id;
-        if(this.configurationService.isReady){
-          this.cartUrl = this.configurationService.serverSettings.purchaseUrl + '/api/customer/cart';
-          this.orderUrl = this.configurationService.serverSettings.purchaseUrl + '/api/orders';
-          this.purchaseUrl = this.configurationService.serverSettings.purchaseUrl;
-          this.loadData();
-        } else {
-          this.configurationService.settingLoaded$.subscribe(x => {
-            this.cartUrl = this.configurationService.serverSettings.purchaseUrl + '/api/customer/cart';
-            this.orderUrl = this.configurationService.serverSettings.purchaseUrl + '/api/orders';
-            this.purchaseUrl = this.configurationService.serverSettings.purchaseUrl;
-            this.loadData();
-          });
-        }
+      // this.cart.customerId = this.authService.UserData.sub;
+      this.cart.customerId = this.securityService.UserData.id;
+      this.configurationService.settingLoaded$.subscribe(settings => {
+        this.cartUrl = settings.purchaseUrl + '/api/customer/cart';
+        this.orderUrl = settings.purchaseUrl + '/api/orders';
+        this.purchaseUrl = settings.purchaseUrl;
+        this.loadData();
+      })
     }
     this.cartEvents.orderCreated$.subscribe(x => {
       this.dropCart();
@@ -70,20 +60,20 @@ export class CartService {
     console.log('add Item to cart');
     let isNewItem = true;
     this.cart.items.forEach(item => {
-      if(item.skuId === newItem.skuId){
+      if (item.skuId === newItem.skuId) {
         item.quantity = Number(item.quantity) + Number(newItem.quantity);
         console.log("quantity: " + item.quantity);
         isNewItem = false;
         return;
       }
     });
-    if(isNewItem){
+    if (isNewItem) {
       this.cart.items.push(newItem);
     }
     return this.setCart(this.cart);
   }
 
-  removeCartItem(itemRemove: ICartItem): Observable<boolean>{
+  removeCartItem(itemRemove: ICartItem): Observable<boolean> {
     this.cart.items.forEach((item, index) => {
       if (item.skuId === itemRemove.skuId) {
         console.log('finded for remove' + index);
@@ -103,11 +93,11 @@ export class CartService {
   setCart(cart: ICart): Observable<boolean> {
     console.log('set cart', cart);
     const url = `${this.cartUrl}/${cart.id}`;
-    const cartForPut = { ...cart, items: JSON.stringify(cart.items) };
+    const cartForPut = {...cart, items: JSON.stringify(cart.items)};
     return this.service.put(url, cartForPut).pipe<boolean>(tap((response: any) => response));
   }
 
-  setCartEmpty(): Observable<ICart>{
+  setCartEmpty(): Observable<ICart> {
     const url = this.cartUrl + '/' + this.cart.id;
     let cart: ICart = {
       customerId: this.cart.customerId,
@@ -116,7 +106,7 @@ export class CartService {
       shippingFee: 0,
       totalPrice: 0
     };
-    const cartForPut = { ...cart, items: JSON.stringify(cart.items) };
+    const cartForPut = {...cart, items: JSON.stringify(cart.items)};
     return this.service.put(url, cartForPut).pipe<ICart>(tap((response: any) => {
       this.cartEvents.orderCreate();
       return response;
@@ -131,9 +121,9 @@ export class CartService {
     }));
   }
 
-  createOrderItems(orderItems : IOrderItem[]):Observable<any[]>{
+  createOrderItems(orderItems: IOrderItem[]): Observable<any[]> {
     const url = this.purchaseUrl + '/api/orderitems';
-    let observables = [];
+    let observables: any[] = [];
     orderItems.forEach(item => {
       let observable = this.service.post(url, item).pipe<any>(tap((res: any) => {
         console.log(url, orderItems, res);
@@ -143,6 +133,7 @@ export class CartService {
     })
     return combineLatest(observables);
   }
+
   getCart(): Observable<ICart> {
     const url = this.cartUrl;
     console.log('get cart', url);
@@ -156,9 +147,9 @@ export class CartService {
   getAddress(): Observable<IAddress[]> {
     const url = this.purchaseUrl + '/address?customerId=' + this.cart.customerId;
     return this.securityService.getUser(this.securityService.UserData.id)
-    .pipe<IAddress[]>(map((res: any) => {
-      return res.address;
-    }))
+      .pipe<IAddress[]>(map((res: any) => {
+        return res.address;
+      }))
     // return this.service.get(url).pipe<IAddress[]>(tap(
     //   {
     //     next: (res: any) => {
@@ -207,7 +198,7 @@ export class CartService {
 
   dropCart() {
     this.cart.items = [];
-    this.cartDropedSource.next();
+    this.cartDroppedSource.next(null);
   }
 
   private loadData() {
@@ -220,13 +211,13 @@ export class CartService {
 
   getOrder(orderId: number): Observable<IOrder> {
     const url = this.orderUrl + '/' + orderId;
-    return this.service.get(url).pipe<IOrder>(map((res: any)=> {
+    return this.service.get(url).pipe<IOrder>(map((res: any) => {
       console.log(url, res);
       return res.data;
     }));
   }
 
-  payment(info) {
+  payment(info: any) {
     const url = this.purchaseUrl + '/api/orders/payment';
     return this.service.post(url, info).pipe<any>(tap((res: any) => {
       console.log(url, res);

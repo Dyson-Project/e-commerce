@@ -18,19 +18,13 @@ export class CatalogService{
     private service: DataService,
     private configurationService: ConfigurationService
   ){
-    if(this.configurationService.isReady){
-      this.catalogUrl = this.configurationService.serverSettings.purchaseUrl + '/api/products/catalog';
-      this.categoryUrl = this.configurationService.serverSettings.purchaseUrl + '/api/categories';
-      this.brandUrl = this.configurationService.serverSettings.purchaseUrl + '/api/brands';
-    }else {
-    this.configurationService.settingLoaded$.subscribe(x => {
-      this.catalogUrl = this.configurationService.serverSettings.purchaseUrl + '/api/products/catalog';
-      this.categoryUrl = this.configurationService.serverSettings.purchaseUrl + '/api/categories';
-      this.brandUrl = this.configurationService.serverSettings.purchaseUrl + '/api/brands';
+    this.configurationService.settingLoaded$.subscribe(settings => {
+      this.catalogUrl = settings.purchaseUrl + '/api/products/catalog';
+      this.categoryUrl = settings.purchaseUrl + '/api/categories';
+      this.brandUrl = settings.purchaseUrl + '/api/brands';
     });
-    }
   }
-  
+
   getCatalog(params?: { [param: string]: any }): Observable<ICatalog<IProduct>> {
     let url = this.catalogUrl;
     if (params && Object.values(params).some(value => value)) {

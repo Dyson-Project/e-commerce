@@ -9,12 +9,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./paymentsuccess.component.scss']
 })
 export class PaymentsuccessComponent implements OnInit {
-  orderId;
+  orderId?: number;
   constructor(
     private securityService: SecurityService,
     private configurationService:ConfigurationService,
     private route: ActivatedRoute
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.orderId = Number(this.route.snapshot.paramMap.get('id'));

@@ -1,16 +1,13 @@
-import { IOrder } from '../../shared/models/order.model';
-import { CartService } from '../cart.service';
-import { environment } from '../../../environments/environment';
-import { error } from 'protractor';
-import { EOrderStatus } from '../../shared/models/orderStatus.const';
-import { ConfigurationService } from '../../shared/services/configuration.service';
-import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
-import { NgModel } from '@angular/forms';
-import { AfterViewInit, ElementRef, ViewChild } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
+import {IOrder} from '../../shared/models/order.model';
+import {CartService} from '../cart.service';
+import {environment} from '../../../environments/environment';
+import {EOrderStatus} from '../../shared/models/orderStatus.const';
+import {ConfigurationService} from '../../shared/services/configuration.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {NgModel} from '@angular/forms';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 
-declare var Stripe;
+declare var Stripe: any;
 
 @Component({
   selector: 'app-check-out',
@@ -18,12 +15,12 @@ declare var Stripe;
   styleUrls: ['./check-out.component.scss']
 })
 export class CheckOutComponent implements OnInit, AfterViewInit {
-  @ViewChild('cardName') cardName: NgModel;
-  @ViewChild('cardNumber') cardNumberElement: ElementRef;
-  @ViewChild('cardExpiry') cardExpiryElement: ElementRef;
-  @ViewChild('cardCvc') cardCvcElement: ElementRef;
+  @ViewChild('cardName') cardName!: NgModel;
+  @ViewChild('cardNumber') cardNumberElement!: ElementRef;
+  @ViewChild('cardExpiry') cardExpiryElement!: ElementRef;
+  @ViewChild('cardCvc') cardCvcElement!: ElementRef;
 
-  order: IOrder;
+  order!: IOrder;
   cardError: any;
 
   private stripe: any;
@@ -35,18 +32,20 @@ export class CheckOutComponent implements OnInit, AfterViewInit {
   private cvcCompleted = false;
   processing = false;
   EORderStatus = EOrderStatus;
+
   constructor(
     private route: ActivatedRoute,
     private configurationService: ConfigurationService,
     private router: Router,
-    private service: CartService) { }
+    private service: CartService) {
+  }
 
   ngOnInit() {
     if (this.configurationService.isReady) {
-    this.getOrder();
+      this.getOrder();
     } else {
       this.configurationService.settingLoaded$.subscribe(x => {
-    this.getOrder();
+        this.getOrder();
       });
     }
   }
@@ -69,7 +68,7 @@ export class CheckOutComponent implements OnInit, AfterViewInit {
     cardCvc.addEventListener('change', this.cardHandler);
   }
 
-  get cardInfoInvalid(){
+  get cardInfoInvalid() {
     return !(this.numberCompleted && this.expiryCompleted && this.cvcCompleted);
   }
 
@@ -82,7 +81,7 @@ export class CheckOutComponent implements OnInit, AfterViewInit {
       });
   }
 
-  onChange(event){
+  onChange(event: any) {
     this.cardError = event.error?.message;
 
     switch (event.elementType) {
@@ -114,14 +113,14 @@ export class CheckOutComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private async createPaymentIntent(){
+  private async createPaymentIntent() {
     const paymentInput = {
-      orderId : this.order.id
+      orderId: this.order.id
     };
     return this.service.payment(paymentInput).toPromise();
   }
 
-  private async confirmPaymentWithStripe(paymentIntent) {
+  private async confirmPaymentWithStripe(paymentIntent: any) {
     return this.stripe.confirmCardPayment(paymentIntent.clientSecret, {
       payment_method: {
         card: this.cardNumber,

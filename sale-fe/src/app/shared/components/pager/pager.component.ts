@@ -10,10 +10,12 @@ import { IPager } from '../../models/pager.model';
 })
 export class Pager implements OnInit, OnChanges {
   @Output() changed: EventEmitter<number> = new EventEmitter<number>();
-  @Input() model!: IPager;
+  @Input() model: IPager;
   pageNumber: number[] = [];
-  
-  constructor() { }
+
+  constructor() {
+    this.model = {totalPages: 0, actualPage: 0, items: 0, itemsPage: 0, totalItems: 0}
+  }
 
   ngOnInit(): void {
   }

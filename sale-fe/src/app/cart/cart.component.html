@@ -1,7 +1,7 @@
-<div [ngClass]="{'hidden': !(cart?.items.length === 0)}" class="contatiner" style="height: 500px;">
+<div [ngClass]="{'hidden': !(cart.items.length === 0)}" class="contatiner" style="height: 500px;">
     <H4> You dont have any item in cart</H4>
 </div>
-<div class="cart row" [ngClass]="{'hidden':cart?.items.length === 0}">
+<div class="cart row" [ngClass]="{'hidden':cart.items.length === 0}">
 
     <!-- <app-header routerLink="/catalog">Back to catalog</app-header> -->
     <div class="col-8">
@@ -62,7 +62,7 @@
                             </span>
                                 <span class="next-number-picker-input">
                             <input [id]="'quantity'+item.skuId" type="text" min="1"
-                             [(ngModel)]="item.quantity" 
+                             [(ngModel)]="item.quantity"
                              (change)="itemQuantityChanged(item)" />
                             </span>
                                 <span class="next-number-picker-handler-up-inner" (click)="itemQuantityChangedUp(item)">
@@ -118,7 +118,7 @@
                 <div class="checkout-summary-rows">
                     <div class="checkout-summary-row">
                         <div class="checkout-summary-label">
-                            Provisional ({{cart?.items.length }} item)
+                            Provisional ({{cart.items.length }} item)
                         </div>
                         <div class="checkout-summary-value">
                             <span class="checkout-summary-noline-value">{{provisional | currency}} </span>

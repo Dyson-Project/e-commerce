@@ -1,5 +1,5 @@
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Component, Input, OnInit } from '@angular/core';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-confirm-modal',
@@ -7,7 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./confirm-modal.component.scss']
 })
 export class ConfirmModalComponent implements OnInit {
-  @Input() message: string;
+  @Input() message: string = "";
+
   constructor(
     public activeModal: NgbActiveModal
   ) { }

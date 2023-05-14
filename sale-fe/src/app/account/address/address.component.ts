@@ -1,31 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { AccountService } from '../account.service';
-import { SecurityService } from '../../shared/services/security.service';
-import { ConfigurationService } from '../../shared/services/configuration.service';
-import { ICustomer } from '../../shared/models/customer.model';
-import { IAddressJson1, IAddressJson2, IAddressJson3 } from '../../shared/models/addressJson.model';
-import { Observable } from 'rxjs';
-import {
-  ConfirmModalComponent
-} from '../../shared/components/confirm-modal/confirm-modal.component';
-import { Validators } from '@angular/forms';
-import { FormControl } from '@angular/forms';
-import { FormGroup } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { IAddress } from 'src/app/shared/models/address.model';
+import {Component, OnInit} from '@angular/core';
+import {AccountService} from '../account.service';
+import {SecurityService} from '../../shared/services/security.service';
+import {ConfigurationService} from '../../shared/services/configuration.service';
+import {ICustomer} from '../../shared/models/customer.model';
+import {IAddressJson1, IAddressJson2, IAddressJson3} from '../../shared/models/addressJson.model';
+import {Observable} from 'rxjs';
+import {ConfirmModalComponent} from '../../shared/components/confirm-modal/confirm-modal.component';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {IAddress} from 'src/app/shared/models/address.model';
 
 
 interface ICurrentAddress {
-  level1_id,
-  id,
-  customerId,
-  street,
-  name,
-  type,
-  level2s,
+  level1_id: any,
+  id: any,
+  customerId: any,
+  street: any,
+  name: any,
+  type: any,
+  level2s: any,
   address2: IAddressJson2,
   address3: IAddressJson3
 }
+
 @Component({
   selector: 'cutomer-address',
   templateUrl: './address.component.html',
@@ -33,19 +30,29 @@ interface ICurrentAddress {
 })
 export class AddressComponent implements OnInit {
   authenticated: boolean;
-  authSubscription;
-  address: IAddress[];
-  currentAddress: ICurrentAddress;
-  addressList: IAddressJson1[];
-  user: ICustomer;
+  authSubscription: any;
+  address: IAddress[] = [];
+  currentAddress?: ICurrentAddress;
+  addressList: IAddressJson1[] = [];
+  user?: ICustomer;
   addressForm: FormGroup;
   address1s: any[] = [];
+
   constructor(
     private configurationService: ConfigurationService,
     private securityService: SecurityService,
     private service: AccountService,
     private modalService: NgbModal) {
     this.authenticated = securityService.IsAuthorized;
+    this.addressForm = new FormGroup({
+      street: new FormControl('', [Validators.required]),
+      address1: new FormControl('', [Validators.required]),
+      address2: new FormControl('', [Validators.required]),
+      address3: new FormControl('', [Validators.required]),
+      isDefault: new FormControl(false),
+      customerId: new FormControl(this.securityService.UserData.id),
+      id: new FormControl(0)
+    })
   }
 
   ngOnInit() {
@@ -65,7 +72,6 @@ export class AddressComponent implements OnInit {
   }
 
   loadData() {
-    this.addressForm = null;
     this.getUser();
   }
 
@@ -104,26 +110,31 @@ export class AddressComponent implements OnInit {
   }
 
   async setAsDefault(addressId: number) {
-    let oldDefault = this.user.address.find(address => address.isDefault);
-    let newDefault = this.user.address.find(address => address.id == addressId);
-    if (oldDefault) {
-      oldDefault.isDefault = false;
-      await this.service.updateAddress(oldDefault).toPromise();
+    if (this.user) {
+      let oldDefault = this.user.address.find(address => address.isDefault);
+      let newDefault = this.user.address.find(address => address.id == addressId);
+      if (oldDefault) {
+        oldDefault.isDefault = false;
+        await this.service.updateAddress(oldDefault).toPromise();
+      }
+      if (newDefault) {
+        newDefault.isDefault = true;
+        await this.service.updateAddress(newDefault).toPromise();
+      }
     }
-    newDefault.isDefault = true;
-    await this.service.updateAddress(newDefault).toPromise();
   }
 
   openAddressForm(content: any, address?: IAddress) {
     this.loadAddressList();
     this.loadAddressForm(address);
 
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
       let promiseAddress = () => Promise.all([
         this.saveAddress().toPromise()
       ]);
       promiseAddress().then(() => this.loadData());
-    }, (reason) => { });
+    }, (reason) => {
+    });
   }
 
   loadAddressList() {
@@ -146,16 +157,17 @@ export class AddressComponent implements OnInit {
     }
   }
 
-  deleteAddress(addressId: number) {
+  deleteAddress(addressId: any) {
     let modalRef = this.modalService.open(ConfirmModalComponent);
     modalRef.componentInstance.message = "Delete this address?";
     modalRef.result.then((result) => {
       this.service.deleteAddress(addressId).toPromise();
-    }, (reason) => { });
+    }, (reason) => {
+    });
   }
 
   get address2s(): any[] {
-    let selectedAddress1 = this.addressForm.get('address1').value;
+    let selectedAddress1 = this.addressForm.get('address1')?.value;
     let address2s = null;
     for (let addressObj of this.address1s) {
       if (addressObj.name == selectedAddress1) {
@@ -166,7 +178,7 @@ export class AddressComponent implements OnInit {
   }
 
   get address3s() {
-    let selectedAddress2 = this.addressForm.get('address2').value;
+    let selectedAddress2 = this.addressForm.get('address2')?.value;
     let address3s = null;
     this.address2s.forEach(addressObj => {
       if (addressObj.name == selectedAddress2) {

@@ -1,19 +1,16 @@
-import { StorageService } from './storage.service';
-import { Subject, Observable } from 'rxjs';
-import { ConfigurationService } from './configuration.service';
-import { error } from 'protractor';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
-import { HttpClient, HttpHeaderResponse, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { encode } from 'node:punycode';
-import jwtDecode from 'jwt-decode';
-import { DataService } from './data.service';
-import { IAuthorizeRequest } from '../models/authorizeRequest.model';
-import { tap } from 'rxjs/operators';
-import { ICustomer } from '../../../../../cms-fe/src/app/shared/models/customer.model';
-import { RSA_NO_PADDING } from 'node:constants';
-import { IRegistingRequest } from '../models/registingCustomerRequest.model';
+import {StorageService} from './storage.service';
+import {Observable, Subject} from 'rxjs';
+import {ConfigurationService} from './configuration.service';
+// import { error } from 'protractor';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+// import { encode } from 'node:punycode';
+import {IAuthorizeRequest} from '../models/authorizeRequest.model';
+import {tap} from 'rxjs/operators';
+import {ICustomer} from '../../../../../cms-fe/src/app/shared/models/customer.model';
+// import { RSA_NO_PADDING } from 'node:constants';
+import {IRegistingRequest} from '../models/registingCustomerRequest.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +23,7 @@ export class SecurityService {
   private identityUrl = '';
   private storage;
 
-  public UserData: ICustomer;
+  public UserData!: ICustomer;
   public IsAuthorized!: boolean;
   constructor(
     private _http: HttpClient,
@@ -40,8 +37,8 @@ export class SecurityService {
     this.headers.append('Accept', 'application/json');
     this.storage = _storageService;
 
-    this.configurationService.settingLoaded$.subscribe(x => {
-      this.identityUrl = this.configurationService.serverSettings.identityUrl;
+    this.configurationService.settingLoaded$.subscribe(serverConfig => {
+      this.identityUrl = serverConfig.identityUrl;
       this.storage.store('identityUrl', this.identityUrl);
     });
 
@@ -189,7 +186,6 @@ export class SecurityService {
   public ResetAuthorizationData() {
     this.IsAuthorized = false;
     this.storage.store('isAuthorized', this.IsAuthorized);
-    this.UserData = null;
     this.storage.store('userData', this.UserData);
   }
 

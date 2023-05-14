@@ -1,6 +1,5 @@
-import { EventEmitter, Input, Output } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Component, OnInit } from '@angular/core';
+import {Component, Input} from '@angular/core';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-modal',
@@ -8,7 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./modal.component.scss']
 })
 export class ModalComponent {
-  @Input() model;
+  @Input() model: any;
+
   constructor(public activeModal: NgbActiveModal) {
   }
   // onSelect(value: any){

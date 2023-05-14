@@ -14,7 +14,7 @@
     <ng-container *ngIf="authenticated">
         <section class="esh-identity-section identity-content-block">
             <a [routerLink]="'account/orders'" style="display: flex;">
-                <div class="esh-identity-name">Hello, {{customer.name}}</div>
+                <div class="esh-identity-name">Hello, {{customer?.name}}</div>
                 <p>
                     <i class="fas fa-user"></i>
                 </p>

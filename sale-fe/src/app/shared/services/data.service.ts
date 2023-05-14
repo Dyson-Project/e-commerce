@@ -1,26 +1,25 @@
-import { SecurityService } from './security.service';
-import { Observable, throwError } from 'rxjs';
-import { Guid } from '../../../guid';
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, tap } from 'rxjs/operators';
+import {SecurityService} from './security.service';
+import {Observable, retry, throwError} from 'rxjs';
+import {Guid} from '../../../guid';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {catchError} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  constructor(private http: HttpClient, private securityService: SecurityService) { }
+  constructor(private http: HttpClient, private securityService: SecurityService) {
+  }
 
   get(url: string, param?: any): Observable<Response> {
     let options = {};
     this.setHeaders(options);
 
-    return this.http.get(url, options)
+    return this.http.get<Response>(url, options)
       .pipe(
-        tap((res: Response) => {
-          return res;
-        }),
+        retry(1),
         catchError(this.handleError)
       );
   }
@@ -45,25 +44,20 @@ export class DataService {
     let options = {};
     this.setHeaders(options, needId);
     console.log(data, url);
-    return this.http.post(url, data, options)
+    return this.http.post<Response>(url, data, options)
       .pipe(
-        tap((res: Response) => {
-          return res;
-        }),
+        retry(1),
         catchError(this.handleError)
-      )
+      );
   }
 
   private doPut(url: string, data: any, needId: boolean, param?: any): Observable<Response> {
     let options = {};
     this.setHeaders(options, needId);
     console.log('do put', url ,data);
-    return this.http.put(url, data, options)
+    return this.http.put<Response>(url, data, options)
       .pipe(
-        tap((res: Response) => {
-          console.log(res);
-          return res;
-        }),
+        retry(1),
         catchError(this.handleError)
       )
   }

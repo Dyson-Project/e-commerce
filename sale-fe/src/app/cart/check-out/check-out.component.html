@@ -45,7 +45,7 @@
                 <div class="d-flex justify-content-between">
                     <div class="text pull-left">
                         <span>
-                       Shipping Fee 
+                       Shipping Fee
                     </span>
                     </div>
                     <span class="text price pull-right">
@@ -74,7 +74,7 @@
         </div>
     </div>
 
-    <div class="row" [class.d-none]="order?.status !== EORderStatus.Unpaid">
+    <div class="row" [class.d-none]="order.status !== EORderStatus.Unpaid">
         <div class="col-6"></div>
         <div class="col-6">
             <h2>Payment</h2>

@@ -1,10 +1,8 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SecurityService } from '../shared/services/security.service';
 import { IAuthorizeRequest } from '../shared/models/authorizeRequest.model';
 import { IRegistingRequest } from '../shared/models/registingCustomerRequest.model';
-import { Output } from '@angular/core';
-import { Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Form, Validators } from '@angular/forms';
 import { FormControl } from '@angular/forms';
@@ -16,16 +14,28 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  authRequest: IAuthorizeRequest | IRegistingRequest;
+  authRequest?: IAuthorizeRequest | IRegistingRequest;
 
   authForm: FormGroup;
-  registForm: FormGroup;
+  registryForm: FormGroup;
   isLogin: boolean = true;
   constructor(
     private router: Router,
-    private sercurityService: SecurityService,
+    private securityService: SecurityService,
     private modalService: NgbModal
-  ) { }
+  ) {
+    this.authForm = new FormGroup({
+      username: new FormControl(null, [Validators.required, Validators.pattern('')]),
+      password: new FormControl(null, [Validators.required, Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')])
+    });
+    this.registryForm = new FormGroup({
+      username: new FormControl(null, [Validators.required, Validators.pattern('')]),
+      password: new FormControl(null, [Validators.required, Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')]),
+      confirmPassword: new FormControl(null, [Validators.required, Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')]),
+      email: new FormControl(null),
+      phoneNumber: new FormControl(null),
+    });
+  }
 
   ngOnInit() {
     this.loadLoginForm();
@@ -48,7 +58,7 @@ export class LoginComponent implements OnInit {
   }
 
   loadRegisterForm() {
-    this.registForm = new FormGroup({
+    this.registryForm = new FormGroup({
       username: new FormControl(null, [Validators.required, Validators.pattern('')]),
       password: new FormControl(null, [Validators.required, Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')]),
       confirmPassword: new FormControl(null, [Validators.required, Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')]),
@@ -57,20 +67,20 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  login(errorModal) {
+  login(errorModal: any) {
     this.authForm.markAllAsTouched();
     if (this.authForm.valid) {
       this.authRequest = {
         phone: this.usernameLogin.value,
         password: this.passwordLogin.value
       };
-      this.sercurityService.Authorize(this.authRequest)
+      this.securityService.Authorize(this.authRequest)
     }
   }
 
   signup() {
     this.authForm.markAllAsTouched();
-    if (this.registForm.valid) {
+    if (this.registryForm.valid) {
       this.authRequest = {
         name: this.username.value,
         password: this.password.value,
@@ -78,13 +88,13 @@ export class LoginComponent implements OnInit {
         email: this.email.value,
         phoneNumber: this.phoneNumber.value,
       };
-      this.sercurityService.Register(this.authRequest);
+      this.securityService.Register(this.authRequest);
     } else {
       alert("wrong input")
     }
   }
 
-  openModal(content){
+  openModal(content: any){
     this.modalService.open(content);
   }
 
@@ -97,23 +107,23 @@ export class LoginComponent implements OnInit {
   }
 
   get username(): FormControl{
-    return this.registForm.get('username') as FormControl;
+    return this.registryForm.get('username') as FormControl;
   }
 
   get password(): FormControl {
-    return this.registForm.get('password') as FormControl;
+    return this.registryForm.get('password') as FormControl;
   }
 
   get confirmPassword(): FormControl {
-    return this.registForm.get('confirmPassword') as FormControl;
+    return this.registryForm.get('confirmPassword') as FormControl;
   }
 
   get email(): FormControl {
-    return this.registForm.get('email') as FormControl;
+    return this.registryForm.get('email') as FormControl;
   }
 
   get phoneNumber(): FormControl {
-    return this.registForm.get('phoneNumber') as FormControl;
+    return this.registryForm.get('phoneNumber') as FormControl;
   }
 
 }

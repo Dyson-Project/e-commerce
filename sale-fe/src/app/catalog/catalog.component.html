@@ -1,77 +1,76 @@
 <section class="row">
     <div class="col-md-2 ">
         <section class="esh-catalog-filters">
-            <div class="alert alert-warning esh-catalog-alert" role="alert" [hidden]="!errorRecieved">
-                Error requesting
+          <div class="alert alert-warning esh-catalog-alert" role="alert" [hidden]="!errorReceived">
+            Error requesting
+          </div>
+          <div class="filter-row">
+            <label data-title="brand" for="brand" class="esh-catalog-label">
+              Name:
+            </label>
+            <input class="form-control" type="text" [(ngModel)]="currentQuery.productName">
+          </div>
+          <div class="filter-row">
+            <label data-title="brand" for="brand" class="esh-catalog-label">
+              Brand:
+            </label>
+            <select id="brand" name="brand" class="form-control"
+                    (change)="onBrandFilterChanged($event)">
+              <option value=""></option>
+              <option *ngFor="let brand of brands" [value]="brand.id">{{brand.name}}</option>
+            </select>
+          </div>
+          <div class="filter-row">
+            <label class="esh-catalog-label" data-title="category">
+              Category:
+            </label>
+            <select class="form-control" (change)="onCategoryFilterChanged($event)">
+              <option value=""></option>
+              <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
+            </select>
+          </div>
+          <div class="filter-row">
+            <label class="esh-catalog-label" data-title="category">
+              Price:
+            </label>
+            <div class="input-group mb-3">
+              <input type="text" (keypress)="numberOnly($event)" [(ngModel)]="currentQuery.minPrice"
+                     class="form-control" placeholder="min" aria-label="Username">
+              <span class="input-group-text bg-light"></span>
             </div>
-            <div class="filter-row">
-                <label data-title="brand" for="brand" class="esh-catalog-label">
-                    Name:
-                </label>
-                <input class="form-control" type="text" [(ngModel)]="currentQuery.productName">
+            <div class="input-group mb-3">
+              <input type="text" (keypress)="numberOnly($event)" [(ngModel)]="currentQuery.maxPrice"
+                     class="form-control" placeholder="max" aria-label="Username">
+              <span class="input-group-text bg-light"></span>
             </div>
-            <div class="filter-row">
-                <label data-title="brand" for="brand" class="esh-catalog-label">
-                    Brand:
-                </label>
-                <select name="brand" class="form-control" (change)="onBrandFilterChanged($event, $event.target.value)">
-                        <option value=""></option>
-                        <option *ngFor="let brand of brands" [value]="brand.id">{{brand.name}}</option>
-                    </select>
-            </div>
-            <div class="filter-row">
-                <label class="esh-catalog-label" data-title="category">
-                    Category:
-                </label>
-                <select class="form-control" (change)="onCategoryFilterChanged($event, $event.target.value)">
-                        <option value=""></option>
-                        <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
-                    </select>
-            </div>
-            <div class="filter-row">
-                <label class="esh-catalog-label" data-title="category">
-                    Price:
-                </label>
-                <div class="input-group mb-3">
-                    <input type="text" (keypress)="numberOnly($event)" [(ngModel)]="currentQuery.minPrice" class="form-control" placeholder="min" aria-label="Username">
-                    <span class="input-group-text bg-light"></span>
-                </div>
-                <div class="input-group mb-3">
-                    <input type="text" (keypress)="numberOnly($event)" [(ngModel)]="currentQuery.maxPrice" class="form-control" placeholder="max" aria-label="Username">
-                    <span class="input-group-text bg-light"></span>
-                </div>
-            </div>
-            <div class="filter-row d-flex justify-content-center">
-                <button class="btn btn-primary btn-sm" (click)="onFilterApplied($event)">
-                    <i class="fas fa-filter" ></i> Apply
-                </button>
-            </div>
+          </div>
+          <div class="filter-row d-flex justify-content-center">
+            <button class="btn btn-primary btn-sm" (click)="onFilterApplied($event)">
+              <i class="fas fa-filter"></i> Apply
+            </button>
+          </div>
         </section>
     </div>
-    <div class="col-md-10">
-        <div class="container">
-            <div *ngIf="catalog?.data.length > 0">
-                <div class="esh-catalog-items row">
-                    <div class="esh-catalog-item col-md-3" *ngFor="let product of catalog?.data">
-                        <div class="product-card">
-                            <a routerLink="/products/{{product.id}}">
-                                <img src="{{product?.skus[0]?.images[0]?.url | prependHost}}" class="esh-catalog-thumnail" />
-                                <div class="esh-catalog-name">
-                                    <span>{{product.productName}}</span>
-                                </div>
-                                <div class="esh-catalog-price">
-                                    <span>{{product.skus[0].price | currency}}</span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
+  <div class="col-md-10" *ngIf="catalog">
+    <div class="container">
+      <div *ngIf="catalog.data.length > 0">
+        <div class="esh-catalog-items row">
+          <div class="esh-catalog-item col-md-3" *ngFor="let product of catalog.data">
+            <div class="product-card">
+              <a routerLink="/products/{{product.id}}">
+                <img src="{{product.skus[0].images[0].url | prependHost}}" class="esh-catalog-thumnail"/>
+                <div class="esh-catalog-name">
+                  <span>{{product.productName}}</span>
                 </div>
-                <app-pager [model]="paginationInfo" (changed)="onPageChanged($event)"></app-pager>
+                <div class="esh-catalog-price">
+                  <span>{{product.skus[0].price | currency}}</span>
+                </div>
+              </a>
             </div>
+          </div>
         </div>
+        <app-pager [model]="paginationInfo" (changed)="onPageChanged($event)"></app-pager>
+      </div>
+    </div>
     </div>
 </section>
-
-<div *ngIf="catalog?.data.length == 0">
-    <span>THERE ARE NO RESULTS THAT MATCH YOUR SEARCH</span>
-</div>

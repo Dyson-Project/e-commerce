@@ -31,7 +31,6 @@ plugins {
 }
 
 apply from: file('wrapper.gradle')
-apply from: "$rootDir/common-methods.gradle"
 
 ext {
     gradleVersion = versions.gradle

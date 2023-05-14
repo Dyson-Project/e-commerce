@@ -1,20 +1,21 @@
-import { Subscription, Observable, concat, interval, combineLatest } from 'rxjs';
-import { Component, OnInit} from '@angular/core';
-import { CartWrapperService } from '../shared/services/cart.wrapper.service';
-import { CartService } from './cart.service';
-import { ICart } from '../shared/models/cart.model';
-import { ConfigurationService } from '../shared/services/configuration.service';
-import { ICartItem } from '../shared/models/cartItem.model';
-import { Router } from '@angular/router';
-import { ModalDismissReasons, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from '../shared/components/modal/modal.component';
-import { SecurityService } from '../shared/services/security.service';
-import { EPaymentMethod } from '../shared/models/paymentMethod.const';
-import { IAddress } from '../../../../cms-fe/src/app/shared/models/address.model';
-import { IOrder } from '../shared/models/order.model';
-import { DateFormat } from '../shared/util/date.format';
-import { EOrderStatus } from '../shared/models/orderStatus.const';
-import { IOrderItem } from '../shared/models/orderItem.model';
+import {combineLatest, Observable} from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {CartWrapperService} from '../shared/services/cart.wrapper.service';
+import {CartService} from './cart.service';
+import {ICart} from '../shared/models/cart.model';
+import {ConfigurationService} from '../shared/services/configuration.service';
+import {ICartItem} from '../shared/models/cartItem.model';
+import {Router} from '@angular/router';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ModalComponent} from '../shared/components/modal/modal.component';
+import {SecurityService} from '../shared/services/security.service';
+import {EPaymentMethod} from '../shared/models/paymentMethod.const';
+import {IAddress} from '../../../../cms-fe/src/app/shared/models/address.model';
+import {IOrder} from '../shared/models/order.model';
+import {DateFormat} from '../shared/util/date.format';
+import {EOrderStatus} from '../shared/models/orderStatus.const';
+import {IOrderItem} from '../shared/models/orderItem.model';
+
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
@@ -22,21 +23,21 @@ import { IOrderItem } from '../shared/models/orderItem.model';
 })
 export class CartComponent implements OnInit {
   errorMessages: any;
-  cart: ICart;
+  cart!: ICart;
   cartItems: ICartItem[] = [];
   provisional: number = 0;
   shippingFee: number = 0;
   totalPrice: number = 0;
-  shippingAddress: IAddress;
+  shippingAddress?: IAddress;
   addressJsonString: string = '';
-  addressList: IAddress[];
+  addressList: IAddress[] = [];
   paymentList: any[] = [
-    { name: 'Cash on delivery', icon: 'fas fa-money-bill-alt', value: EPaymentMethod.COD },
-    { name: 'Visa', icon: 'fab fa-cc-visa', value: EPaymentMethod.VISA },
-    { name: 'Credit card', icon: 'fas fa-credit-card', value: EPaymentMethod.CREDIT },
-    { name: 'Bitcoin', icon: 'fab fa-bitcoin', value: EPaymentMethod.BITCOIN },
-    { name: 'Paypal', icon: 'fab fa-cc-paypal', value: EPaymentMethod.PAYPAL },
-    { name: 'Mastercard', icon: 'fab fa-cc-mastercard', value: EPaymentMethod.MASTERCARD }
+    {name: 'Cash on delivery', icon: 'fas fa-money-bill-alt', value: EPaymentMethod.COD},
+    {name: 'Visa', icon: 'fab fa-cc-visa', value: EPaymentMethod.VISA},
+    {name: 'Credit card', icon: 'fas fa-credit-card', value: EPaymentMethod.CREDIT},
+    {name: 'Bitcoin', icon: 'fab fa-bitcoin', value: EPaymentMethod.BITCOIN},
+    {name: 'Paypal', icon: 'fab fa-cc-paypal', value: EPaymentMethod.PAYPAL},
+    {name: 'Mastercard', icon: 'fab fa-cc-mastercard', value: EPaymentMethod.MASTERCARD}
   ];
   selectedPayment = this.paymentList[0];
   closeResult = '';
@@ -48,10 +49,11 @@ export class CartComponent implements OnInit {
     private cartWrapper: CartWrapperService,
     private modalService: NgbModal,
     private securityService: SecurityService
-    ) { }
+  ) {
+  }
 
   ngOnInit(): void {
-    if(!this.securityService.IsAuthorized){
+    if (!this.securityService.IsAuthorized) {
       this.securityService.GoToLoginPage();
     }
 
@@ -68,7 +70,7 @@ export class CartComponent implements OnInit {
     // Guard address
     this.securityService.getUser(this.securityService.UserData.id).subscribe({
       next: res => {
-        if(res.address.length == 0) {
+        if (res.address.length == 0) {
           this.router.navigate(['/account/address'])
           alert('You need to have a address');
         }
@@ -90,14 +92,15 @@ export class CartComponent implements OnInit {
     });
   }
 
-  getAddress(){
-      this.service.getAddress().subscribe({
-        next: addressList => {
-          this.addressList = addressList;
-          this.shippingAddress = this.addressList.length > 0 ? this.addressList[0] : null;
-          this.addressJsonString = JSON.stringify(this.shippingAddress);
-        }
-      });
+  getAddress() {
+    this.service.getAddress().subscribe({
+      next: addressList => {
+        this.addressList = addressList;
+        if (this.addressList.length > 0)
+          this.shippingAddress = this.addressList[0]
+        this.addressJsonString = JSON.stringify(this.shippingAddress);
+      }
+    });
   }
 
   itemQuantityChanged(item: ICartItem): void {
@@ -134,18 +137,18 @@ export class CartComponent implements OnInit {
   }
 
   selectCartItem(itemRemoves: ICartItem[]) {
-      itemRemoves.forEach(item => {
-        if (this.cartItems.indexOf(item) == -1) {
-          this.cartItems.push(item);
-        } else {
-          this.cartItems.splice(this.cartItems.indexOf(item), 1);
-        }
-      });
-      console.log(this.cartItems);
+    itemRemoves.forEach(item => {
+      if (this.cartItems.indexOf(item) == -1) {
+        this.cartItems.push(item);
+      } else {
+        this.cartItems.splice(this.cartItems.indexOf(item), 1);
+      }
+    });
+    console.log(this.cartItems);
   }
 
   removeCartItem(itemRemoves: ICartItem[]) {
-    let observables = [];
+    let observables: any[] = [];
     itemRemoves.forEach(itemRemove => {
       const observable = this.service.removeCartItem(itemRemove);
       observables.push(observable);
@@ -204,8 +207,8 @@ export class CartComponent implements OnInit {
       });
   }
 
-  mapCartInfoCheckout(cart: ICart, paymentMethod, address): IOrder{
-    const order: IOrder = {
+  mapCartInfoCheckout(cart: ICart, paymentMethod: any, address: any): IOrder {
+    return {
       customerId: cart.customerId,
       createDate: DateFormat.formatISO(new Date()),
       updateDate: DateFormat.formatISO(new Date()),
@@ -229,8 +232,6 @@ export class CartComponent implements OnInit {
         return orderItem;
       })
     };
-
-    return order;
   }
 
   private calculateTotalPrice() {
@@ -240,18 +241,18 @@ export class CartComponent implements OnInit {
     this.cart.items.forEach(item => {
       this.provisional += (item.itemPrice * item.quantity);
       this.shippingFee += new Date().getDate();
-  });
+    });
     this.totalPrice = this.provisional + this.shippingFee;
     this.cart.shippingFee = this.shippingFee;
     this.cart.totalPrice = this.totalPrice
   }
 
-stringify(str: any): string {
-  return JSON.stringify(str);
-}
+  stringify(str: any): string {
+    return JSON.stringify(str);
+  }
 
-  confirmCheckout(content) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
+  confirmCheckout(content: any) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'})
       .result
       .then((result) => {
         // this.checkOut();
@@ -262,22 +263,24 @@ stringify(str: any): string {
         return res ? this.confirmPaymentMethod() : false;
       }, (reason) => (false))
       .then((paymentResult) => {
-        if(paymentResult){
+        if (paymentResult) {
           this.selectedPayment = JSON.parse(paymentResult);
           this.checkOut();
         }
       })
-      .catch(error=>{console.log(error);});
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   confirmPaymentMethod(): Promise<any> {
-    const modelPayment = this.modalService.open(ModalComponent, { ariaLabelledBy: 'modal-basic-title' })
+    const modelPayment = this.modalService.open(ModalComponent, {ariaLabelledBy: 'modal-basic-title'})
     modelPayment.componentInstance.model = this.paymentList;
     return modelPayment.result;
   }
 
-changePaymentMethod():Promise<any> {
-    const modelPayment = this.modalService.open(ModalComponent, { ariaLabelledBy: 'modal-basic-title' })
+  changePaymentMethod(): Promise<any> {
+    const modelPayment = this.modalService.open(ModalComponent, {ariaLabelledBy: 'modal-basic-title'})
     modelPayment.componentInstance.model = this.paymentList;
     return modelPayment.result;
     // .then((result) => {

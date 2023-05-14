@@ -1,12 +1,9 @@
-import { ICustomer } from '../../shared/models/customer.model';
-import { AccountService } from '../account.service';
-import { ConfigurationService } from '../../shared/services/configuration.service';
-import { AbstractControl } from '@angular/forms';
-import { ValidatorFn, Validators } from '@angular/forms';
-import { FormControl } from '@angular/forms';
-import { FormGroup } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Component, OnInit } from '@angular/core';
+import {ICustomer} from '../../shared/models/customer.model';
+import {AccountService} from '../account.service';
+import {ConfigurationService} from '../../shared/services/configuration.service';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-info',
@@ -14,54 +11,70 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./info.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  profile: ICustomer = null;
-  isLoaded:boolean;
-  changePasswordForm;
+  profile?: ICustomer;
+  isLoaded: boolean = false;
+  changePasswordForm: FormGroup;
 
   constructor(
     private service: AccountService,
     private configurationService: ConfigurationService,
     private modalService: NgbModal,
-  ) { }
+  ) {
+    this.changePasswordForm = new FormGroup({
+      oldPwd: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8)
+      ]),
+      newPwd: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8)
+      ]),
+      confirmNewPwd: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8)
+      ])
+    })
+  }
 
   ngOnInit() {
-    if(this.configurationService.isReady){
+    if (this.configurationService.isReady) {
       this.loadData();
     } else {
-      this.configurationService.settingLoaded$.subscribe(x=>{
+      this.configurationService.settingLoaded$.subscribe(x => {
         this.loadData();
       })
     }
   }
 
- loadData(){
-   this.getProfile();
-   this.changePasswordForm = new FormGroup({
-     oldPwd: new FormControl('', [
-       Validators.required,
-       Validators.minLength(8)
-     ]),
-     newPwd: new FormControl('', [
-       Validators.required,
-       Validators.minLength(8)
-     ]),
-     confirmNewPwd: new FormControl('', [
-       Validators.required,
-       Validators.minLength(8)
-     ])
-   })
- } 
-
- checkConfirmPwd(){
-  if(this.changePasswordForm.get('confirmNewPwd').value != this.changePasswordForm.get('newPwd').value){
-    this.changePasswordForm.controls.confirmNewPwd.setErrors({
-      ...this.changePasswordForm.get('confirmNewPwd').errors,
-      'incorrectPassword':true
-    });
-  } else {
-    this.changePasswordForm.controls.confirmNewPwd.setErrors(null);
+  loadData() {
+    this.getProfile();
+    this.changePasswordForm = new FormGroup({
+      oldPwd: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8)
+      ]),
+      newPwd: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8)
+      ]),
+      confirmNewPwd: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8)
+      ])
+    })
   }
- }
+
+  // checkConfirmPwd() {
+  //   if (this.changePasswordForm.get('confirmNewPwd').value != this.changePasswordForm.get('newPwd').value) {
+  //     this.changePasswordForm.controls.confirmNewPwd.setErrors({
+  //       ...this.changePasswordForm.get('confirmNewPwd').errors,
+  //       'incorrectPassword': true
+  //     });
+  //   } else {
+  //     this.changePasswordForm.controls['confirmNewPwd'].setErrors(null);
+  //   }
+  // }
+
   // checkCorrectNewPassword(): ValidatorFn {
   //   return (control: AbstractControl): { [key: string]: boolean } | null => {
   //     let newPwd = control.parent.get('newPwd').value;
@@ -72,35 +85,47 @@ export class ProfileComponent implements OnInit {
   getProfile() {
     console.log('load data');
     this.service.getProfile().subscribe({
-      next: profile => {this.profile = profile;
-      console.log(this.profile);
+      next: profile => {
+        this.profile = profile;
+        console.log(this.profile);
       },
-      complete: () => { this.isLoaded = true; }
+      complete: () => {
+        this.isLoaded = true;
+      }
     })
   }
 
-  open(content) {
-    this.modalService.open(content, { ariaLabelledBy: 'change-pwd' }).result.then((result) => {
+  open(content: any) {
+    this.modalService.open(content, {ariaLabelledBy: 'change-pwd'}).result.then((result) => {
       if (this.changePasswordForm.status === 'VALID') {
-        this.service.updatePassword(this.oldPwd.value, this.newPwd.value);
+        this.service.updatePassword(this.oldPwd?.value, this.newPwd?.value);
         console.log('update passwod success');
       }
     }, (reason) => {
     });
   }
 
-  modifyProfile(){
+  modifyProfile() {
     console.log(this.profile);
     this.service.updateProfile(this.profile).subscribe({
-      next: res=>{
+      next: res => {
 
       },
-      complete: ()=>{
+      complete: () => {
         this.loadData();
       }
     })
   }
-  get oldPwd() { return this.changePasswordForm.get('oldPwd'); }
-  get newPwd() { return this.changePasswordForm.get('newPwd'); }
-  get confirmNewPwd() { return this.changePasswordForm.get('confirmNewPwd'); }
+
+  get oldPwd() {
+    return this.changePasswordForm.get('oldPwd');
+  }
+
+  get newPwd() {
+    return this.changePasswordForm.get('newPwd');
+  }
+
+  get confirmNewPwd() {
+    return this.changePasswordForm.get('confirmNewPwd');
+  }
 }

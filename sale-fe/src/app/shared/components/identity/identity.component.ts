@@ -11,7 +11,7 @@ import { ICustomer } from '../../models/customer.model';
 export class Identity implements OnInit {
   authenticated: boolean = false;
   subscription!: Subscription;
-  customer: ICustomer;
+  customer?: ICustomer;
 
   constructor(
     private service: SecurityService,

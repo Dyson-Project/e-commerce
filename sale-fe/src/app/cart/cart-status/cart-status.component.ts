@@ -1,10 +1,9 @@
-import { Subscription } from 'rxjs';
-import { CartService } from '../cart.service';
-import { CartWrapperService } from '../../shared/services/cart.wrapper.service';
-import { SecurityService } from '../../shared/services/security.service';
-import { ConfigurationService } from '../../shared/services/configuration.service';
-import { Component, OnInit } from '@angular/core';
-import { ignoreElements } from 'rxjs/operators';
+import {Subscription} from 'rxjs';
+import {CartService} from '../cart.service';
+import {CartWrapperService} from '../../shared/services/cart.wrapper.service';
+import {SecurityService} from '../../shared/services/security.service';
+import {ConfigurationService} from '../../shared/services/configuration.service';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-cart-status',
@@ -12,23 +11,24 @@ import { ignoreElements } from 'rxjs/operators';
   styleUrls: ['./cart-status.component.scss']
 })
 export class CartStatusComponent implements OnInit {
-  cartItemAddedSubscription: Subscription;
-  authSubscription: Subscription;
-  cartDroppedSubscription: Subscription;
+  cartItemAddedSubscription?: Subscription;
+  authSubscription?: Subscription;
+  cartDroppedSubscription?: Subscription;
 
   badge: number = 0;
 
   constructor(
     private service: CartService,
-    private cartEvents: CartWrapperService,
+    private cartWrapperService: CartWrapperService,
     private authService: SecurityService,
     private configurationService: ConfigurationService
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     // Subcibe to Add Basket Observable:
     console.log('init cart status');
-    this.cartItemAddedSubscription = this.cartEvents.addItemToCart$.subscribe(
+    this.cartItemAddedSubscription = this.cartWrapperService.addItemToCart$.subscribe(
       item => {
         console.log('cart status add item');
         this.service.addItemToCart(item).subscribe(res => {
@@ -40,20 +40,20 @@ export class CartStatusComponent implements OnInit {
         });
       });
 
-    this.cartItemAddedSubscription = this.cartEvents.updateBage$.subscribe(
+    this.cartItemAddedSubscription = this.cartWrapperService.updateBadge$.subscribe(
       item => {
         console.log('removed item from cart');
         // this.service.removeCartItem(item).subscribe(res => {
         this.service.getCart().subscribe(cart => {
-            if (cart) {
-              this.badge = cart.items.length;
-            }
-          });
+          if (cart) {
+            this.badge = cart.items.length;
+          }
+        });
         // });
       }
     );
-      // Subcribe to Drop Basket Observable:
-    this.cartDroppedSubscription = this.service.cartDroped$.subscribe(res => {
+    // Subcribe to Drop Basket Observable:
+    this.cartDroppedSubscription = this.service.cartDropped$.subscribe(res => {
       this.badge = 0;
     });
 
@@ -66,17 +66,17 @@ export class CartStatusComponent implements OnInit {
       });
     });
     // Init:
-    if(this.configurationService.isReady){
-      this.service.getCart().subscribe(cart =>{
-        if(cart != null){
+    if (this.configurationService.isReady) {
+      this.service.getCart().subscribe(cart => {
+        if (cart != null) {
           this.badge = cart.items.length;
         }
       });
     } else {
-      this.configurationService.settingLoaded$.subscribe( x =>{
+      this.configurationService.settingLoaded$.subscribe(x => {
         // TODO: change carts to cart
         this.service.getCart().subscribe(cart => {
-          if(cart != null){
+          if (cart != null) {
             this.badge = cart.items.length;
           }
         });

@@ -29,7 +29,7 @@ export class AccountNavComponent implements OnInit {
   ngOnInit(): void {
 
   }
-  onClick(link){
+  onClick(link: string){
     this.selectedLink = link;
   }
 }
