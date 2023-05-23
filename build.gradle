@@ -1,270 +1,35 @@
 buildscript {
-    ext.kotlin_version = '1.8.21'
-    repositories {
-        mavenCentral()
-    }
     apply from: "$rootDir/gradle/dependencies.gradle"
-    dependencies {
-        // For Apache Rat plugin to ignore non-Git files
-        classpath "org.ajoberstar.grgit:grgit-core:$versions.grgit"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
 }
-
-
 plugins {
-    id 'java'
     id 'idea'
-    id 'maven-publish'
-    id 'com.diffplug.spotless' version '6.10.0'
-    id 'com.github.ben-manes.versions' version '0.42.0'
-    id 'org.owasp.dependencycheck' version '7.1.1'
-    id 'org.nosphere.apache.rat' version "0.7.1"
-    id "com.github.spotbugs" version '5.0.9' apply false
-    id 'org.gradle.test-retry' version '1.4.0' apply false
-    id 'org.scoverage' version '7.0.0' apply false
-    id 'com.github.johnrengelman.shadow' version '7.1.2' apply false
-    id "io.swagger.core.v3.swagger-gradle-plugin" version "2.2.0"
-    id 'org.springframework.boot' version '2.7.8'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-}
-
-apply from: file('wrapper.gradle')
-apply plugin: 'kotlin'
-
-ext {
-    gradleVersion = versions.gradle
-    minJavaVersion = "8"
-    buildVersionFileName = "kafka-version.properties"
-
-    defaultMaxHeapSize = "2g"
-    defaultJvmArgs = ["-Xss4m", "-XX:+UseParallelGC"]
-
-    // "JEP 403: Strongly Encapsulate JDK Internals" causes some tests to fail when they try
-    // to access internals (often via mocking libraries). We use `--add-opens` as a workaround
-    // for now and we'll fix it properly (where possible) via KAFKA-13275.
-    if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17))
-        defaultJvmArgs.addAll(
-                "--add-opens=java.base/java.io=ALL-UNNAMED",
-                "--add-opens=java.base/java.lang=ALL-UNNAMED",
-                "--add-opens=java.base/java.nio=ALL-UNNAMED",
-                "--add-opens=java.base/java.nio.file=ALL-UNNAMED",
-                "--add-opens=java.base/java.util=ALL-UNNAMED",
-                "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
-                "--add-opens=java.base/java.util.regex=ALL-UNNAMED",
-                "--add-opens=java.base/java.util.stream=ALL-UNNAMED",
-                "--add-opens=java.base/java.text=ALL-UNNAMED",
-                "--add-opens=java.base/java.time=ALL-UNNAMED",
-                "--add-opens=java.security.jgss/sun.security.krb5=ALL-UNNAMED"
-        )
-    maxTestForks = project.hasProperty('maxParallelForks') ? maxParallelForks.toInteger() : Runtime.runtime.availableProcessors()
-    userMaxTestRetries = project.hasProperty('maxTestRetries') ? maxTestRetries.toInteger() : 0
-    userMaxTestRetryFailures = project.hasProperty('maxTestRetryFailures') ? maxTestRetryFailures.toInteger() : 0
-    userIgnoreFailures = project.hasProperty('ignoreFailures') ? ignoreFailures : false
-
-    mavenUrl = project.hasProperty('mavenUrl') ? project.mavenUrl : ''
-    mavenUsername = project.hasProperty('mavenUsername') ? project.mavenUsername : ''
-    mavenPassword = project.hasProperty('mavenPassword') ? project.mavenPassword : ''
-    userTestLoggingEvents = project.hasProperty("testLoggingEvents") ? Arrays.asList(testLoggingEvents.split(",")) : null
-    userEnableTestCoverage = project.hasProperty("enableTestCoverage") ? enableTestCoverage : false
-    userShowStandardStreams = project.hasProperty("showStandardStreams") ? showStandardStreams : null
-
+    id 'java-library'
+    id 'org.springframework.boot' version '3.0.6'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id "com.google.protobuf" version "0.9.3"
+    id 'org.jetbrains.kotlin.jvm' version '1.8.20'
+    id 'org.jetbrains.kotlin.plugin.lombok' version '1.8.10'
+    id 'io.freefair.lombok' version '5.3.0'
+    id "org.jetbrains.kotlin.plugin.jpa" version "1.8.20"
 }
 
 allprojects {
     repositories {
         mavenCentral()
     }
-    task printAllDependencies(type: DependencyReportTask) {}
 }
-
 
 subprojects {
-
-    // enable running :dependencies task recursively on all subprojects
-    // eg: ./gradlew allDeps
-    task allDeps(type: DependencyReportTask) {}
-    // enable running :dependencyInsight task recursively on all subprojects
-    // eg: ./gradlew allDepInsight --configuration runtime --dependency com.fasterxml.jackson.core:jackson-databind
-    task allDepInsight(type: DependencyInsightReportTask) { showingAllVariants = false } doLast {}
-
     apply plugin: 'java-library'
-    apply plugin: 'checkstyle'
-    apply plugin: "com.github.spotbugs"
-    apply plugin: 'org.gradle.test-retry'
-    apply plugin: 'maven-publish'
-
-    // apply the eclipse plugin only to subprojects that hold code. 'connect' is just a folder.
-    if (!project.name.equals('connect')) {
-        apply plugin: 'eclipse'
-    }
-
-    sourceCompatibility = minJavaVersion
-    targetCompatibility = minJavaVersion
-
-    java {
-        consistentResolution {
-            // resolve the compileClasspath and then "inject" the result of resolution as strict constraints into the runtimeClasspath
-            useCompileClasspathVersions()
-        }
-    }
-    tasks.register('install').configure { dependsOn(publishToMavenLocal) }
-    tasks.register('uploadArchives').configure { dependsOn(publish) }
-
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-        options.compilerArgs << "-Xlint:all"
-        // temporary exclusions until all the warnings are fixed
-        if (!project.path.startsWith(":connect"))
-            options.compilerArgs << "-Xlint:-rawtypes"
-        options.compilerArgs << "-Xlint:-serial"
-        options.compilerArgs << "-Xlint:-try"
-        options.compilerArgs << "-Werror"
-        // --release is the recommended way to select the target release, but it's only supported in Java 9 so we also
-        // set --source and --target via `sourceCompatibility` and `targetCompatibility`. If/when Gradle supports `--release`
-        // natively (https://github.com/gradle/gradle/issues/2510), we should switch to that.
-        if (JavaVersion.current().isJava9Compatible())
-            options.compilerArgs << "--release" << minJavaVersion
-    }
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-                artifactId = archivesBaseName
-            }
-        }
-        repositories {
-            maven {
-                url = mavenUrl
-                credentials {
-                    username = mavenUsername
-                    password = mavenPassword
-                }
-            }
-        }
-    }
-
-    // Remove the relevant project name once it's converted to JUnit 5
-    def shouldUseJUnit5 = !(["runtime"].contains(it.project.name))
-    def testLoggingEvents = ["passed", "skipped", "failed"]
-    def testShowStandardStreams = false
-    def testExceptionFormat = 'full'
-    // Gradle built-in logging only supports sending test output to stdout, which generates a lot
-    // of noise, especially for passing tests. We really only want output for failed tests. This
-    // hooks into the output and logs it (so we don't have to buffer it all in memory) and only
-    // saves the output for failing tests. Directory and filenames are such that you can, e.g.,
-    // create a Jenkins rule to collect failed test output.
-    // The suites are for running sets of tests in IDEs.
-    // Gradle will run each test class, so we exclude the suites to avoid redundantly running the tests twice.
-    def testsToExclude = ['**/*Suite.class']
-    // Exclude PowerMock tests when running with Java 16 or newer until a version of PowerMock that supports the relevant versions is released
-    // The relevant issues are https://github.com/powermock/powermock/issues/1094 and https://github.com/powermock/powermock/issues/1099
-    if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
-        testsToExclude.addAll([
-                // connect tests
-                "**/DistributedHerderTest.*",
-                "**/KafkaConfigBackingStoreTest.*",
-                "**/KafkaBasedLogTest.*", "**/StandaloneHerderTest.*",
-                "**/WorkerSinkTaskTest.*", "**/WorkerSinkTaskThreadedTest.*",
-                "**/WorkerSourceTaskTest.*", "**/AbstractWorkerSourceTaskTest.*"
-        ])
-    }
-
-
-    jar {
-        from "$rootDir/LICENSE"
-        from "$rootDir/NOTICE"
-    }
-
-    task srcJar(type: Jar) {
-        archiveClassifier = 'sources'
-        from "$rootDir/LICENSE"
-        from "$rootDir/NOTICE"
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        archiveClassifier = 'javadoc'
-        from "$rootDir/LICENSE"
-        from "$rootDir/NOTICE"
-        from javadoc.destinationDir
-    }
-
-    task docsJar(dependsOn: javadocJar)
-
-    javadoc {
-        options.charSet = 'UTF-8'
-        options.docEncoding = 'UTF-8'
-        options.encoding = 'UTF-8'
-        // Turn off doclint for now, see https://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html for rationale
-        options.addStringOption('Xdoclint:none', '-quiet')
-
-        // The URL structure was changed to include the locale after Java 8
-        if (JavaVersion.current().isJava11Compatible())
-            options.links "https://docs.oracle.com/en/java/javase/${JavaVersion.current().majorVersion}/docs/api/"
-        else
-            options.links "https://docs.oracle.com/javase/8/docs/api/"
-    }
-
-    task systemTestLibs(dependsOn: jar)
-
-    if (!sourceSets.test.allSource.isEmpty()) {
-        task testJar(type: Jar) {
-            archiveClassifier = 'test'
-            from "$rootDir/LICENSE"
-            from "$rootDir/NOTICE"
-            from sourceSets.test.output
-        }
-
-        task testSrcJar(type: Jar, dependsOn: testJar) {
-            archiveClassifier = 'test-sources'
-            from "$rootDir/LICENSE"
-            from "$rootDir/NOTICE"
-            from sourceSets.test.allSource
-        }
-
-    }
-
-    configure(checkstyleMain) {
-        group = 'Verification'
-        description = 'Run checkstyle on all main Java sources'
-    }
-
-    configure(checkstyleTest) {
-        group = 'Verification'
-        description = 'Run checkstyle on all test Java sources'
-    }
-
-    test.dependsOn('checkstyleMain', 'checkstyleTest')
-
-    spotbugs {
-        toolVersion = versions.spotbugs
-        excludeFilter = file("$rootDir/gradle/spotbugs-exclude.xml")
-        ignoreFailures = false
-    }
-    test.dependsOn('spotbugsMain')
-
-    tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
-        reports {
-            // Continue supporting `xmlFindBugsReport` for compatibility
-            xml.enabled(project.hasProperty('xmlSpotBugsReport') || project.hasProperty('xmlFindBugsReport'))
-            html.enabled(!project.hasProperty('xmlSpotBugsReport') && !project.hasProperty('xmlFindBugsReport'))
-        }
-        maxHeapSize = defaultMaxHeapSize
-        jvmArgs = defaultJvmArgs
-    }
-
-    if (userEnableTestCoverage) {
-        def coverageGen = it.path == ':core' ? 'reportScoverage' : 'jacocoTestReport'
-        task reportCoverage(dependsOn: [coverageGen])
-    }
-
-}
-
-gradle.taskGraph.whenReady { taskGraph ->
-    taskGraph.getAllTasks().findAll { it.name.contains('spotbugsScoverage') || it.name.contains('spotbugsTest') }.each { task ->
-        task.enabled = false
+    apply plugin: 'org.jetbrains.kotlin.jvm'
+    apply plugin: 'org.jetbrains.kotlin.plugin.lombok'
+    apply plugin: 'org.jetbrains.kotlin.plugin.jpa'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'com.google.protobuf'
+    sourceCompatibility = JavaVersion.VERSION_17
+    dependencies {
+        implementation platform("org.springframework.cloud:spring-cloud-dependencies:$versions.springCloud")
     }
 }
 
@@ -283,15 +48,10 @@ project(':sale'){
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation libs.springdoc
+        runtimeOnly 'org.postgresql:postgresql'
         compileOnly 'org.projectlombok:lombok'
     }
-}
-repositories {
-    mavenCentral()
-}
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-}
-kotlin {
-    jvmToolchain(11)
 }

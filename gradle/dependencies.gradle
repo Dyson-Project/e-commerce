@@ -74,7 +74,10 @@ versions += [
         zinc                 : "1.7.2",
         zookeeper            : "3.6.3",
         zstd                 : "1.5.2-1",
-        springBoot           : "2.7.8",
+        springBootVersion    : "3.0.6",
+        springCloud          : "2022.0.2",
+        lombokVersion        : "1.18.26",
+        openapiVersion       : "2.1.0",
         gson                 : "2.10.1"
 ]
 libs += [
@@ -172,5 +175,5 @@ libs += [
         gson                       : "com.google.code.gson:gson:$versions.gson",
         jpa                        : "org.springframework.boot:spring-boot-starter-data-jpa",
         validation                 : 'org.springframework.boot:spring-boot-starter-validation',
-
+        springdoc                   : "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.openapiVersion",
 ]
