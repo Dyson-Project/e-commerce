@@ -5,7 +5,8 @@ import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-@RestController("/api")
+@RestController
+@RequestMapping("/api/1.0/addresses")
 class AddressController {
     @GetMapping()
     fun getAddresses(): ResponseEntity<Page<AddressResponse>> {

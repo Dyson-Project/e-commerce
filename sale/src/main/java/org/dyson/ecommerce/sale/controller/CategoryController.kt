@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/api/1.0/categories")
 class CategoryController {
     @GetMapping
     fun getCategory(): ResponseEntity<CategoryDto> {

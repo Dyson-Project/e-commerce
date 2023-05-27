@@ -1,0 +1,77 @@
+.order {
+  margin-top: 12px;
+  padding-bottom: 24px;
+  background-color: #fff;
+}
+
+.order-info {
+  padding: 8px 12px;
+  min-height: 50px;
+  border-bottom: 1px solid #dadada;
+  display: flex;
+}
+
+.order-info .pull-left,
+.order-info .pull-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.order-info .info-order-left-text {
+  margin-bottom: 4px;
+}
+
+.order-info .link {
+  color: #1a9cb7;
+  font-weight: 500;
+}
+
+.text.desc {
+  font-size: 12px;
+  margin-bottom: 0px;
+}
+
+.text.info {
+  color: #757575;
+}
+
+.text {
+  color: #212121;
+  word-break: break-word;
+}
+
+.order-info .pull-cont {
+  flex: 1;
+  margin: 0 30px;
+  text-align: right;
+}
+
+.order-info .pull-left,
+.order-info .pull-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.order-item {
+  min-height: 80px;
+  margin: 24px 12px 24px 36px;
+  padding-right: 12px;
+  width: 916px;
+}
+
+.text.title {
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+
+.capsule {
+  font-size: 12px;
+  padding: 4px 12px;
+  display: inline-block;
+  border-radius: 24px;
+  background-color: #eff0f5;
+  max-width: 150px;
+  margin-top: -4px;
+}

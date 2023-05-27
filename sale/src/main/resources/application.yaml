@@ -1,0 +1,56 @@
+spring:
+  profiles:
+    group:
+      default-group: base, default
+      dev-group: base, dev
+      prod-group: base, prod
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/fnb}
+    username: ${DATABASE_USER:postgres}
+    password: ${DATABASE_PASSWORD:P@ssword789}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:P@ssword789}
+      database: ${REDIS_DATABASE:0}
+  security:
+    oauth2:
+      client:
+        registration:
+          sale:
+            provider: ${KEYCLOAK_PROVIDER:keycloak}
+            client-id: ${KEYCLOAK_CLIENT_ID:authentication}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET:sFfvlJBg1wmDmUlb0PO2OoldW1600YTx}
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope:
+              - openid
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_ISSUER_URI:https://keycloak.tiktzuki.com/realms/ecommerce}
+      #            authorization-uri: ${KEYCLOAK_AUTHORIZATION_URI:https://keycloak.tiktzuki.com/realms/ecommerce/protocol/openid-connect/auth}
+      #            token-uri: ${KEYCLOAK_TOKEN_URI:https://keycloak.tiktzuki.com/realms/ecommerce/protocol/openid-connect/token}
+      #            jwk-set-uri: ${KEYCLOAK_JWT_SET_URI:https://keycloak.tiktzuki.com/realms/ecommerce/protocol/openid-connect/certs}
+      #            user-info-uri: ${KEYCLOAK_USERINFO_URI:https://keycloak.tiktzuki.com/realms/ecommerce/protocol/openid-connect/userinfo}
+      #            user-info-authentication-method: header
+      #            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:https://keycloak.tiktzuki.com/realms/ecommerce}
+keycloak:
+  auth-server-url: ${KEYCLOAK_HOST:https://keycloak.tiktzuki.com}
+  realm: ${KEYCLOAK_REALM:fnb-cms}
+  resource: ${KEYCLOAK_RESOURCE:realm-management}
+  credentials:
+    secret: ${KEYCLOAK_CREDENTIALS_SECRET:WE6ybGtJIrOR2jn9tucxsvZfxrZnl2D7}
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 60000
+        readTimeout: 60000
+        loggerLevel: full
+      sms:
+        url: ${SMS_URL:https://sms.sunshineapp.vn/api}
+        token: ${SMS_TOKEN:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6ImFkbWluIiwiaWF0IjoxNTE2MjM5MDIyfQ.wuHYbExf8mo06-RveSfS2GZt6MOR1_ahgU7T58HFdxQ}

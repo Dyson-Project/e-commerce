@@ -13,8 +13,6 @@ public class Sku {
 
     String sellerSku;
 
-    Long productId;
-
     Long available;
 
     Long quantity;

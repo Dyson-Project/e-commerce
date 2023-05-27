@@ -1,0 +1,35 @@
+.table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  table-layout: fixed;
+  background: #fff;
+}
+
+.table-th {
+  padding: 0;
+  background: #fff;
+  color: #010101;
+  text-align: left;
+  font-weight: 700;
+  border: 1px solid #000;
+}
+
+.table-cell-inner {
+  padding: 16px 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  font-size: 16px;
+  padding: 18px 12px 18px 12px !important;
+  text-align: center;
+}
+
+.step {
+  padding: 20px 0;
+  border-bottom: solid .5px #d3d3d3;
+}
+
+.state {
+  text-align: center;
+}

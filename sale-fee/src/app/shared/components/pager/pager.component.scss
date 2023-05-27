@@ -1,0 +1,15 @@
+.esh-pager-wrapper {
+  padding: 10px 0;
+  flex-direction: row-reverse;
+  display: flex;
+}
+
+.page-button {
+  margin: 0 10px;
+  min-width: 2rem;
+}
+
+.is-disabled {
+  cursor: default;
+  opacity: 0;
+}

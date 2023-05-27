@@ -1,0 +1,44 @@
+<header class="esh-app-header">
+  <div class="container">
+    <article class="row">
+      <section class="col-lg-6 col-md-3 col-12">
+        <div class="brand">
+          <a href="/" class="navbar-brand">
+            <img src="assets/images/logo.gif" width="200">
+          </a>
+        </div>
+      </section>
+      <!-- <section class="col-lg-4 hidden-md-down"></section> -->
+      <section class="col-lg-5 col-md-8 col-1 identity-container">
+        <app-identity></app-identity>
+      </section>
+      <section class="col-lg-1 col-md-1 col-1">
+        <div style="padding-top: 5px;">
+          <app-cart-status *ngIf="Authenticated"></app-cart-status>
+        </div>
+      </section>
+    </article>
+  </div>
+</header>
+<!-- component routing placeholder -->
+<div class="content-background">
+  <div class="container main-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<footer class="esh-app-footer">
+  <div class="container">
+    <article class="row">
+      <section class="col-sm-6">
+        <img style="width: 20rem" src="assets/images/logo.jpg" width="200" alt="" class="esh-app-footer-brand">
+      </section>
+      <section class="col-sm-6">
+        <p>
+          Designed By @TikTzuki
+        </p>
+        <!-- <img src="assets/images/main_footer_text.png" alt="footer text image" class="esh-app-footer-text hidden" width="335" height="26"> -->
+      </section>
+    </article>
+  </div>
+</footer>

@@ -1,0 +1,86 @@
+<h1 *ngIf="!isLoaded">Loading...</h1>
+<div class="container" *ngIf="isLoaded">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="name"> Name </label>
+        <input type="text" name="name" id="name" class="form-control" [(ngModel)]="profile.name">
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" class="form-control" [(ngModel)]="profile.email">
+      </div>
+      <div class="form-group">
+        <label for="">Phone Number
+        </label>
+        <input disabled type="text" name="phone" id="phone" class="form-control" [(ngModel)]="profile.phoneNumber">
+      </div>
+      <div class="form-group">
+        <label for="select-gender"> Gender </label>
+        <select id="select-gender" class="form-control" [(ngModel)]="profile.gender">
+          <option value="male" [selected]="(profile.gender==male)">Male</option>
+          <option value="female" [selected]="(profile.gender==female)">Female</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12 d-flex justify-content-center update-profile">
+    <button class="btn btn-primary" (click)="modifyProfile()">Update profile</button>
+  </div>
+</div>
+
+<!-- <ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="change-pwd">Profile update</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="changePasswordForm">
+            <label for="">
+                Old Password
+                <input type="password" formControlName="oldPwd" id="oldPwd" required>
+                <div *ngIf="oldPwd.invalid && (oldPwd.dirty || oldPwd.touched)" class="alert alert-danger">
+                    <div *ngIf="oldPwd.errors?.required">
+                        Password is required.
+                    </div>
+                    <div *ngIf="oldPwd.errors?.minlength">
+                        Password must be at least 8 characters long.
+                    </div>
+                </div>
+            </label>
+            <label for="">
+                New Password
+                <input type="password" formControlName="newPwd" id="newPwd" (change)="checkConfirmPwd()">
+                <div *ngIf="newPwd.invalid && (newPwd.dirty || newPwd.touched)" class="alert alert-danger">
+                    <div *ngIf="newPwd.errors?.required">
+                        New password is required.
+                    </div>
+                    <div *ngIf="newPwd.errors?.minlength">
+                        Password must be at least 8 characters long.
+                    </div>
+                </div>
+            </label>
+            <label for="">
+                Confirm New Passowrd
+                <input type="password" formControlName="confirmNewPwd" id="confirmPwd" (change)="checkConfirmPwd()">
+                <div *ngIf="confirmNewPwd.invalid && (confirmNewPwd.dirty || confirmNewPwd.touched)"
+                    class="alert alert-danger">
+                    <span *ngIf="confirmNewPwd.errors?.requried">
+                        Confirm password is required
+                    </span>
+                    <span *ngIf="confirmNewPwd.errors?.minlength">
+                        Password must be least 8 characters long.
+                    </span>
+                    <span *ngIf="confirmNewPwd.errors?.incorrectPassword">
+                        Incorrect new password
+                    </span>
+                </div>
+            </label>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.close()">Save</button>
+    </div>
+</ng-template> -->

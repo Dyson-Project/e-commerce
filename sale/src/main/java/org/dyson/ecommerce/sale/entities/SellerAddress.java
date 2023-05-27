@@ -7,9 +7,6 @@ public class SellerAddress {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
-
-    Long sellerId;
-
     String street;
     String address1;
     String address2;

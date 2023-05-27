@@ -1,0 +1,11 @@
+@import '../../../variable';
+
+.row-model {
+  // margin: 0 15px;
+  padding: 5px 5px;
+  cursor: pointer;
+}
+
+.row-model:hover {
+  background-color: $color-background-bright;
+}

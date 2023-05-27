@@ -1,6 +1,8 @@
 package org.dyson.ecommerce.sale.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -10,10 +12,6 @@ import java.util.List;
 
 @Entity
 public class Cart {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    Long customerId;
-
     BigDecimal shippingFee;
 
     BigDecimal totalPrice;
@@ -22,6 +20,7 @@ public class Cart {
     List<CartItem> items;
 
     @OneToOne
+    @Id
     Customer customer;
 
     @Data

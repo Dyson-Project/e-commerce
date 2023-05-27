@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
+@Table(name = "order_tbl")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

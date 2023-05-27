@@ -5,15 +5,15 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping("/api/1.0/customers/{id}/cart")
 class CartController {
     @GetMapping
-    fun getCart(): CartDto {
+    fun getCart(@PathVariable id: Long): CartDto {
         throw Exception()
     }
 
-    @PutMapping("/{id}")
-    fun updateCart(@PathVariable id: String, cartDto: CartDto): ResponseEntity<Void> {
+    @PutMapping
+    fun updateCart(@PathVariable id: Long, cartDto: CartDto): ResponseEntity<Void> {
         throw Exception()
     }
 }

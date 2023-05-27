@@ -1,0 +1,55 @@
+server:
+  port: 8080
+  error:
+    include-exception: true
+    include-stacktrace: always
+    include-message: always
+spring:
+  datasource:
+    hikari:
+      pool-name: DDD-HikariPool
+      auto-commit: true
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+      minimum-idle: 3
+      maximum-pool-size: 24
+  jpa:
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: false
+          region:
+            factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    hibernate:
+      ddl-auto: update
+  batch:
+    jdbc:
+      initialize-schema: always
+  jackson:
+    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
+  messages:
+    basename: i18n/messages
+springdoc:
+  api-docs:
+    path: /api-docs
+  show-actuator: false
+  show-login-endpoint: true
+  show-oauth2-endpoints: true
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+grpc:
+  server:
+    port: ${GRPC_SERVER_PORT:9090}

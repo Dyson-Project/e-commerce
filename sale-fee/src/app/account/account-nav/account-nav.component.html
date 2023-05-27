@@ -1,0 +1,8 @@
+<div>
+  <ul class="nav nav-vertical">
+    <li *ngFor="let item of navList">
+      <a [routerLink]="item.link" [ngClass]="{'active': item.link == selectedLink}"
+         (click)="onClick(item.link)"> {{item.name}}  </a>
+    </li>
+  </ul>
+</div>

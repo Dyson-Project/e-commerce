@@ -1,0 +1,68 @@
+<div class="login-background">
+  <div class="login-form" *ngIf="isLogin && authForm" [formGroup]="authForm">
+    <h1>Login</h1>
+    <div class="form-input-material">
+      <input type="text" name="username" id="username" formControlName="username" class="form-control-material"/>
+      <label for="username">Phone number</label>
+    </div>
+    <small *ngIf="usernameLogin.invalid && (usernameLogin.dirty || usernameLogin.touched)" class="alert-sm"> Invalid
+      phone number </small>
+    <div class="form-input-material">
+      <input type="password" name="password" id="password" formControlName="password" class="form-control-material"/>
+      <label for="password">Password</label>
+    </div>
+    <span *ngIf="passwordLogin.invalid && (passwordLogin.dirty || passwordLogin.touched)" class="alert-sm"> Invalid password </span>
+    <button type="button" (click)="login(errorModal)" class="btn btn-ghost">Login</button>
+    <small class="change-action" (click)="changeAction()"> Sign-up </small>
+  </div>
+  <div class="login-form" *ngIf="!isLogin && registForm" [formGroup]="registForm" #child>
+    <h1>Create Account</h1>
+    <div class="form-input-material">
+      <input type="text" name="username" id="username" formControlName="username" class="form-control-material"/>
+      <label for="username">Username</label>
+    </div>
+    <small *ngIf="username.invalid && (username.dirty || username.touched)" class="alert-sm"> Invalid phone
+      number </small>
+    <div class="form-input-material">
+      <input type="password" name="password" id="password" formControlName="password" class="form-control-material"/>
+      <label for="password">Password</label>
+    </div>
+    <small *ngIf="password.invalid && (password.dirty || password.touched)" class="alert-sm"> Invalid password </small>
+    <div class="form-input-material">
+      <input type="password" formControlName="confirmPassword" class="form-control-material"/>
+      <label for="password">Confirm Password</label>
+    </div>
+    <small *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)" class="alert-sm">
+      Invalid password </small>
+
+    <div class="form-input-material">
+      <input type="text" formControlName="email" class="form-control-material"/>
+      <label for="password">Email</label>
+    </div>
+    <small *ngIf="email.invalid && (email.dirty || email.touched)" class="alert-sm"> Invalid Email </small>
+
+    <div class="form-input-material">
+      <input type="text" formControlName="phoneNumber" class="form-control-material"/>
+      <label for="password">Phone Number</label>
+    </div>
+    <small *ngIf="phoneNumber.invalid && (phoneNumber.dirty || phoneNumber.touched)" class="alert-sm"> Ivalid
+      phone </small>
+    <button type="button" (click)="signup()" class="btn btn-ghost">Sign up</button>
+    <small class="change-action" (click)="changeAction()"> Login </small>
+  </div>
+</div>
+
+<ng-template #errorModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Login false</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <h3> Wrong info </h3>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('result')">OK</button>
+  </div>
+</ng-template>
