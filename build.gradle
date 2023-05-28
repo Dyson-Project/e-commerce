@@ -60,6 +60,8 @@ project(':sale'){
         implementation libs.springThymeleaf
         implementation libs.springStarterSecurity
         implementation libs.springOAuth2Client
+        implementation libs.minio
+        implementation "io.minio:minio:8.5.3"
         runtimeOnly 'org.postgresql:postgresql'
         annotationProcessor libs.lombok
         compileOnly 'org.projectlombok:lombok'

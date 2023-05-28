@@ -45,6 +45,7 @@ libs += [
         keycloakSpringStarter      : "org.keycloak:keycloak-spring-boot-starter:$versions.keycloakVersion",
         keycloakAdminClient        : "org.keycloak:keycloak-admin-client:$versions.keycloakVersion",
         keycloakCore               : "org.keycloak:keycloak-core:$versions.keycloakVersion",
+        minio                      : "com.jlefebure:spring-boot-starter-minio:1.10",
 //        // API Documentation
         springdoc                  : "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.openapiVersion",
 
