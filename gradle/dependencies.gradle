@@ -1,60 +1,62 @@
 ext {
-    versions = [:]
-    libs = [:]
-}
-
-versions += [
-        springBootVersion       : "3.1.0",
-        springCloud             : "2022.0.2",
-        lombokVersion           : "1.18.26",
-        openapiVersion          : "2.1.0",
-        gson                    : "2.10.1",
-        grpcVersion             : "1.54.1",
-        grpcSpringStarterVersion: "2.14.0.RELEASE",
-]
-libs += [
-        springStarter              : "org.springframework.boot:spring-boot-starter",
-        springStarterJson          : "org.springframework.boot:spring-boot-starter-json",
-        springActuator             : "org.springframework.boot:spring-boot-starter-actuator",
-        springStarterAmqp          : "org.springframework.boot:spring-boot-starter-amqp",
-        springStarterJpa           : "org.springframework.boot:spring-boot-starter-data-jpa",
-        springJpa                  : "org.springframework.data:spring-data-jpa",
-        springAop                  : "org.springframework.boot:spring-boot-starter-aop",
-        springStarterDataRedis     : "org.springframework.boot:spring-boot-starter-data-redis",
-        postgresql                 : "org.postgresql:postgresql",
-        hibernateCore              : "org.hibernate.orm:hibernate-core",
-        hibernateEhcache           : "org.hibernate.orm:hibernate-ehcache:$versions.hibernateEhcache",
-        hibernateJcache            : "org.hibernate.orm:hibernate-jcache:6.1.7.Final",
+    versions = [
+            springBootVersion       : "3.1.0",
+            springCloud             : "2022.0.2",
+            lombokVersion           : "1.18.26",
+            openapiVersion          : "2.1.0",
+            gson                    : "2.10.1",
+            grpcVersion             : "1.54.1",
+            grpcSpringStarterVersion: "2.14.0.RELEASE",
+    ]
+    libs = [
+            springStarter               : "org.springframework.boot:spring-boot-starter",
+            springStarterJson           : "org.springframework.boot:spring-boot-starter-json",
+            springActuator              : "org.springframework.boot:spring-boot-starter-actuator",
+            springStarterAmqp           : "org.springframework.boot:spring-boot-starter-amqp",
+            springStarterJpa            : "org.springframework.boot:spring-boot-starter-data-jpa",
+            springJpa                   : "org.springframework.data:spring-data-jpa",
+            springAop                   : "org.springframework.boot:spring-boot-starter-aop",
+            springStarterDataRedis      : "org.springframework.boot:spring-boot-starter-data-redis",
+            postgresql                  : "org.postgresql:postgresql",
+            hibernateCore               : "org.hibernate.orm:hibernate-core",
+            hibernateEhcache            : "org.hibernate.orm:hibernate-ehcache:$versions.hibernateEhcache",
+            hibernateJcache             : "org.hibernate.orm:hibernate-jcache:6.1.7.Final",
 
 
-        springValidation           : "org.springframework.boot:spring-boot-starter-validation",
-        springStarterWeb           : "org.springframework.boot:spring-boot-starter-web",
-        springStarterWebflux       : "org.springframework.boot:spring-boot-starter-webflux",
-        springWebsocket            : "org.springframework.boot:spring-boot-starter-websocket",
-        springDataCommons          : "org.springframework.data:spring-data-commons",
+            springValidation            : "org.springframework.boot:spring-boot-starter-validation",
+            springStarterWeb            : "org.springframework.boot:spring-boot-starter-web",
+            springStarterWebflux        : "org.springframework.boot:spring-boot-starter-webflux",
+            springWebsocket             : "org.springframework.boot:spring-boot-starter-websocket",
+            springDataCommons           : "org.springframework.data:spring-data-commons",
 
-        springCloudStarterOpenfeign: "org.springframework.cloud:spring-cloud-starter-openfeign",
+            springCloudStarterOpenfeign : "org.springframework.cloud:spring-cloud-starter-openfeign",
 //        // View engine
-        springThymeleaf            : 'org.springframework.boot:spring-boot-starter-thymeleaf',
+            springThymeleaf             : 'org.springframework.boot:spring-boot-starter-thymeleaf',
 
 //        // Security
-        springOAuth2Client         : "org.springframework.boot:spring-boot-starter-oauth2-client",
-        springOAuth2ResourceServer : "org.springframework.boot:spring-boot-starter-oauth2-resource-server",
-        springStarterSecurity      : "org.springframework.boot:spring-boot-starter-security",
-        springSecurityCore         : "org.springframework.boot:spring-boot-starter-security",
-        keycloakSpringStarter      : "org.keycloak:keycloak-spring-boot-starter:$versions.keycloakVersion",
-        keycloakAdminClient        : "org.keycloak:keycloak-admin-client:$versions.keycloakVersion",
-        keycloakCore               : "org.keycloak:keycloak-core:$versions.keycloakVersion",
-        minio                      : "com.jlefebure:spring-boot-starter-minio:1.10",
+            springOAuth2Client          : "org.springframework.boot:spring-boot-starter-oauth2-client",
+            springOAuth2ResourceServer  : "org.springframework.boot:spring-boot-starter-oauth2-resource-server",
+            springStarterSecurity       : "org.springframework.boot:spring-boot-starter-security",
+            springSecurityCore          : "org.springframework.boot:spring-boot-starter-security",
+            keycloakSpringStarter       : "org.keycloak:keycloak-spring-boot-starter:$versions.keycloakVersion",
+            keycloakAdminClient         : "org.keycloak:keycloak-admin-client:$versions.keycloakVersion",
+            keycloakCore                : "org.keycloak:keycloak-core:$versions.keycloakVersion",
+            minio                       : "com.jlefebure:spring-boot-starter-minio:1.10",
 //        // API Documentation
-        springdoc                  : "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.openapiVersion",
+            springdoc                   : "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.openapiVersion",
 
-        lombok                     : "org.projectlombok:lombok:$versions.lombokVersion",
-        // GRPC
-        annotationsApi             : "org.apache.tomcat:annotations-api:6.0.53", // CompileOnly
-        grpcNettyShaded            : "io.grpc:grpc-netty-shaded:$versions.grpcVersion",
-        grpcProtobuf               : "io.grpc:grpc-protobuf:$versions.grpcVersion",
-        grpcStub                   : "io.grpc:grpc-stub:$versions.grpcVersion",
-        grpcSpringStarter          : "net.devh:grpc-spring-boot-starter:$versions.grpcSpringStarterVersion",
-        protobufJavaUtil           : "com.google.protobuf:protobuf-java-util:$versions.protobufJavaUtilVersion", // Runtime
-]
+            lombok                      : "org.projectlombok:lombok:$versions.lombokVersion",
+            // GRPC
+            annotationsApi              : "org.apache.tomcat:annotations-api:6.0.53", // CompileOnly
+            grpcNettyShaded             : "io.grpc:grpc-netty-shaded:$versions.grpcVersion",
+            grpcProtobuf                : "io.grpc:grpc-protobuf:$versions.grpcVersion",
+            grpcStub                    : "io.grpc:grpc-stub:$versions.grpcVersion",
+            grpcSpringStarter           : "net.devh:grpc-spring-boot-starter:$versions.grpcSpringStarterVersion",
+            protobufJavaUtil            : "com.google.protobuf:protobuf-java-util:$versions.protobufJavaUtilVersion", // Runtime
+            springConfigurationProcessor: "org.springframework.boot:spring-boot-configuration-processor",
+            kotlinSdk                   : "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
+            kotlinReflect               : "org.jetbrains.kotlin:kotlin-reflect",
+            kotlinLogging               : "io.github.microutils:kotlin-logging-jvm:3.0.5",
+            kotlinJackson               : "com.fasterxml.jackson.module:jackson-module-kotlin",
+    ]
+}

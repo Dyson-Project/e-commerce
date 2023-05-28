@@ -86,10 +86,10 @@ public class RestExceptionHandlers extends ExtendedResponseEntityExceptionHandle
         return buildResponseEntity(restError);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handle(Exception ex) {
-        return buildResponseEntity(new RestError(INTERNAL_SERVER_ERROR, ex));
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<Object> handle(Exception ex) {
+//        return buildResponseEntity(new RestError(INTERNAL_SERVER_ERROR, ex));
+//    }
 
     @Override
     public ResponseEntity<Object> buildResponseEntity(RestError restError) {

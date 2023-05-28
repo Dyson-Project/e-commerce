@@ -63,8 +63,14 @@ project(':sale'){
         implementation libs.minio
         implementation "io.minio:minio:8.5.3"
         runtimeOnly 'org.postgresql:postgresql'
+
+        implementation libs.kotlinSdk
+        implementation libs.kotlinReflect
+        implementation libs.kotlinLogging
+        implementation libs.kotlinJackson
         annotationProcessor libs.lombok
-        compileOnly 'org.projectlombok:lombok'
+        compileOnly libs.lombok
+        annotationProcessor libs.springConfigurationProcessor
         implementation project(":core")
     }
 }

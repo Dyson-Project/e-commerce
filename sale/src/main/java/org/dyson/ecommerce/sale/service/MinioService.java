@@ -19,7 +19,6 @@ import java.util.stream.StreamSupport;
 
 /**
  * Service class to interact with Minio bucket. This class is register as a bean and use the properties defined in {@link MinioConfigurationProperties}.
- * All methods return an {@link com.jlefebure.spring.boot.minio.MinioException} which wrap the Minio SDK exception.
  * The bucket name is provided with the one defined in the configuration properties.
  *
  * @author Jordan LEFEBURE
@@ -126,9 +125,8 @@ public class MinioService {
      *
      * @param path Path with prefix to the object. Object name must be included.
      * @return The object as an InputStream
-     * @throws com.jlefebure.spring.boot.minio.MinioException if an error occur while fetch object
      */
-    public InputStream get(Path path) throws com.jlefebure.spring.boot.minio.MinioException {
+    public InputStream get(Path path) {
         try {
             GetObjectArgs args = GetObjectArgs.builder()
                 .bucket(configurationProperties.getBucket())
@@ -136,7 +134,7 @@ public class MinioService {
                 .build();
             return minioClient.getObject(args);
         } catch (Exception e) {
-            throw new com.jlefebure.spring.boot.minio.MinioException("Error while fetching files in Minio", e);
+            throw new RuntimeException("Error while fetching files in Minio", e);
         }
     }
 
@@ -145,17 +143,16 @@ public class MinioService {
      *
      * @param path Path with prefix to the object. Object name must be included.
      * @return Metadata of the  object
-     * @throws com.jlefebure.spring.boot.minio.MinioException if an error occur while fetching object metadatas
      */
-    public StatObjectResponse getMetadata(Path path) throws com.jlefebure.spring.boot.minio.MinioException {
+    public StatObjectResponse getMetadata(Path path) {
+        StatObjectArgs args = StatObjectArgs.builder()
+            .bucket(configurationProperties.getBucket())
+            .object(path.toString())
+            .build();
         try {
-            StatObjectArgs args = StatObjectArgs.builder()
-                .bucket(configurationProperties.getBucket())
-                .object(path.toString())
-                .build();
             return minioClient.statObject(args);
         } catch (Exception e) {
-            throw new com.jlefebure.spring.boot.minio.MinioException("Error while fetching files in Minio", e);
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
@@ -186,9 +183,8 @@ public class MinioService {
      *
      * @param source   Path with prefix to the object. Object name must be included.
      * @param fileName Filename
-     * @throws com.jlefebure.spring.boot.minio.MinioException if an error occur while fetch object
      */
-    public void getAndSave(Path source, String fileName) throws com.jlefebure.spring.boot.minio.MinioException {
+    public void getAndSave(Path source, String fileName)  {
         try {
             DownloadObjectArgs args = DownloadObjectArgs.builder()
                 .bucket(configurationProperties.getBucket())
@@ -197,7 +193,7 @@ public class MinioService {
                 .build();
             minioClient.downloadObject(args);
         } catch (Exception e) {
-            throw new com.jlefebure.spring.boot.minio.MinioException("Error while fetching files in Minio", e);
+            throw new RuntimeException("Error while fetching files in Minio", e);
         }
     }
 
@@ -207,10 +203,8 @@ public class MinioService {
      * @param source  Path with prefix to the object. Object name must be included.
      * @param file    File as an inputstream
      * @param headers Additional headers to put on the file. The map MUST be mutable. All custom headers will start with 'x-amz-meta-' prefix when fetched with {@code getMetadata()} method.
-     * @throws com.jlefebure.spring.boot.minio.MinioException if an error occur while uploading object
      */
-    public void upload(Path source, InputStream file, Map<String, String> headers) throws
-        com.jlefebure.spring.boot.minio.MinioException {
+    public void upload(Path source, InputStream file, Map<String, String> headers)  {
         try {
             PutObjectArgs args = PutObjectArgs.builder()
                 .bucket(configurationProperties.getBucket())
@@ -220,7 +214,7 @@ public class MinioService {
                 .build();
             minioClient.putObject(args);
         } catch (Exception e) {
-            throw new com.jlefebure.spring.boot.minio.MinioException("Error while fetching files in Minio", e);
+            throw new RuntimeException("Error while fetching files in Minio", e);
         }
     }
 
@@ -229,10 +223,8 @@ public class MinioService {
      *
      * @param source Path with prefix to the object. Object name must be included.
      * @param file   File as an inputstream
-     * @throws com.jlefebure.spring.boot.minio.MinioException if an error occur while uploading object
      */
-    public void upload(Path source, InputStream file) throws
-        com.jlefebure.spring.boot.minio.MinioException {
+    public void upload(Path source, InputStream file) {
         try {
             PutObjectArgs args = PutObjectArgs.builder()
                 .bucket(configurationProperties.getBucket())
@@ -241,7 +233,7 @@ public class MinioService {
                 .build();
             minioClient.putObject(args);
         } catch (Exception e) {
-            throw new com.jlefebure.spring.boot.minio.MinioException("Error while fetching files in Minio", e);
+            throw new RuntimeException("Error while fetching files in Minio", e);
         }
     }
 
@@ -252,10 +244,8 @@ public class MinioService {
      * @param file        File as an inputstream
      * @param contentType MIME type for the object
      * @param headers     Additional headers to put on the file. The map MUST be mutable
-     * @throws com.jlefebure.spring.boot.minio.MinioException if an error occur while uploading object
      */
-    public void upload(Path source, InputStream file, String contentType, Map<String, String> headers) throws
-        com.jlefebure.spring.boot.minio.MinioException {
+    public void upload(Path source, InputStream file, String contentType, Map<String, String> headers) {
         try {
             PutObjectArgs args = PutObjectArgs.builder()
                 .bucket(configurationProperties.getBucket())
@@ -267,7 +257,7 @@ public class MinioService {
 
             minioClient.putObject(args);
         } catch (Exception e) {
-            throw new com.jlefebure.spring.boot.minio.MinioException("Error while fetching files in Minio", e);
+            throw new RuntimeException("Error while fetching files in Minio", e);
         }
     }
 
@@ -277,10 +267,8 @@ public class MinioService {
      * @param source      Path with prefix to the object. Object name must be included.
      * @param file        File as an inputstream
      * @param contentType MIME type for the object
-     * @throws com.jlefebure.spring.boot.minio.MinioException if an error occur while uploading object
      */
-    public void upload(Path source, InputStream file, String contentType) throws
-        com.jlefebure.spring.boot.minio.MinioException {
+    public void upload(Path source, InputStream file, String contentType) throws MinioException  {
         try {
             PutObjectArgs args = PutObjectArgs.builder()
                 .bucket(configurationProperties.getBucket())
@@ -291,7 +279,7 @@ public class MinioService {
 
             minioClient.putObject(args);
         } catch (Exception e) {
-            throw new com.jlefebure.spring.boot.minio.MinioException("Error while fetching files in Minio", e);
+            throw new RuntimeException("Error while fetching files in Minio", e);
         }
     }
 
@@ -303,8 +291,7 @@ public class MinioService {
      * @param file   File as an Filename
      * @throws com.jlefebure.spring.boot.minio.MinioException if an error occur while uploading object
      */
-    public void upload(Path source, File file) throws
-        com.jlefebure.spring.boot.minio.MinioException {
+    public void upload(Path source, File file)  {
         try {
             UploadObjectArgs args = UploadObjectArgs.builder()
                 .bucket(configurationProperties.getBucket())
@@ -313,7 +300,7 @@ public class MinioService {
                 .build();
             minioClient.uploadObject(args);
         } catch (Exception e) {
-            throw new com.jlefebure.spring.boot.minio.MinioException("Error while fetching files in Minio", e);
+            throw new RuntimeException("Error while fetching files in Minio", e);
         }
     }
 

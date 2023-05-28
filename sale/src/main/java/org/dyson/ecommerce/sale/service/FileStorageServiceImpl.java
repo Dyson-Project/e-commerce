@@ -1,9 +1,8 @@
 package org.dyson.ecommerce.sale.service;
 
-import lombok.AccessLevel;
+import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.dyson.ecommerce.sale.dto.FileResponse;
 import org.springframework.core.io.InputStreamResource;
@@ -16,26 +15,21 @@ import java.nio.file.Path;
 
 
 @Service
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class FileStorageServiceImpl implements FileStorageService {
 
     private final MinioService minioService;
 
-    FileResponseMapper fileResponseMapper;
 
     @Override
-    public FileResponse addFile(MultipartFile file) {
+    public FileResponse addFile(MultipartFile file) throws IOException, MinioException {
         Path path = Path.of(file.getOriginalFilename());
-        try {
-            minioService.upload(path, file.getInputStream(), file.getContentType());
-            var metadata = minioService.getMetadata(path);
-            log.info("this file {} storage in bucket: {} on date: {}", metadata.name(), metadata.bucketName(), metadata.createdTime());
-            return fileResponseMapper.fileAddResponse(metadata);
-        } catch (IOException | MinioException ex) {
-            throw new IllegalStateException(ex.getMessage());
-        }
+        minioService.upload(path, file.getInputStream(), file.getContentType());
+        var metadata = minioService.getMetadata(path);
+//            log.info("this file {} storage in bucket: {} on date: {}", metadata.name(), metadata.bucketName(), metadata.createdTime());
+//            return fileResponseMapper.fileAddResponse(metadata);
+        return null;
     }
 
     @SneakyThrows
@@ -44,7 +38,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         Path path = Path.of(filename);
         var metadata = minioService.getMetadata(path);
         minioService.remove(path);
-        log.info("this file {} removed in bucket: {} on date: {}", metadata.name(), metadata.bucketName(), metadata.createdTime());
+//        log.info("this file {} removed in bucket: {} on date: {}", metadata.name(), metadata.bucketName(), metadata.createdTime());
     }
 
     @SneakyThrows
@@ -55,14 +49,14 @@ public class FileStorageServiceImpl implements FileStorageService {
 
         InputStream inputStream = minioService.get(path);
         InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
-
-        return FileResponse.builder()
-            .filename(metadata.name())
-            .fileSize(metadata.length())
-            .contentType(metadata.contentType())
-            .createdTime(metadata.createdTime())
-            .stream(inputStreamResource)
-            .build();
+        return null;
+//        return FileResponse.builder()
+//            .filename(metadata.name())
+//            .fileSize(metadata.length())
+//            .contentType(metadata.contentType())
+//            .createdTime(metadata.createdTime())
+//            .stream(inputStreamResource)
+//            .build();
     }
 
     @SneakyThrows
@@ -70,6 +64,6 @@ public class FileStorageServiceImpl implements FileStorageService {
     public FileResponse getFileDetails(String fileName) {
         Path path = Path.of(fileName);
         var metadata = minioService.getMetadata(path);
-        return fileResponseMapper.fileGetResponse(metadata);
+        return null;
     }
 }

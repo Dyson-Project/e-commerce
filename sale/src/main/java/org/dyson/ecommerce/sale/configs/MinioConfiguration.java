@@ -23,14 +23,13 @@ import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.errors.*;
 import io.minio.http.HttpUtils;
+import lombok.RequiredArgsConstructor;
 import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
@@ -43,48 +42,48 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @ConditionalOnClass(MinioClient.class)
 @EnableConfigurationProperties(MinioConfigurationProperties.class)
+@RequiredArgsConstructor
 public class MinioConfiguration {
     final Long DEFAULT_CONNECTION_TIMEOUT = TimeUnit.MINUTES.toMillis(5);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MinioConfiguration.class);
 
-    @Autowired
-    private MinioConfigurationProperties minioConfigurationProperties;
+    private final MinioConfigurationProperties properties;
 
     @Bean
     public MinioClient minioClient() throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InternalException, ErrorResponseException, InvalidResponseException, com.jlefebure.spring.boot.minio.MinioException, XmlParserException, ServerException {
 
         MinioClient minioClient;
         minioClient = MinioClient.builder()
-            .endpoint(minioConfigurationProperties.getUrl())
-            .credentials(minioConfigurationProperties.getAccessKey(), minioConfigurationProperties.getSecretKey())
+            .endpoint(properties.getUrl())
+            .credentials(properties.getAccessKey(), properties.getSecretKey())
             .httpClient(client())
             .build();
         minioClient.setTimeout(
-            minioConfigurationProperties.getConnectTimeout().toMillis(),
-            minioConfigurationProperties.getWriteTimeout().toMillis(),
-            minioConfigurationProperties.getReadTimeout().toMillis()
+            properties.getConnectTimeout().toMillis(),
+            properties.getWriteTimeout().toMillis(),
+            properties.getReadTimeout().toMillis()
         );
 
-        if (minioConfigurationProperties.isCheckBucket()) {
+        if (properties.isCheckBucket()) {
             try {
-                LOGGER.debug("Checking if bucket {} exists", minioConfigurationProperties.getBucket());
+                LOGGER.debug("Checking if bucket {} exists", properties.getBucket());
                 BucketExistsArgs existsArgs = BucketExistsArgs.builder()
-                    .bucket(minioConfigurationProperties.getBucket())
+                    .bucket(properties.getBucket())
                     .build();
                 boolean b = minioClient.bucketExists(existsArgs);
                 if (!b) {
-                    if (minioConfigurationProperties.isCreateBucket()) {
+                    if (properties.isCreateBucket()) {
                         try {
                             MakeBucketArgs makeBucketArgs = MakeBucketArgs.builder()
-                                .bucket(minioConfigurationProperties.getBucket())
+                                .bucket(properties.getBucket())
                                 .build();
                             minioClient.makeBucket(makeBucketArgs);
                         } catch (Exception e) {
                             throw new MinioException("Cannot create bucket", e);
                         }
                     } else {
-                        throw new IllegalStateException("Bucket does not exist: " + minioConfigurationProperties.getBucket());
+                        throw new IllegalStateException("Bucket does not exist: " + properties.getBucket());
                     }
                 }
             } catch (Exception e) {
