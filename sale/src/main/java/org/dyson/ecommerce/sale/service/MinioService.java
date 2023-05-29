@@ -127,12 +127,12 @@ public class MinioService {
      * @return The object as an InputStream
      */
     public InputStream get(Path path) {
-        try {
-            GetObjectArgs args = GetObjectArgs.builder()
-                .bucket(configurationProperties.getBucket())
-                .object(path.toString())
-                .build();
-            return minioClient.getObject(args);
+        GetObjectArgs args = GetObjectArgs.builder()
+            .bucket(configurationProperties.getBucket())
+            .object(path.toString())
+            .build();
+        try (InputStream stream = minioClient.getObject(args)) {
+            return stream;
         } catch (Exception e) {
             throw new RuntimeException("Error while fetching files in Minio", e);
         }

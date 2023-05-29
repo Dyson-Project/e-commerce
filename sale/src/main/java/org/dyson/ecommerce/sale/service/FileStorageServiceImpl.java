@@ -1,9 +1,10 @@
 package org.dyson.ecommerce.sale.service;
 
+import io.minio.*;
 import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.dyson.ecommerce.sale.configs.MinioConfigurationProperties;
 import org.dyson.ecommerce.sale.dto.FileResponse;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
@@ -18,52 +19,75 @@ import java.nio.file.Path;
 @Slf4j
 @RequiredArgsConstructor
 public class FileStorageServiceImpl implements FileStorageService {
-
-    private final MinioService minioService;
+    private final MinioClient minioClient;
+    private final MinioConfigurationProperties configurationProperties;
 
 
     @Override
-    public FileResponse addFile(MultipartFile file) throws IOException, MinioException {
+    public FileResponse upload(MultipartFile file) throws IOException, MinioException {
         Path path = Path.of(file.getOriginalFilename());
-        minioService.upload(path, file.getInputStream(), file.getContentType());
-        var metadata = minioService.getMetadata(path);
+        PutObjectArgs args = PutObjectArgs.builder()
+            .bucket(configurationProperties.getBucket())
+            .object(path.toString())
+            .stream(file.getInputStream(), file.getInputStream().available(), -1)
+            .contentType(file.getContentType())
+            .build();
+        try {
+            minioClient.putObject(args);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while fetching files in Minio", e);
+        }
+        var metadata = getMetadata(path);
 //            log.info("this file {} storage in bucket: {} on date: {}", metadata.name(), metadata.bucketName(), metadata.createdTime());
-//            return fileResponseMapper.fileAddResponse(metadata);
         return null;
     }
 
-    @SneakyThrows
     @Override
     public void deleteFile(String filename) {
         Path path = Path.of(filename);
-        var metadata = minioService.getMetadata(path);
-        minioService.remove(path);
-//        log.info("this file {} removed in bucket: {} on date: {}", metadata.name(), metadata.bucketName(), metadata.createdTime());
+        RemoveObjectArgs args = RemoveObjectArgs.builder()
+            .bucket(configurationProperties.getBucket())
+            .object(path.toString())
+            .build();
+        try {
+            minioClient.removeObject(args);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while fetching files in Minio", e);
+        }
     }
 
-    @SneakyThrows
     @Override
     public FileResponse getFile(String filename) {
         Path path = Path.of(filename);
-        var metadata = minioService.getMetadata(path);
-
-        InputStream inputStream = minioService.get(path);
-        InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
-        return null;
-//        return FileResponse.builder()
-//            .filename(metadata.name())
-//            .fileSize(metadata.length())
-//            .contentType(metadata.contentType())
-//            .createdTime(metadata.createdTime())
-//            .stream(inputStreamResource)
-//            .build();
+        var metadata = getMetadata(path);
+        log.debug("metadata {}", metadata);
+        GetObjectArgs args = GetObjectArgs.builder()
+            .bucket(configurationProperties.getBucket())
+            .object(path.toString())
+            .build();
+        try (InputStream stream = minioClient.getObject(args)) {
+            return new FileResponse(metadata.size(), "name", metadata.contentType(), metadata.lastModified(), new InputStreamResource(stream));
+        } catch (Exception e) {
+            throw new RuntimeException("Error while fetching files in Minio", e);
+        }
     }
 
-    @SneakyThrows
     @Override
     public FileResponse getFileDetails(String fileName) {
         Path path = Path.of(fileName);
-        var metadata = minioService.getMetadata(path);
+        var metadata = getMetadata(path);
         return null;
+    }
+
+    public StatObjectResponse getMetadata(Path path) {
+        StatObjectArgs args = StatObjectArgs.builder()
+            .bucket(configurationProperties.getBucket())
+            .object(path.toString())
+            .build();
+        try {
+            return minioClient.statObject(args);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 }
