@@ -10,7 +10,7 @@
     "e2e": "ng e2e",
     "fake-server": "json-server fake-server.json --routes fake-server-routes.json",
     "dotnet-server": "cd ../apiproject && dotnet watch run",
-    "manager-client": "cd ../cms-fe && npm start",
+    "manager-client": "cd ../cms-fee && npm start",
     "stripe": "cd ../apiproject && stripe listen --forward-to https://localhost:5001/api/orders/webhook"
   },
   "private": true,

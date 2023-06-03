@@ -62,7 +62,10 @@ export class SharedModule {
    constructor(library: FaIconLibrary){
     library.addIconPacks(fas);
    }
-  static forRoot(): ModuleWithProviders<SharedModule> {
+  static forRoot(): {
+    ngModule: SharedModule;
+    providers: (DataService | SecurityService | ConfigurationService | StorageService | CartWrapperService | Pager)[]
+  } {
     return {
       ngModule: SharedModule,
       providers: [

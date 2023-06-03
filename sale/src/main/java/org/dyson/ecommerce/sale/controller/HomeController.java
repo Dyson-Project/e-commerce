@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class HomeController {
     @Hidden
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/redoc", method = RequestMethod.GET)
     public String reDocs() {
         return "redoc.html";
     }

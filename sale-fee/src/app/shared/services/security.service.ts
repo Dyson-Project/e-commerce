@@ -11,7 +11,7 @@ import jwtDecode from 'jwt-decode';
 import {DataService} from './data.service';
 import {IAuthorizeRequest} from '../models/authorizeRequest.model';
 import {tap} from 'rxjs/operators';
-import {ICustomer} from '../../../../../cms-fe/src/app/shared/models/customer.model';
+import {ICustomer} from '../../../../../cms-fee/src/app/shared/models/customer.model';
 import {RSA_NO_PADDING} from 'node:constants';
 import {IRegistingRequest} from '../models/registingCustomerRequest.model';
 

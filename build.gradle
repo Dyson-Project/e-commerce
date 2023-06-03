@@ -55,11 +55,13 @@ project(':sale'){
     archivesBaseName = "sale"
     dependencies {
         implementation libs.springStarterJpa
+        implementation libs.springDataRest
         implementation libs.springStarterWeb
         implementation libs.springdoc
         implementation libs.springThymeleaf
         implementation libs.springStarterSecurity
-        implementation libs.springOAuth2Client
+//        implementation libs.springOAuth2Client
+        implementation libs.springOAuth2ResourceServer
         implementation libs.minio
         implementation "io.minio:minio:8.5.3"
         runtimeOnly 'org.postgresql:postgresql'

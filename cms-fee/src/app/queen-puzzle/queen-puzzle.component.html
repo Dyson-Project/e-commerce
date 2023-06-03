@@ -1,0 +1,106 @@
+<div *ngIf="steps[0]">
+    <div class="step row" *ngIf="steps[0].close[0] as vertex">
+        <div class="col-12">
+            <H4> Bước: 0 </H4>
+        </div>
+        Khởi tạo S0
+        <div class="col-12">
+            <div class="row">
+                <div class="col-3">
+                    <table class="table">
+                        <tbody class="table-body">
+                            <tr *ngFor="let row of [].constructor(8); let rowIndex = index">
+                                <td *ngFor="let col of vertex.state.queens; let colIndex = index">
+                                    <div class="table-cell-inner">
+                                        <ng-container *ngIf="col==rowIndex">
+                                            H
+                                        </ng-container>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>>
+                    </table>
+                    <h5 class="state"> Trạng thái S{{vertex.identity}} </h5>
+                    <span> các giá trị của S{{vertex.identity}} </span>
+                    <li> g(S{{vertex.identity}}) = {{vertex.g}}</li>
+                    <li> h(S{{vertex.identity}}) = {{vertex.h}}</li>
+                    <li> f(S{{vertex.identity}}) = {{vertex.f}}</li>
+                </div>
+            </div>
+        </div>
+        Thêm S0 vào OPEN
+    </div>
+
+    <div *ngFor="let step of steps; let i = index" class="step row">
+        <div class="col-12">
+            <H4> Bước: {{i+1}} </H4>
+        </div>
+        <div class="col-12">
+            <p>
+                {{step.initString}}
+            </p>
+        </div>
+        <div class="col-12">
+            <div class="row">
+                <div *ngFor="let vertex of step.newOpens" class="col-3">
+                    <table class="table">
+                        <tbody class="table-body">
+                            <tr *ngFor="let row of [].constructor(8); let rowIndex = index">
+                                <td *ngFor="let col of vertex.state.queens; let colIndex = index">
+                                    <div class="table-cell-inner">
+                                        <ng-container *ngIf="col==rowIndex">
+                                            H
+                                        </ng-container>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h5 class="state"> Trạng thái S{{vertex.identity}} </h5>
+                    <span> Tính các giá trị của S{{vertex.identity}} </span>
+                    <li> g(S{{vertex.identity}}) = {{vertex.g}}</li>
+                    <li> h(S{{vertex.identity}}) = {{vertex.h}}</li>
+                    <li> f(S{{vertex.identity}}) = {{vertex.f}}</li>
+                </div>
+            </div>
+            <div>
+                {{step.finishString}}
+            </div>
+            <div>
+                OPEN = [{{step.openToString}}]
+            </div>
+            <div>
+                CLOSE = [{{step.closeToString}}]
+            </div>
+        </div>
+    </div>
+
+    <div class="step row" *ngIf="steps[0].close[steps[0].close.length-1] as vertex">
+        Lấy S{{steps[0].close[steps[0].close.length-1].identity}} có giá trị f nhỏ nhất ra khỏi OPEN. S{{vertex.identity}} chính là trạng thái mục tiêu cần tìm. Thuật toán đúng!!!!
+        <div class="col-12">
+            <div class="row">
+                <div class="col-3">
+                    <table class="table">
+                        <tbody class="table-body">
+                            <tr *ngFor="let row of [].constructor(8); let rowIndex = index">
+                                <td *ngFor="let col of vertex.state.queens; let colIndex = index">
+                                    <div class="table-cell-inner">
+                                        <ng-container *ngIf="col==rowIndex">
+                                            H
+                                        </ng-container>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h5 class="state"> Trạng thái S{{vertex.identity}} </h5>
+                    <span> các giá trị của S{{vertex.identity}} </span>
+                    <li> g(S{{vertex.identity}}) = {{vertex.g}}</li>
+                    <li> h(S{{vertex.identity}}) = {{vertex.h}}</li>
+                    <li> f(S{{vertex.identity}}) = {{vertex.f}}</li>
+                </div>
+            </div>
+        </div>
+        Từ S{{vertex.identity}}, lần ngược trạng thái chả của mỗi trạng thái, xác định được con đường tốt nhất là {{steps[steps.length-1].closeToString}}
+    </div>
+</div>

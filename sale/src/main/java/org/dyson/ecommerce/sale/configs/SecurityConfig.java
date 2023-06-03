@@ -34,9 +34,9 @@ public class SecurityConfig {
                     ).permitAll()
                     .anyRequest().authenticated()
             )
-//            .oauth2ResourceServer(configurer -> configurer.jwt(withDefaults()))
+            .oauth2ResourceServer(configurer -> configurer.jwt(withDefaults()));
 //            .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .oauth2Login(withDefaults());
+//            .oauth2Login(withDefaults());
 //            .oauth2Client(withDefaults());
         return http.build();
     }

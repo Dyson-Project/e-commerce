@@ -27,25 +27,25 @@ spring:
     secret-key: ${MINIO_SECRET_KEY:tfteSlswRu7BJ86wekitnifILbZam1KYY3TG}
   security:
     oauth2:
-      client:
-        registration:
-          sale:
-            provider: ${KEYCLOAK_PROVIDER:keycloak}
-            client-id: ${KEYCLOAK_CLIENT_ID:authentication}
-            client-secret: ${KEYCLOAK_CLIENT_SECRET:sFfvlJBg1wmDmUlb0PO2OoldW1600YTx}
-            authorization-grant-type: authorization_code
-            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            scope:
-              - openid
-        provider:
-          keycloak:
-            issuer-uri: ${KEYCLOAK_ISSUER_URI:https://keycloak.tiktzuki.com/realms/ecommerce}
-      #            authorization-uri: ${KEYCLOAK_AUTHORIZATION_URI:https://keycloak.tiktzuki.com/realms/ecommerce/protocol/openid-connect/auth}
-      #            token-uri: ${KEYCLOAK_TOKEN_URI:https://keycloak.tiktzuki.com/realms/ecommerce/protocol/openid-connect/token}
-      #            jwk-set-uri: ${KEYCLOAK_JWT_SET_URI:https://keycloak.tiktzuki.com/realms/ecommerce/protocol/openid-connect/certs}
-      #            user-info-uri: ${KEYCLOAK_USERINFO_URI:https://keycloak.tiktzuki.com/realms/ecommerce/protocol/openid-connect/userinfo}
-      #            user-info-authentication-method: header
-      #            user-name-attribute: preferred_username
+#      client:
+#        registration:
+#          sale:
+#            provider: ${KEYCLOAK_PROVIDER:keycloak}
+#            client-id: ${KEYCLOAK_CLIENT_ID:cms-frontend}
+#            client-secret: ${KEYCLOAK_CLIENT_SECRET:5kdNdVhCE0DxvlLIhVa5OiTJPxpfVAf4}
+#            authorization-grant-type: authorization_code
+#            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+#            scope:
+#              - openid
+#        provider:
+#          keycloak:
+#            issuer-uri: ${KEYCLOAK_ISSUER_URI:https://keycloak.tiktzuki.com/realms/ecommerce}
+#            authorization-uri: ${KEYCLOAK_AUTHORIZATION_URI:https://keycloak.tiktzuki.com/realms/ecommerce/protocol/openid-connect/auth}
+#            token-uri: ${KEYCLOAK_TOKEN_URI:https://keycloak.tiktzuki.com/realms/ecommerce/protocol/openid-connect/token}
+#            jwk-set-uri: ${KEYCLOAK_JWT_SET_URI:https://keycloak.tiktzuki.com/realms/ecommerce/protocol/openid-connect/certs}
+#            user-info-uri: ${KEYCLOAK_USERINFO_URI:https://keycloak.tiktzuki.com/realms/ecommerce/protocol/openid-connect/userinfo}
+#            user-info-authentication-method: header
+#            user-name-attribute: preferred_username
       resourceserver:
         jwt:
           issuer-uri: ${KEYCLOAK_ISSUER_URI:https://keycloak.tiktzuki.com/realms/ecommerce}

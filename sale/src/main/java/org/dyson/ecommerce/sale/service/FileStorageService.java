@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface FileStorageService {
+    public void createObject();
     FileResponse upload(MultipartFile file) throws MinioException, IOException, io.minio.errors.MinioException;
 
     void deleteFile(String filename);

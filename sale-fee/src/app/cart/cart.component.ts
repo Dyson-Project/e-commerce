@@ -10,7 +10,7 @@ import {ModalDismissReasons, NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bo
 import {ModalComponent} from '../shared/components/modal/modal.component';
 import {SecurityService} from '../shared/services/security.service';
 import {EPaymentMethod} from '../shared/models/paymentMethod.const';
-import {IAddress} from '../../../../cms-fe/src/app/shared/models/address.model';
+import {IAddress} from '../../../../cms-fee/src/app/shared/models/address.model';
 import {IOrder} from '../shared/models/order.model';
 import {DateFormat} from '../shared/util/date.format';
 import {EOrderStatus} from '../shared/models/orderStatus.const';

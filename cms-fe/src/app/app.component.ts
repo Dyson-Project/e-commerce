@@ -1,35 +1,43 @@
-import { SecurityService } from './shared/services/security.service';
-import { ConfigurationService } from './shared/services/configuration.service';
-import { Subscription } from 'rxjs';
-import { Component } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import {Component, OnInit} from '@angular/core';
+import {KeycloakService} from 'keycloak-angular';
+import {KeycloakProfile} from 'keycloak-js';
+import {ProductService} from "./product.service";
+import {Category} from "./categories";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  Authenticated: boolean = false;
-  subscription!: Subscription;
-  constructor(
-    private titleService: Title,
-    private securityService: SecurityService,
-    private configurationService: ConfigurationService
-  ) {
-    this.Authenticated = this.securityService.IsAuthorized;
+export class AppComponent implements OnInit {
+  public isLoggedIn = false;
+  public userProfile: KeycloakProfile | null = null;
+  categories: Category[] = []
+
+  constructor(private readonly keycloak: KeycloakService, private readonly productService: ProductService) {
   }
 
-  ngOnInit(): void {
-    console.log('app init');
-    this.subscription = this.securityService.authenticationChallenge$.subscribe(res=> this.Authenticated=res);
-    
-    this.configurationService.load();
-    this.setTitle('Eshop Seller');
+  public async ngOnInit() {
+    this.isLoggedIn = await this.keycloak.isLoggedIn();
+
+    if (this.isLoggedIn) {
+      this.userProfile = await this.keycloak.loadUserProfile();
+
+      this.productService.productCategories$.subscribe(value => {
+        this.categories = value
+      })
+      this.productService.post().subscribe(value => {
+        console.log('------------>', value)
+      })
+
+    }
   }
 
-  public setTitle(newTitle: string){
-    this.titleService.setTitle(newTitle);
+  public login() {
+    this.keycloak.login();
   }
 
+  public logout() {
+    this.keycloak.logout();
+  }
 }

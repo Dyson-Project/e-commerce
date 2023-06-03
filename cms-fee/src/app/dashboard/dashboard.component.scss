@@ -1,0 +1,7 @@
+@import '../../assets/scss/black-dashboard.scss';
+.daily-task {
+    padding-top: 1rem;
+    &:hover {
+        background-color: $dark;
+    }
+}

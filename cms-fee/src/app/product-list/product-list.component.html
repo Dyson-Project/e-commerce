@@ -1,0 +1,142 @@
+<div class="container">
+    <h2> Product manager </h2>
+    <div class="row">
+        <a class="btn btn-primary" routerLink="/product/:productId"> New Product </a>
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="nav-item" *ngFor="let statusObj of ProductStatus">
+            <p class="nav-link" (click)="changeTab(statusObj.value)" [ngClass]="{'active':selectedTab==statusObj.value}">
+                {{statusObj.name}}
+            </p>
+        </li>
+    </ul>
+    <div class="table-container-tab">
+        <div class="search-section d-flex align-items-center">
+            <form class="search-form row" *ngIf="searchFormGroup" [formGroup]="searchFormGroup">
+                <div class="mb-3 col-3">
+                    <label class="form-label">Category</label>
+                    <select class="custom-select" *ngIf="categories" formControlName="categoryId">
+                        <option [value]="category.id" *ngFor="let category of categories">{{category.name}}</option>
+                    </select>
+                </div>
+                <div class="mb-3 col-3">
+                    <label class="form-label">Brand</label>
+                    <select class="custom-select" *ngIf="brands" formControlName="brandId">
+                        <option [value]="brand.id" *ngFor="let brand of brands">{{brand.name}}</option>
+                    </select>
+                </div>
+                <div class="mb-3 col-3">
+                    <label class="min-price">Min Price</label>
+                    <input type="text" class="form-control" (keypress)="numberOnly($event)" formControlName="minPrice">
+                </div>
+                <div class="mb-3 col-3">
+                    <label class="max-price">Max Price</label>
+                    <input type="text" class="form-control" (keypress)="numberOnly($event)" formControlName="maxPrice">
+                </div>
+                <div class="mb-3 col-3">
+                    <label class="form-label">Product Id</label>
+                    <input type="text" class="form-control" formControlName="id">
+                </div>
+            </form>
+            <button class="btn btn-primary" (click)="searchProduct()">Search</button>
+            <button class="btn clear-btn" (click)="loadSearchForm()"><i class="fas fa-times"></i>  </button>
+        </div>
+        <div class="products table">
+            <table>
+                <thead class="table-header">
+                    <tr>
+                        <th class="table-cell table-header-node">
+                            <div class="table-cell-wrapper">
+                                <p> Image </p>
+                            </div>
+                        </th>
+                        <th class="table-cell table-header-node">
+                            <div class="table-cell-wrapper">
+                                <p> Name </p>
+                            </div>
+                        </th>
+                        <th class="table-cell table-header-node">
+                            <div class="table-cell-wrapper">
+                                <p> Price </p>
+                            </div>
+                        </th>
+                        <th class="table-cell table-header-node">
+                            <div class="table-cell-wrapper">
+                                <p> Available </p>
+                            </div>
+                        </th>
+                        <th class="table-cell table-header-node">
+                            <div class="table-cell-wrapper">
+                                <p> Action </p>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="table-body">
+                    <tr class="table-row" *ngFor="let product of productList">
+                        <td class="table-cell table-cell-selection">
+                            <div class="table-cell-wrapper">
+                                <a class="product-desc-link-image">
+                                    <img class="product-desc-image" [src]="product.skus[0]?.images[0]?.url | prependHost">
+                                </a>
+                            </div>
+                        </td>
+                        <td class="table-cell table-cell-selection">
+                            <div class="table-cell-wrapper">
+                                <p>
+                                    {{product.productName}}
+                                </p>
+                            </div>
+                        </td>
+                        <td class="table-cell table-cell-selection">
+                            <div class="table-cell-wrapper">
+                                <p *ngIf="product.minPrice!==product.maxPrice">
+                                    {{product.minPrice | number}}-{{product.maxPrice | number}}
+                                </p>
+                                <p *ngIf="product.minPrice===product.maxPrice">
+                                    {{product.minPrice | number}}
+                                </p>
+                            </div>
+                        </td>
+                        <td class="table-cell table-cell-selection">
+                            <div class="table-cell-wrapper">
+                                <p>
+                                    {{product.totalAvailable}}
+                                </p>
+                            </div>
+                        </td>
+                        <td class="table-cell table-cell-selection">
+                            <div class="table-cell-wrapper">
+                                <button class="btn btn-info btn-sm" routerLink="/product/{{product.id}}">
+                                Modify
+                            </button>
+                                <button class="btn btn-danger btn-sm" (click)="deleteProduct(product)">
+                                Delete
+                            </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <app-pager [model]="paginationInfo" (changed)="onPageChanged($event)"></app-pager>
+</div>
+
+
+<!-- <ng-template #content let-modal>
+    <div class="modal-content modal-backdrop">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Product update</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+        </div>
+        <div class="modal-body d-flex align-items-center justify-content-around">
+            <H3> Delete Product ? </H3>
+            <button type="button" class="btn btn-outline-dark" (click)="modal.close('result')">Confirm</button>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</ng-template> -->

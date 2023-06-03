@@ -1,0 +1,63 @@
+.table table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+}
+
+.table-body,
+.table-header {
+    overflow: auto;
+    font-size: 14px;
+}
+
+.table th {
+    padding: 0;
+    text-align: left;
+    font-weight: 700;
+    border: 1px solid #eee;
+}
+
+.table th .table-cell-wrapper {
+    padding: 12px 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+}
+
+.page-root-struct .table-selection .table-cell-wrapper {
+    min-width: unset;
+}
+
+.next-table-body {
+    font-size: 14px;
+}
+
+.table-row {
+    -webkit-transition: all .3s ease;
+    transition: all .3s ease;
+    color: #333;
+}
+
+.page-root-struct .next-table-body .next-table-cell {
+    vertical-align: top;
+}
+
+.list-table-desc-extend-cell .product-desc-link-image {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.product-desc-image,
+.with-default-img-color {
+    width: 64px;
+    height: 64px;
+}
+
+.search-form {
+    margin-right: 1rem;
+}
+
+.clear-btn {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}

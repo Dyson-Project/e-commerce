@@ -4,6 +4,8 @@ server:
     include-exception: true
     include-stacktrace: always
     include-message: always
+  servlet:
+    context-path: /api
 spring:
   datasource:
     hikari:
