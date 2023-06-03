@@ -6,8 +6,9 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {HttpClientModule} from "@angular/common/http";
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
-import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
 import {NgJsonEditorModule} from "ang-jsoneditor";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {CommonModule} from "@angular/common";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -28,12 +29,16 @@ function initializeKeycloak(keycloak: KeycloakService) {
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    CommonModule,
     BrowserModule,
     AppRoutingModule,
     KeycloakAngularModule,
     HttpClientModule,
     NgbModule,
-    NgJsonEditorModule
+    NgJsonEditorModule,
+    FormsModule,
+    ReactiveFormsModule
+
   ],
   providers: [
     {
@@ -43,7 +48,12 @@ function initializeKeycloak(keycloak: KeycloakService) {
       deps: [KeycloakService]
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule
+  ]
 })
 export class AppModule {
 }

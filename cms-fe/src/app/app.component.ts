@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
 import {KeycloakProfile} from 'keycloak-js';
 import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
+import {FormGroup, UntypedFormBuilder} from "@angular/forms";
 
 @Component({
   selector: 'app-root',
@@ -10,13 +11,19 @@ import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
 })
 export class AppComponent implements OnInit {
   public isLoggedIn = false;
-  public userProfile: KeycloakProfile;
-  public editorOptions: JsonEditorOptions
+  public userProfile: KeycloakProfile | null = null;
+  public editorOptions: JsonEditorOptions;
   public data: any;
   @ViewChild(JsonEditorComponent, {static: false}) editor: JsonEditorComponent;
+  public form: FormGroup | null = null;
 
-  constructor(private readonly keycloak: KeycloakService) {
+  constructor(private readonly keycloak: KeycloakService, public formBuilder: UntypedFormBuilder) {
     this.editorOptions = new JsonEditorOptions();
+    this.editorOptions.modes = ['code', 'text', 'tree', 'view'];
+    this.editorOptions.theme = 1
+    this.editorOptions.expandAll = true
+    this.editorOptions.indentation = 2
+
     this.data = {
       "products": [{
         "name": "car",
@@ -29,6 +36,7 @@ export class AppComponent implements OnInit {
         }]
       }]
     }
+    this.editor = new JsonEditorComponent();
   }
 
   public async ngOnInit() {
@@ -36,6 +44,11 @@ export class AppComponent implements OnInit {
     if (this.isLoggedIn) {
       this.userProfile = await this.keycloak.loadUserProfile();
     }
+
+    this.form = this.formBuilder.group({
+      input: [this.data]
+    });
+
   }
 
   public login() {
@@ -44,5 +57,10 @@ export class AppComponent implements OnInit {
 
   public logout() {
     this.keycloak.logout();
+  }
+
+  submit() {
+    this.data = JSON.stringify(this.form?.value, null, 2);
+    console.log(this.form?.value);
   }
 }

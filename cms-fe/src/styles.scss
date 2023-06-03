@@ -3,6 +3,7 @@
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
 @import './app/variable';
+@import "jsoneditor/dist/jsoneditor.min.css";
 :root {
   a:hover,
   a:active {
