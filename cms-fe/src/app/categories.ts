@@ -1,4 +1,6 @@
-export interface Category {
+interface Category {
   id: number,
   name: String
 }
+
+export {Category}

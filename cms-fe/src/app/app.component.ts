@@ -1,8 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
 import {KeycloakProfile} from 'keycloak-js';
-import {ProductService} from "./product.service";
-import {Category} from "./categories";
+import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
 
 @Component({
   selector: 'app-root',
@@ -11,25 +10,31 @@ import {Category} from "./categories";
 })
 export class AppComponent implements OnInit {
   public isLoggedIn = false;
-  public userProfile: KeycloakProfile | null = null;
-  categories: Category[] = []
+  public userProfile: KeycloakProfile;
+  public editorOptions: JsonEditorOptions
+  public data: any;
+  @ViewChild(JsonEditorComponent, {static: false}) editor: JsonEditorComponent;
 
-  constructor(private readonly keycloak: KeycloakService, private readonly productService: ProductService) {
+  constructor(private readonly keycloak: KeycloakService) {
+    this.editorOptions = new JsonEditorOptions();
+    this.data = {
+      "products": [{
+        "name": "car",
+        "product": [{
+          "name": "honda",
+          "model": [{"id": "civic", "name": "civic"}, {"id": "accord", "name": "accord"}, {
+            "id": "crv",
+            "name": "crv"
+          }, {"id": "pilot", "name": "pilot"}, {"id": "odyssey", "name": "odyssey"}]
+        }]
+      }]
+    }
   }
 
   public async ngOnInit() {
     this.isLoggedIn = await this.keycloak.isLoggedIn();
-
     if (this.isLoggedIn) {
       this.userProfile = await this.keycloak.loadUserProfile();
-
-      this.productService.productCategories$.subscribe(value => {
-        this.categories = value
-      })
-      this.productService.post().subscribe(value => {
-        console.log('------------>', value)
-      })
-
     }
   }
 

@@ -6,7 +6,7 @@ import {Category} from "./categories";
 @Injectable({
   providedIn: 'root'
 })
-export class ProductService {
+export class DataService {
   protected categoriesPath = "/api/categories"
 
   constructor(protected http: HttpClient) {
