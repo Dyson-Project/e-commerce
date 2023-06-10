@@ -5,10 +5,12 @@ import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {HttpClientModule} from "@angular/common/http";
-import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import {NgJsonEditorModule} from "ang-jsoneditor";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
+import {MatInputModule} from "@angular/material/input";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatButtonModule} from "@angular/material/button";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -34,11 +36,12 @@ function initializeKeycloak(keycloak: KeycloakService) {
     AppRoutingModule,
     KeycloakAngularModule,
     HttpClientModule,
-    NgbModule,
     NgJsonEditorModule,
     FormsModule,
-    ReactiveFormsModule
-
+    ReactiveFormsModule,
+    MatInputModule,
+    BrowserAnimationsModule,
+    MatButtonModule
   ],
   providers: [
     {
