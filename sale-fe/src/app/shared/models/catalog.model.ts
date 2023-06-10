@@ -1,8 +1,7 @@
-import { IProduct } from './product.model';
-
-export interface ICatalog<T> {
-  pageIndex: number;
+export interface IPage<T> {
+  number: number;
   data: T[];
-  pageSize: number;
-  count: number;
+  size: number;
+  totalElements: number;
+  totalPages: number
 }

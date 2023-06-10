@@ -87,11 +87,11 @@ export class DataService {
   private setHeaders(options: any, needId?: boolean) {
     if (needId && this.securityService) {
       options.headers = new HttpHeaders()
-        .append('Authorization', 'Bearer' + this.securityService.GetToken())
+        // .append('Authorization', 'Bearer' + this.securityService.GetToken())
         .append('x-requestid', Guid.newGuid());
     } else if (this.securityService) {
       options.headers = new HttpHeaders()
-        .append('Authorization', 'Bearer ' + this.securityService.GetToken());
+        // .append('Authorization', 'Bearer ' + this.securityService.GetToken());
     }
   }
 }

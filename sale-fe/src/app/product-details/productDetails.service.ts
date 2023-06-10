@@ -7,14 +7,14 @@ import {map} from "rxjs/operators";
 
 @Injectable()
 export class ProductDetailService {
-  private productUrl!: string;
+  private productUrl: string ='/api/products';
 
   constructor(
     private service: DataService,
     private configurationService: ConfigurationService
   ) {
     configurationService.settingLoaded$.subscribe(settings => {
-      this.productUrl = settings.purchaseUrl + '/api/products';
+
     })
   }
 

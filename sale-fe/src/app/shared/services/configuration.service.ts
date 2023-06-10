@@ -33,12 +33,10 @@ export class ConfigurationService {
       // }
       //TODO: Json-server config
       this.serverSettings = {
-        identityUrl: 'https://localhost:5001',
-        purchaseUrl: 'https://localhost:5001',
+        identityUrl: 'http://localhost:8080',
       }
 
       this.storageService.store('identityUrl', this.serverSettings.identityUrl);
-      this.storageService.store('purchaseUrl', this.serverSettings.purchaseUrl);
       this.isReady = true;
       this.settingsLoadedSource.next(this.serverSettings);
     });

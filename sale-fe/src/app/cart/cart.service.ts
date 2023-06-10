@@ -18,9 +18,8 @@ import {IOrderItem} from '../shared/models/orderItem.model';
   providedIn: 'root'
 })
 export class CartService {
-  private cartUrl: string = '';
-  private orderUrl: string = '';
-  private purchaseUrl: string = '';
+  private cartUrl: string = '/api/customer/cart';
+  private orderUrl: string = '/api/orders';
   cart: ICart;
 
   private cartDroppedSource = new Subject();
@@ -45,9 +44,6 @@ export class CartService {
       // this.cart.customerId = this.authService.UserData.sub;
       this.cart.customerId = this.securityService.UserData.id;
       this.configurationService.settingLoaded$.subscribe(settings => {
-        this.cartUrl = settings.purchaseUrl + '/api/customer/cart';
-        this.orderUrl = settings.purchaseUrl + '/api/orders';
-        this.purchaseUrl = settings.purchaseUrl;
         this.loadData();
       })
     }
@@ -86,7 +82,7 @@ export class CartService {
   }
 
   getSkuFormCartItem(item: ICartItem): Observable<ISku> {
-    const url = this.purchaseUrl + '/api/skus/' + item.skuId;
+    const url = '/api/skus/' + item.skuId;
     return this.service.get(url).pipe<ISku>(map((res: any) => res.data));
   }
 
@@ -114,7 +110,7 @@ export class CartService {
   }
 
   createOrder(order: IOrder): Observable<IOrder> {
-    const url = this.purchaseUrl + '/api/orders';
+    const url = '/api/orders';
     return this.service.post(url, order).pipe<IOrder>(tap((res: any) => {
       console.log(url, order, res);
       return res;
@@ -122,7 +118,7 @@ export class CartService {
   }
 
   createOrderItems(orderItems: IOrderItem[]): Observable<any[]> {
-    const url = this.purchaseUrl + '/api/orderitems';
+    const url = '/api/orderitems';
     let observables: any[] = [];
     orderItems.forEach(item => {
       let observable = this.service.post(url, item).pipe<any>(tap((res: any) => {
@@ -145,7 +141,7 @@ export class CartService {
   }
 
   getAddress(): Observable<IAddress[]> {
-    const url = this.purchaseUrl + '/address?customerId=' + this.cart.customerId;
+    const url = '/address?customerId=' + this.cart.customerId;
     return this.securityService.getUser(this.securityService.UserData.id)
       .pipe<IAddress[]>(map((res: any) => {
         return res.address;
@@ -218,7 +214,7 @@ export class CartService {
   }
 
   payment(info: any) {
-    const url = this.purchaseUrl + '/api/orders/payment';
+    const url = '/api/orders/payment';
     return this.service.post(url, info).pipe<any>(tap((res: any) => {
       console.log(url, res);
       return res;

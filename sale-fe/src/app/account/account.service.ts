@@ -7,16 +7,16 @@ import {ICustomer} from '../shared/models/customer.model';
 import {Observable} from 'rxjs';
 import {IOrder} from '../shared/models/order.model';
 import {IAddress} from '../shared/models/address.model';
-import {ICatalog} from '../shared/models/catalog.model';
+import {IPage} from '../shared/models/catalog.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
-  accountUrl: string = "";
+  accountUrl: string = '/api/customers';
   purchaseUrl: string = "";
-  addressUrl: string = "";
-  orderUrl: string = "";
+  addressUrl: string = '/api/address';
+  orderUrl: string = '/api/orders';
 
   constructor(
     private service: DataService,
@@ -24,10 +24,7 @@ export class AccountService {
     private securityService: SecurityService
   ) {
     this.configurationService.settingLoaded$.subscribe(setting => {
-      this.accountUrl = setting.purchaseUrl + '/api/customers';
-      this.purchaseUrl = setting.purchaseUrl;
-      this.addressUrl = setting.purchaseUrl + '/api/address';
-      this.orderUrl = setting.purchaseUrl + '/api/orders';
+
     })
   }
 
@@ -100,7 +97,7 @@ export class AccountService {
     }));
   }
 
-  getOrderCatalog(params: { [param: string]: any }): Observable<ICatalog<IOrder>> {
+  getOrderCatalog(params: { [param: string]: any }): Observable<IPage<IOrder>> {
     let url = `${this.orderUrl}?customerId=${this.securityService.UserData.id}`;
     if (params && Object.values(params).some(value => value)) {
       url += '&';
@@ -111,7 +108,7 @@ export class AccountService {
       }
       url = url.substr(0, url.lastIndexOf('&'));
     }
-    return this.service.get(url, null).pipe<ICatalog<IOrder>>(tap((res: any) => {
+    return this.service.get(url, null).pipe<IPage<IOrder>>(tap((res: any) => {
       return res;
     }));
   }

@@ -1,5 +1,5 @@
 import {ICategory} from '../shared/models/category.model';
-import {ICatalog} from '../shared/models/catalog.model';
+import {IPage} from '../shared/models/catalog.model';
 import {IPager} from '../shared/models/pager.model';
 import {Subscription, throwError} from 'rxjs';
 import {CatalogService} from './catalog.service';
@@ -9,6 +9,11 @@ import {IProduct} from '../shared/models/product.model';
 import {IBrand} from '../shared/models/brand.model';
 import {EProductStatus} from '../shared/models/productStatus.const';
 import numberOnly from '../shared/util/validate';
+
+class ValueAndText {
+  constructor(public Value: string, public Text: string) {
+  }
+}
 
 @Component({
   selector: 'app-catalog',
@@ -21,7 +26,7 @@ export class CatalogComponent implements OnInit {
   categories!: ICategory[];
   categorySelected?: number;
   brandSelected?: string;
-  catalog?: ICatalog<IProduct>;
+  catalog?: IPage<IProduct>;
   paginationInfo!: IPager;
   authenticated: boolean = false;
   authSubscription?: Subscription;
@@ -97,13 +102,14 @@ export class CatalogComponent implements OnInit {
   getCatalog(params: { [param: string]: any }) {
     this.service.getCatalog(params)
       .subscribe(catalog => {
+        console.log(catalog)
         this.catalog = catalog;
         this.paginationInfo = {
-          actualPage : catalog.pageIndex,
-          itemsPage : catalog.pageSize,
-          totalItems: catalog.count,
-          items: catalog.pageSize,
-          totalPages: Math.ceil(catalog.count / catalog.pageSize)
+          actualPage: catalog.number,
+          itemsPage: catalog.size,
+          totalItems: catalog.totalElements,
+          items: catalog.size,
+          totalPages: catalog.totalPages
         }
       })
   }

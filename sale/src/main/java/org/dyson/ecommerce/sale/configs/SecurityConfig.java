@@ -3,6 +3,7 @@ package org.dyson.ecommerce.sale.configs;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,7 +18,13 @@ public class SecurityConfig {
         http.cors(withDefaults())
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(registry ->
-                registry.requestMatchers("/",
+                registry
+                    .requestMatchers(HttpMethod.GET,
+                        "/products",
+                        "/categories**",
+                        "/brands"
+                    ).permitAll()
+                    .requestMatchers("/",
                         "/api-docs/**",
                         "/webjars/**",
                         "/swagger-ui/**",
@@ -32,7 +39,8 @@ public class SecurityConfig {
                         "/api/*/authenticate/**",
                         "/api/*/registry/**"
                     ).permitAll()
-                    .anyRequest().authenticated()
+                    .anyRequest()
+                    .authenticated()
             )
             .oauth2ResourceServer(configurer -> configurer.jwt(withDefaults()));
 //            .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

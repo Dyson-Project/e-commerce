@@ -89,11 +89,11 @@ export class OrderComponent implements OnInit {
         this.orders = catalog.data;
         console.log(this.orders);
         this.paginationInfo = {
-          actualPage: catalog.pageIndex,
-          itemsPage: catalog.pageSize,
-          totalItems: catalog.count,
+          actualPage: catalog.number,
+          itemsPage: catalog.size,
+          totalItems: catalog.totalElements,
           items: catalog.data.length,
-          totalPages: Math.ceil(catalog.count / catalog.pageSize)
+          totalPages: catalog.totalPages
         }
       }
     })

@@ -1,31 +1,33 @@
-import { DataService } from '../shared/services/data.service';
-import { ConfigurationService } from '../shared/services/configuration.service';
-import { Observable } from 'rxjs';
-import { ICatalog } from '../shared/models/catalog.model';
-import { IProduct } from '../shared/models/product.model';
-import { Injectable } from "@angular/core";
-import { tap } from 'rxjs/operators';
-import { ICategory } from '../shared/models/category.model';
-import { IBrand } from '../shared/models/brand.model';
+import {DataService} from '../shared/services/data.service';
+import {ConfigurationService} from '../shared/services/configuration.service';
+import {Observable} from 'rxjs';
+import {Injectable} from "@angular/core";
+import {map} from 'rxjs/operators';
+import {ICategory} from '../shared/models/category.model';
+import {IBrand} from '../shared/models/brand.model';
+import {IProduct} from "../shared/models/product.model";
+import {IPage} from "../shared/models/catalog.model";
 
-@Injectable()
-export class CatalogService{
-  private catalogUrl: string='';
-  private categoryUrl: string='';
-  private brandUrl: string='';
+@Injectable({
+  providedIn: 'root',
+})
+export class CatalogService {
+  private catalogUrl: string = '';
+  private categoryUrl: string = '';
+  private brandUrl: string = '';
 
   constructor(
     private service: DataService,
     private configurationService: ConfigurationService
-  ){
+  ) {
     this.configurationService.settingLoaded$.subscribe(settings => {
-      this.catalogUrl = settings.purchaseUrl + '/api/products/catalog';
-      this.categoryUrl = settings.purchaseUrl + '/api/categories';
-      this.brandUrl = settings.purchaseUrl + '/api/brands';
+      this.catalogUrl = '/api/products/search/catalog';
+      this.categoryUrl = '/api/categories';
+      this.brandUrl = '/api/brands';
     });
   }
 
-  getCatalog(params?: { [param: string]: any }): Observable<ICatalog<IProduct>> {
+  getCatalog(params?: { [param: string]: any }): Observable<IPage<IProduct>> {
     let url = this.catalogUrl;
     if (params && Object.values(params).some(value => value)) {
       url += '?';
@@ -36,23 +38,28 @@ export class CatalogService{
       }
       url = url.substring(0, url.lastIndexOf('&'));
     }
-    return this.service.get(url).pipe<ICatalog<IProduct>>(tap((response: any) => {
-      console.log(url, response);
-      return response;
-    }));
+    return this.service.get(url)
+      .pipe(map((response: any): IPage<IProduct> => {
+        console.log(url, response);
+        return {
+          data: response._embedded.products,
+          size: response.page.size,
+          number: response.page.number,
+          totalElements: response.page.totalElements,
+          totalPages: response.page.totalPages
+        }
+      }));
   }
 
-  getBrands():Observable<IBrand[]>{
-    let url = this.brandUrl;
-    return this.service.get(url).pipe<IBrand[]>(tap((res:any)=>{
-      return res;
+  getBrands(): Observable<IBrand[]> {
+    return this.service.get(this.brandUrl).pipe<IBrand[]>(map((res: any) => {
+      return res._embedded.brands
     }))
   }
 
-  getCategories():Observable<ICategory[]>{
-    let url = this.categoryUrl;
-    return this.service.get(url).pipe<ICategory[]>(tap((res:any)=>{
-      return res;
+  getCategories(): Observable<ICategory[]> {
+    return this.service.get(this.categoryUrl).pipe<ICategory[]>(map((res: any) => {
+      return res._embedded.categories
     }))
   }
 }

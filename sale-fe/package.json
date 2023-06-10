@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port 5000 --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -29,6 +29,8 @@
     "jose": "^4.14.4",
     "jquery": "^3.7.0",
     "jwt-decode": "^3.1.2",
+    "keycloak-angular": "^13.0.0",
+    "keycloak-js": "^19.0.3",
     "ngx-slick-carousel": "^15.0.0",
     "ngx-toastr": "^16.2.0",
     "rxjs": "~7.8.0",

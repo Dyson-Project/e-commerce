@@ -34,12 +34,12 @@
               Price:
             </label>
             <div class="input-group mb-3">
-              <input type="text" (keypress)="numberOnly($event)" [(ngModel)]="currentQuery.minPrice"
+              <input type="text" (keydown)="numberOnly($event)" [(ngModel)]="currentQuery.minPrice"
                      class="form-control" placeholder="min" aria-label="Username">
               <span class="input-group-text bg-light"></span>
             </div>
             <div class="input-group mb-3">
-              <input type="text" (keypress)="numberOnly($event)" [(ngModel)]="currentQuery.maxPrice"
+              <input type="text" (keydown)="numberOnly($event)" [(ngModel)]="currentQuery.maxPrice"
                      class="form-control" placeholder="max" aria-label="Username">
               <span class="input-group-text bg-light"></span>
             </div>

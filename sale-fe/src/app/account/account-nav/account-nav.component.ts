@@ -3,8 +3,6 @@ import { max } from 'rxjs/operators';
 import { AddressComponent } from '../address/address.component';
 import { OrderComponent } from '../order/order.component';
 import { ProfileComponent } from '../info/info.component';
-import { routing } from 'src/app/app.routes';
-import { routes } from '../../app.routes';
 import { ActivatedRoute } from '@angular/router';
 
 interface navItem {
