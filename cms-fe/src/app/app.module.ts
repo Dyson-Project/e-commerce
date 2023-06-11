@@ -7,7 +7,7 @@ import {AppComponent} from './app.component';
 import {HttpClientModule} from "@angular/common/http";
 import {NgJsonEditorModule} from "ang-jsoneditor";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {CommonModule} from "@angular/common";
+import {CommonModule, NgForOf} from "@angular/common";
 import {MatInputModule} from "@angular/material/input";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatButtonModule} from "@angular/material/button";
@@ -30,19 +30,20 @@ function initializeKeycloak(keycloak: KeycloakService) {
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [
-    CommonModule,
-    BrowserModule,
-    AppRoutingModule,
-    KeycloakAngularModule,
-    HttpClientModule,
-    NgJsonEditorModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    BrowserAnimationsModule,
-    MatButtonModule
-  ],
+    imports: [
+        CommonModule,
+        BrowserModule,
+        AppRoutingModule,
+        KeycloakAngularModule,
+        HttpClientModule,
+        NgJsonEditorModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        BrowserAnimationsModule,
+        MatButtonModule,
+        NgForOf
+    ],
   providers: [
     {
       provide: APP_INITIALIZER,

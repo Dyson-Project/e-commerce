@@ -1,4 +1,3 @@
-import { IImage } from './image.model';
 export interface IOrderItem{
   id: number;
   orderId: number;

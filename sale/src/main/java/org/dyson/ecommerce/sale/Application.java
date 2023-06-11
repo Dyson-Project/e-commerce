@@ -20,8 +20,5 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        fileStorageService.createObject();
-        FileResponse response = fileStorageService.getFile("build.gradle");
-        System.out.printf("-------> %s %s %s", response.getFilename(), response.getFileSize(), response.getContentType());
     }
 }

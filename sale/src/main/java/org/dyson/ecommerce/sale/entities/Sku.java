@@ -1,11 +1,15 @@
 package org.dyson.ecommerce.sale.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
+@Data
 public class Sku {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -31,8 +35,8 @@ public class Sku {
 
     BigDecimal price;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sku", orphanRemoval = true)
-    List<Images> images;
+    @JdbcTypeCode(SqlTypes.JSON)
+    List<String> images;
 
     @ManyToOne
     Product product;

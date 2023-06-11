@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable, shareReplay} from "rxjs";
-import {Category} from "./categories";
+import {Category} from "./types/form_type";
 
 @Injectable({
   providedIn: 'root'

@@ -3,6 +3,7 @@ package org.dyson.ecommerce.sale.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,10 +14,13 @@ public class Product {
     private Long id;
     private Long sellerId;
     private Long categoryId;
-    private Long brandId;
+    @ManyToOne
+    @JoinColumn(name="brand_id")
+    private Brand brand;
     private String productName;
+    @Lob
     private String description;
     private String status;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Sku> skus;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "product")
+    private List<Sku> skus = new ArrayList<>();
 }

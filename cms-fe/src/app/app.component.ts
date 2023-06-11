@@ -5,7 +5,8 @@ import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
 import {UntypedFormBuilder} from "@angular/forms";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {shareReplay} from "rxjs";
-import {FormController} from "./categories";
+import {FormController} from "./types/form_type";
+import {SCHEMA_MAP} from "./types/models";
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,8 @@ export class AppComponent implements OnInit {
   public isLoggedIn = false;
   public userProfile: KeycloakProfile | null = null;
   public editorOptions: JsonEditorOptions;
-  public apiPath: string = "/api"
+  public apiPath: string = "/api";
+  public schemas: any[] = []
   @ViewChild(JsonEditorComponent, {static: false}) editor: JsonEditorComponent;
   public form: FormController
   public httpOptions = {
@@ -41,8 +43,17 @@ export class AppComponent implements OnInit {
       this.userProfile = await this.keycloak.loadUserProfile();
     }
     this.http.get(this.apiPath)
-      .subscribe(value => {
-        this.form.updateValue(value)
+      .subscribe((res: any) => {
+        const links = res._links
+        for (const [key, value] of Object.entries(links)) {
+          this.schemas.push({
+            key: key,
+            apiPath: new URL(links[key].href).pathname,
+            schema: SCHEMA_MAP.has(key) ? SCHEMA_MAP.get(key) : {}
+          })
+        }
+        console.log(this.schemas)
+        this.form.updateValue(res)
       })
 
   }
@@ -88,5 +99,13 @@ export class AppComponent implements OnInit {
       .subscribe(value => {
         this.form.updateValue({input: value});
       })
+  }
+
+  getSampleData(key: string) {
+    const schema = this.schemas.find(value => {
+      return value.key == key
+    });
+    this.apiPath = schema.apiPath
+    this.form.updateValue(schema.schema)
   }
 }

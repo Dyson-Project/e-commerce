@@ -13,15 +13,15 @@ export class DataService {
   constructor(private http: HttpClient, private securityService: SecurityService) {
   }
 
-  get(url: string, param?: any): Observable<Response> {
+  get(url: string, param?: any): Observable<any> {
     let options = {};
     this.setHeaders(options);
 
-    return this.http.get<Response>(url, options)
-      .pipe(
-        retry(1),
-        catchError(this.handleError)
-      );
+    return this.http.get(url, options)
+        .pipe(
+            retry(1),
+            catchError(this.handleError)
+        );
   }
 
   // postWithId(url: string, data: any, params?: any): Observable<Response>{

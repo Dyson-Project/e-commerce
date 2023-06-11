@@ -14,4 +14,5 @@ public class Brand {
     Long id;
 
     String name;
+
 }

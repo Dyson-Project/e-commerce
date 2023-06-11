@@ -19,7 +19,8 @@
           "options": {
             "allowedCommonJsDependencies": [
               "base64-js",
-              "js-sha256"
+              "js-sha256",
+              "jsoneditor"
             ],
             "outputPath": "dist/cms-fe",
             "index": "src/index.html",

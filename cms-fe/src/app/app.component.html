@@ -7,7 +7,9 @@
   <mat-label>Input</mat-label>
   <input matInput [value]="apiPath" (keyup)="onKey($event)">
 </mat-form-field>
-<button mat-stroked-button color="primary" (click)="load()">GET</button>
+<button mat-stroked-button color="primary" (keydown.enter)="load()" (click)="load()">GET</button>
+<button *ngFor="let schema of schemas" mat-stroked-button color="primary"
+        (click)="getSampleData(schema.key)">{{schema.key}} </button>
 <form [formGroup]="form.formGroup">
   <json-editor [options]="editorOptions" formControlName="value" #jsonEditorComponent></json-editor>
 </form>

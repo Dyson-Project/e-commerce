@@ -21,5 +21,5 @@ $cms-fe-theme: mat.define-light-theme((
 @import "jsoneditor/dist/jsoneditor.min.css";
 
 div.jsoneditor {
-  height: 500px; //100vh if you want full screen
+  height: 80vh; //100vh if you want full screen
 }

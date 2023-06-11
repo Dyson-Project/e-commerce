@@ -58,7 +58,7 @@
           <div class="esh-catalog-item col-md-3" *ngFor="let product of catalog.data">
             <div class="product-card">
               <a routerLink="/products/{{product.id}}">
-                <img src="{{product.skus[0].images[0].url | prependHost}}" class="esh-catalog-thumnail"/>
+                <img src="{{product.skus[0].images[0] }}" class="esh-catalog-thumnail"/>
                 <div class="esh-catalog-name">
                   <span>{{product.productName}}</span>
                 </div>

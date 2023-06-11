@@ -1,4 +1,3 @@
-import { IImage } from './image.model';
 export interface ISku{
   id: number;
   productId: number;
@@ -12,5 +11,5 @@ export interface ISku{
   length: number;
   weight: number;
   price: number;
-  images: IImage[];
+  images: string[];
 }

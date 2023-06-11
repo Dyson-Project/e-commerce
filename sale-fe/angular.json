@@ -17,6 +17,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "base64-js",
+              "js-sha256"
+            ],
             "outputPath": "dist/sale-fe",
             "index": "src/index.html",
             "main": "src/main.ts",

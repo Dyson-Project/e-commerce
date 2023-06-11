@@ -1,25 +1,22 @@
-import { IProduct } from '../shared/models/product.model';
-import { ConfigurationService } from '../shared/services/configuration.service';
-import { Subscription } from 'rxjs';
-import { SecurityService } from '../shared/services/security.service';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ProductDetailService } from './productDetails.service';
-import { ISku } from '../shared/models/sku.model';
-import { CartWrapperService } from '../shared/services/cart.wrapper.service';
-import { FormControl } from '@angular/forms';
-import { FormGroup } from '@angular/forms';
-import { FormBuilder } from '@angular/forms';
+import {IProduct} from '../shared/models/product.model';
+import {ConfigurationService} from '../shared/services/configuration.service';
+import {SecurityService} from '../shared/services/security.service';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {ISku} from '../shared/models/sku.model';
+import {CartWrapperService} from '../shared/services/cart.wrapper.service';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import numberOnly from '../shared/util/validate';
-import { ICartItem } from '../shared/models/cartItem.model';
-import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
+import {ICartItem} from '../shared/models/cartItem.model';
+import {NgbCarouselConfig} from '@ng-bootstrap/ng-bootstrap';
+import {ProductService} from "../shared/services/product.service";
+
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.scss']
 })
 export class ProductDetailsComponent implements OnInit {
-  authSubscription: Subscription = new Subscription();
   authenticated: boolean;
   product!: IProduct;
   selectedSku!: ISku;
@@ -36,7 +33,8 @@ export class ProductDetailsComponent implements OnInit {
   };
   constructor(
     private route: ActivatedRoute,
-    private service: ProductDetailService,
+    // private service: ProductDetailService,
+    private service: ProductService,
     private configurationService: ConfigurationService,
     private cartEventService: CartWrapperService,
     private formBuilder: FormBuilder,
@@ -51,16 +49,7 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.configurationService.isReady) {
-      this.loadData();
-    } else {
-      this.configurationService.settingLoaded$.subscribe(x => {
-        this.loadData();
-      });
-    }
-    this.authSubscription = this.sercurityService.authenticationChallenge$.subscribe(res => {
-      this.authenticated = res;
-    });
+    this.loadData();
   }
 
   loadData() {
@@ -73,10 +62,10 @@ export class ProductDetailsComponent implements OnInit {
     this.skuForm = this.formBuilder.group({
       byParams: new FormControl(`{"skuId":"${this.selectedSku.id
       }", "name":"${this.product.productName
-      }", "variation":"${this.selectedSku.color +' '+ this.selectedSku.size
+      }", "variation":"${this.selectedSku.color + ' ' + this.selectedSku.size
       }", "itemPrice":"${this.selectedSku.price
       }", "quantity":"${this.quantity
-      }", "image":"${this.selectedSku.images[0].url}" }`)
+      }", "image":"${this.selectedSku.images[0]}" }`)
     });
   }
 
@@ -85,7 +74,7 @@ export class ProductDetailsComponent implements OnInit {
       .subscribe(product => {
         this.product = product;
         this.selectedSku = product.skus[0];
-        this.selectedImageUrl = this.selectedSku.images[0].url;
+        this.selectedImageUrl = this.selectedSku.images[0];
         this.loadSkuForm();
       });
   }
@@ -121,7 +110,7 @@ export class ProductDetailsComponent implements OnInit {
     this.quantity -=1;
     this.onQuantityChanged();
   }
-  
+
   numberOnly(event: any){
     return numberOnly(event);
   }

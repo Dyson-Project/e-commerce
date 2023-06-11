@@ -107,7 +107,6 @@
 
 .product-detail {
     display: inline-block;
-    width: 100%;
     vertical-align: top;
     padding: 0 20px;
     -webkit-box-sizing: border-box;
@@ -127,7 +126,7 @@
 }
 
 .sku-price {
-    color: $color-primary;
+    color: $color-foreground-darker;
 }
 
 .module-quantity-input {

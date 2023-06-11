@@ -8,19 +8,21 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 
 
 @RepositoryRestResource(collectionResourceRel = "products", path = "products")
 interface ProductResource : PagingAndSortingRepository<Product, Long?>, CrudRepository<Product, Long> {
+    @Transactional(readOnly = true)
     @Query(
         """
         select p from Product  p
-        join fetch p.skus sku
+        left join fetch p.skus sku
         where
             (:name is null or p.productName ilike %:name%)
             and (:categoryId is null or p.categoryId = :categoryId)
-            and (:branchId is null or p.brandId = :branchId)
+            and (:branchId is null or p.brand.id = :branchId)
             and (:status is null or p.status = :status)
             and (:minPrice is null or sku.price > :minPrice)
             and (:maxPrice is null or sku.price < :maxPrice)

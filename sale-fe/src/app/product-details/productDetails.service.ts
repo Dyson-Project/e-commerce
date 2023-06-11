@@ -22,9 +22,9 @@ export class ProductDetailService {
   getProduct(id: number): Observable<IProduct> {
     let url = this.productUrl;
     url += `/${id}`;
-    return this.service.get(url).pipe<IProduct>(map((response: any) => {
+    return this.service.get(url).pipe<IProduct>(map((response: any):IProduct => {
       console.log('res' , response);
-      return response.data;
+      return response
     }));
   }
 }
