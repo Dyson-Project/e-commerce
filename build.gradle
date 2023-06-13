@@ -52,7 +52,7 @@ project(':core') {
     }
 }
 project(':sale'){
-    archivesBaseName = "sale"
+    archivesBaseName = "ecommerce"
     dependencies {
         implementation libs.springStarterJpa
         implementation libs.springDataRest

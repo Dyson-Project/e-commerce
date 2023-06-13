@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ecommerce-config
+data:
+  SPRING_PROFILES_ACTIVE: 'dev-group'
+  DATABASE_URL: 'jdbc:postgresql://14.225.205.235:35432/ecommerce'
+  DATABASE_USER: 'postgres'
+  DATABASE_PASSWORD: 'P@ssword789'
+
+  KEYCLOAK_HOST: 'https://keycloak.tiktzuki.com'
+  KEYCLOAK_ISSUER_URI: '${KEYCLOAK_HOST}/realms/ecommerce'
+  KEYCLOAK_REALM: 'ecommerce'
+  KEYCLOAK_RESOURCE: '${KEYCLOAK_CLIENT_ID}'
+  KEYCLOAK_CREDENTIALS_SECRET: '${KEYCLOAK_CLIENT_SECRET}'
+
+  MINIO_URL: 'https://minio.tiktzuki.com'
+  MINIO_BUCKET: 'ecommerce'
+  MINIO_ACCESS_KEY: QF9xaSutsaPKnJTYog2G
+  MINIO_SECRET_KEY: tnVBiBa6UClNV2EQ1CpzJVwRVHYK9CqqgRzsWtX3
