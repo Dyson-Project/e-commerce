@@ -13,7 +13,7 @@ pipeline {
             steps {
                 sh './gradlew sale:bootJar'
                 script {
-                    dockerImage = docker.build(dockerImageName, ".")
+                    dockerImage = docker.build(dockerImageName, "./sale")
                 }
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
