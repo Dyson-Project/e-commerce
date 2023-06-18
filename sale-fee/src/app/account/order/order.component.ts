@@ -26,8 +26,8 @@ export class OrderComponent implements OnInit {
   selectedTab: string = EOrderStatus.All;
   orders: IOrder[];
   currentQuery = {
-    pageIndex: 0,
-    pageSize: 4,
+    page: 0,
+    size: 4,
     status: EOrderStatus.All,
   };
   OrderStatus = [
@@ -70,7 +70,7 @@ export class OrderComponent implements OnInit {
 
   changeTab(orderStatus: string) {
     this.selectedTab = orderStatus;
-    this.currentQuery = {...this.currentQuery, pageIndex: 0, status: orderStatus};
+    this.currentQuery = {...this.currentQuery, page: 0, status: orderStatus};
     this.loadOrdersCatalog(this.currentQuery);
   }
 

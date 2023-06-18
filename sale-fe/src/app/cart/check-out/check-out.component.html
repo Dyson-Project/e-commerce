@@ -20,7 +20,7 @@
                 <span>{{orderDetail.quantity}}</span>
             </div>
             <div class="col-md-1 item-price">
-                <span>{{orderDetail.price | currency}}</span>
+                <span>{{orderDetail.price | currency: 'VND'}}</span>
             </div>
         </div>
 
@@ -39,7 +39,7 @@
                     </span>
                     </div>
                     <span class="text price pull-right">
-                    {{(order.totalPrice - order.shippingFee) | currency}}
+                    {{(order.totalPrice - order.shippingFee) | currency: 'VND'}}
                 </span>
                 </div>
                 <div class="d-flex justify-content-between">
@@ -49,7 +49,7 @@
                     </span>
                     </div>
                     <span class="text price pull-right">
-                    {{order.shippingFee | currency}}
+                    {{order.shippingFee | currency: 'VND'}}
                 </span>
                 </div>
                 <hr>
@@ -58,7 +58,7 @@
                         Total
                     </div>
                     <div class="text bold total-price pull-right">
-                        {{order.totalPrice|currency}}
+                        {{order.totalPrice|currency:'VND'}}
                     </div>
                 </div>
                 <div class="d-flex justify-content-between">

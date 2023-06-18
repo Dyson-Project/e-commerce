@@ -13,40 +13,35 @@ import {IOrder} from '../shared/models/order.model';
 import {Router} from '@angular/router';
 import {IAddress} from '../shared/models/address.model';
 import {IOrderItem} from '../shared/models/orderItem.model';
+import {Guid} from "../../guid";
+
+const CART_ID = "CART_ID";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  private cartUrl: string = '/api/customer/cart';
+  private cartUrl: string = '/api/customer/cart/';
   private orderUrl: string = '/api/orders';
-  cart: ICart;
+  cart: ICart = {
+    id: Guid.newGuid(),
+    customerId: 0,
+    items: [],
+    shippingFee: 0,
+    totalPrice: 0
+  }
 
   private cartDroppedSource = new Subject();
   cartDropped$ = this.cartDroppedSource.asObservable();
 
   constructor(
-    private service: DataService,
-    private securityService: SecurityService,
-    private cartEvents: CartWrapperService,
-    private router: Router,
-    private configurationService: ConfigurationService,
-    private storageService: StorageService
+      private service: DataService,
+      private securityService: SecurityService,
+      private cartEvents: CartWrapperService,
+      private router: Router,
+      private configurationService: ConfigurationService,
+      private storageService: StorageService
   ) {
-    this.cart = {
-      id: 0,
-      customerId: 0,
-      items: [],
-      shippingFee: 0,
-      totalPrice: 0
-    }
-    if (this.securityService.IsAuthorized) {
-      // this.cart.customerId = this.authService.UserData.sub;
-      this.cart.customerId = this.securityService.UserData.id;
-      this.configurationService.settingLoaded$.subscribe(settings => {
-        this.loadData();
-      })
-    }
     this.cartEvents.orderCreated$.subscribe(x => {
       this.dropCart();
     });
@@ -130,13 +125,18 @@ export class CartService {
     return combineLatest(observables);
   }
 
+  newCart(): Observable<ICart> {
+    return this.service.post(this.cartUrl, {}).pipe(tap((value: ICart) => {
+      this.storageService.store(CART_ID, value.id);
+      this.cartEvents.updateBadge(value.items.length);
+    }));
+  }
+
   getCart(): Observable<ICart> {
-    const url = this.cartUrl;
+    const url = this.cartUrl + "/" + this.storageService.retrieve(CART_ID);
     console.log('get cart', url);
-    return this.service.get(url).pipe<ICart>(map((res: any) => {
-      console.log(res);
-      res.items = JSON.parse(res.items != null ? res.items : '[]');
-      return res;
+    return this.service.get(url).pipe(tap(value => {
+      this.cartEvents.updateBadge(value.items.length);
     }));
   }
 

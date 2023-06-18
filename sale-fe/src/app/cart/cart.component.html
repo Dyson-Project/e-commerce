@@ -49,7 +49,7 @@
                         <a href="#" class="automation-link-from-sub-title-to-prod sku"> {{item.variation}}</a>
                     </section>
                     <section class="cart-item cart-item--middle col-2">
-                        <p class="current-price">{{item.itemPrice | currency}}</p>
+                        <p class="current-price">{{item.itemPrice | currency:'VND'}}</p>
                         <div class="operations" (click)="removeCartItem([item])">
                             <fa-icon icon="trash" class="delete"></fa-icon>
                         </div>
@@ -73,7 +73,7 @@
                     </section>
                     <section class="cart-item cart-item--middle cart-item--mark col-2">
                         <p class="sub-price">
-                            {{(item.itemPrice * item.quantity) | currency}}
+                            {{(item.itemPrice * item.quantity) | currency:'VND'}}
                         </p>
                     </section>
                 </div>
@@ -121,7 +121,7 @@
                             Provisional ({{cart.items.length }} item)
                         </div>
                         <div class="checkout-summary-value">
-                            <span class="checkout-summary-noline-value">{{provisional | currency}} </span>
+                            <span class="checkout-summary-noline-value">{{provisional | currency:'VND'}} </span>
                         </div>
                     </div>
                     <div class="checkout-summary-row">
@@ -129,7 +129,7 @@
                             Shipping Fee
                         </div>
                         <div class="checkout-summary-value">
-                            <span class="checkout-summary-noline-value">{{shippingFee | currency}} </span>
+                            <span class="checkout-summary-noline-value">{{shippingFee | currency:'VND'}} </span>
                         </div>
                     </div>
                     <!-- <div class="checkout-summary-row">
@@ -152,7 +152,7 @@
                     <div class="checkout-order-total-row">
                         <div class="checkout-order-total-title"> Total </div>
                         <div class="checkout-order-total-fee">
-                            {{totalPrice | currency}}
+                            {{totalPrice | currency:'VND'}}
                         </div>
                     </div>
                 </div>

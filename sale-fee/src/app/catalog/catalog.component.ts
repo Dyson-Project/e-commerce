@@ -32,8 +32,8 @@ export class CatalogComponent implements OnInit {
   authSubscription: Subscription;
   errorRecieved: boolean;
   currentQuery = {
-    pageIndex: 0,
-    pageSize: 10,
+    page: 0,
+    size: 10,
     status: EProductStatus.Active,
     productName: null,
     brandId: null,

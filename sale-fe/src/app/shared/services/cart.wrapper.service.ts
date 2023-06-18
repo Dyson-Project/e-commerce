@@ -1,4 +1,3 @@
-import {SecurityService} from './security.service';
 import {Injectable} from "@angular/core";
 import {Subject} from 'rxjs';
 import {ICartItem} from '../models/cartItem.model';
@@ -10,36 +9,27 @@ import {ICart} from '../models/cart.model';
 export class CartWrapperService {
   public cart?: ICart;
 
-  constructor(private identityService: SecurityService) {
+  constructor() {
   }
 
   private addItemToCartSource = new Subject<ICartItem>();
   addItemToCart$ = this.addItemToCartSource.asObservable();
 
-  private updateBadgeSource = new Subject<ICartItem>();
+  private updateBadgeSource = new Subject<number>();
   updateBadge$ = this.updateBadgeSource.asObservable();
 
-  private orderCreatedSouce = new Subject();
-  orderCreated$ = this.orderCreatedSouce.asObservable();
+  private orderCreatedSource = new Subject();
+  orderCreated$ = this.orderCreatedSource.asObservable();
 
   addItemToCart(item: ICartItem) {
-    if (this.identityService.IsAuthorized) {
-      // TODO: Can mapping from sku to cart item here!!!
-      this.addItemToCartSource.next(item);
-    } else {
-      this.identityService.GoToLoginPage();
-    }
+    this.addItemToCartSource.next(item);
   }
 
-  updateBadge() {
-    this.updateBadge$.subscribe(value => {
-      this.updateBadgeSource.next(value);
-    })
+  updateBadge(itemCount: number) {
+    this.updateBadgeSource.next(itemCount);
   }
 
   orderCreate() {
-    this.orderCreated$.subscribe(value => {
-      this.orderCreatedSouce.next(value);
-    })
+    this.orderCreatedSource.next(null);
   }
 }

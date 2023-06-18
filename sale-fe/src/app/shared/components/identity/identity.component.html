@@ -1,15 +1,15 @@
 <div class="esh-identity">
     <div *ngIf="!authenticated" class="esh-identity-unauthenticate">
-        <div class="identity-content-block">
-            <a routerLink="/sign-up">
-                Sign-up <i class="fas fa-user"></i>
-            </a>
-        </div>
-        <div class="identity-content-block">
-            <a routerLink="/sign-in">
-                 Sign-in <i class="fas fa-sign-in-alt"></i>
-            </a>
-        </div>
+<!--        <div class="identity-content-block">-->
+<!--            <a routerLink="/sign-up">-->
+<!--              Sign-up <i class="fas fa-user"></i>-->
+<!--            </a>-->
+<!--        </div>-->
+      <div class="identity-content-block">
+        <button (click)="login()">
+          Login <i class="fas fa-sign-in-alt"></i>
+        </button>
+      </div>
     </div>
     <ng-container *ngIf="authenticated">
         <section class="esh-identity-section identity-content-block">

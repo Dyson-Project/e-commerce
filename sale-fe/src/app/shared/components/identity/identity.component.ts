@@ -2,6 +2,7 @@ import { Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { SecurityService } from '../../services/security.service';
 import { ICustomer } from '../../models/customer.model';
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-identity',
@@ -15,6 +16,7 @@ export class Identity implements OnInit {
 
   constructor(
     private service: SecurityService,
+    private readonly keycloak: KeycloakService,
   ) { }
 
   ngOnInit(): void {
@@ -33,7 +35,8 @@ export class Identity implements OnInit {
   }
 
   login(): void{
-    this.service.Authorize({phone:'', password:''});
+    this.keycloak.login().then(value => {
+    });
   }
 
   logout(): void{

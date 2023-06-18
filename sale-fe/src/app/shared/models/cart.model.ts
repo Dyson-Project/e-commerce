@@ -1,6 +1,6 @@
 import { ICartItem } from './cartItem.model';
 export interface ICart{
-  id: number;
+  id: String;
   customerId: number;
   shippingFee: number;
   totalPrice: number;

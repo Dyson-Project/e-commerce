@@ -29,8 +29,8 @@ export class OrderComponent implements OnInit {
   selectedTab: string = EOrderStatus.All;
   orders: IOrder[] = [];
   currentQuery = {
-    pageIndex: 0,
-    pageSize: 4,
+    page: 0,
+    size: 4,
     status: EOrderStatus.All,
   };
   OrderStatus = [
@@ -44,7 +44,7 @@ export class OrderComponent implements OnInit {
   ];
   EOrderStatus = EOrderStatus;
   EPaymentMethod = EPaymentMethod;
-  paginationInfo: IPager = {actualPage: 0, totalItems: 0, itemsPage: 0, items: 0, totalPages: 0};
+  paginationInfo: IPager = {actualPage: 0, totalItems: 0, items: 0, totalPages: 0};
   searchFormGroup?: FormGroup;
 
   constructor(
@@ -73,7 +73,7 @@ export class OrderComponent implements OnInit {
 
   changeTab(orderStatus: string) {
     this.selectedTab = orderStatus;
-    this.currentQuery = {...this.currentQuery, pageIndex: 0, status: orderStatus};
+    this.currentQuery = {...this.currentQuery, page: 0, status: orderStatus};
     this.loadOrdersCatalog(this.currentQuery);
   }
 
@@ -90,7 +90,6 @@ export class OrderComponent implements OnInit {
         console.log(this.orders);
         this.paginationInfo = {
           actualPage: catalog.number,
-          itemsPage: catalog.size,
           totalItems: catalog.totalElements,
           items: catalog.data.length,
           totalPages: catalog.totalPages
@@ -144,7 +143,7 @@ export class OrderComponent implements OnInit {
   }
 
   onPageChanged($event: any) {
-    this.currentQuery.pageIndex = $event;
+    this.currentQuery.page = $event;
     this.loadOrdersCatalog(this.currentQuery)
   }
 

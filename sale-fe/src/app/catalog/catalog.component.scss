@@ -10,9 +10,11 @@
 }
 
 .product-card {
-    box-shadow: 0 0.4px 0.4px rgb(128 128 128 / 11%), 0 1px 1px rgb(128 128 128 / 16%), 0 2.1px 2.1px rgb(128 128 128 / 20%), 0 4.4px 4.4px rgb(128 128 128 / 24%), 0 12px 12px rgb(128 128 128 / 35%);
-    // padding-bottom: 1rem;
-    padding: .5rem;
+  box-shadow: 0 0.4px 0.4px rgb(128 128 128 / 11%), 0 1px 1px rgb(128 128 128 / 16%), 0 2.1px 2.1px rgb(128 128 128 / 20%), 0 4.4px 4.4px rgb(128 128 128 / 24%), 0 12px 12px rgb(128 128 128 / 35%);
+  // padding-bottom: 1rem;
+  padding: .5rem;
+  overflow: hidden;
+  height: 418px;
 }
 
 .esh-catalog-name {
@@ -23,13 +25,47 @@
 }
 
 .esh-catalog-price {
-    padding-top: .2rem;
-    color: $color-primary-dark;
-    font-size: 18px;
-    line-height: 22px;
-    padding-left: 1rem;
+  padding-top: .2rem;
+  color: $color-primary-dark;
+  font-size: 18px;
+  line-height: 22px;
+  padding-left: 1rem;
 }
 
 .esh-catalog-thumnail {
-    max-height: 210px;
+  max-height: 210px;
+}
+
+.u-gutter-20 .u-layout .u-layout-cell {
+  border: 10px solid transparent;
+}
+
+.u-section-2 .u-layout-cell-2 {
+  min-height: 420px;
+  background-image: none;
+}
+
+.u-container-style:not([class*="u-align-"]) {
+  text-align: left;
+}
+
+.u-layout-row > .u-size-20 {
+  flex: 0 0 33.33333333%;
+  max-width: 33.33333333%;
+}
+
+.u-layout-cell, .u-group.u-opacity {
+  background-color: transparent !important;
+  opacity: 1;
+}
+
+.u-layout-cell {
+  position: relative;
+  display: flex;
+  background-clip: padding-box;
+  background-origin: padding-box;
+}
+
+.u-layout-row > * {
+  max-height: 100%;
 }

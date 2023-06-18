@@ -1,5 +1,6 @@
 package org.dyson.ecommerce.sale.controller
 
+import org.dyson.ecommerce.sale.constants.ProductStatus
 import org.dyson.ecommerce.sale.entities.Product
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -13,7 +14,7 @@ import java.math.BigDecimal
 
 
 @RepositoryRestResource(collectionResourceRel = "products", path = "products")
-interface ProductResource : PagingAndSortingRepository<Product, Long?>, CrudRepository<Product, Long> {
+interface ProductRestRepository : PagingAndSortingRepository<Product, Long?>, CrudRepository<Product, Long> {
     @Transactional(readOnly = true)
     @Query(
         """
@@ -22,19 +23,23 @@ interface ProductResource : PagingAndSortingRepository<Product, Long?>, CrudRepo
         where
             (:name is null or p.productName ilike %:name%)
             and (:categoryId is null or p.categoryId = :categoryId)
-            and (:branchId is null or p.brand.id = :branchId)
+            and (:branchId is null or p.branchId = :branchId)
             and (:status is null or p.status = :status)
-            and (:minPrice is null or sku.price > :minPrice)
-            and (:maxPrice is null or sku.price < :maxPrice)
-    """
+    """,
+        countQuery = """
+        select count(p.id) from Product  p
+        where
+            (:name is null or p.productName ilike %:name%)
+            and (:categoryId is null or p.categoryId = :categoryId)
+            and (:branchId is null or p.branchId = :branchId)
+            and (:status is null or p.status = :status)
+        """
     )
     fun catalog(
         @Param("name") name: String?,
         @Param("branchId") branchId: Long?,
         @Param("categoryId") categoryId: Long?,
-        @Param("status") status: String?,
-        @Param("minPrice") minPrice: BigDecimal?,
-        @Param("maxPrice") maxPrice: BigDecimal?,
+        @Param("status") status: ProductStatus? = ProductStatus.ACTIVE,
         pageable: Pageable
     ): Page<Product>
 }

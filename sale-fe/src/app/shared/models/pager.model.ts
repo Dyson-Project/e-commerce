@@ -1,7 +1,6 @@
 export interface IPager {
-  itemsPage: number;
-  totalItems: number;
-  actualPage: number;
-  totalPages:number;
   items:number;
+  totalItems: number;
+  totalPages:number;
+  actualPage: number;
 }

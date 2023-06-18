@@ -29,21 +29,6 @@
               <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
             </select>
           </div>
-          <div class="filter-row">
-            <label class="esh-catalog-label" data-title="category">
-              Price:
-            </label>
-            <div class="input-group mb-3">
-              <input type="text" (keydown)="numberOnly($event)" [(ngModel)]="currentQuery.minPrice"
-                     class="form-control" placeholder="min" aria-label="Username">
-              <span class="input-group-text bg-light"></span>
-            </div>
-            <div class="input-group mb-3">
-              <input type="text" (keydown)="numberOnly($event)" [(ngModel)]="currentQuery.maxPrice"
-                     class="form-control" placeholder="max" aria-label="Username">
-              <span class="input-group-text bg-light"></span>
-            </div>
-          </div>
           <div class="filter-row d-flex justify-content-center">
             <button class="btn btn-primary btn-sm" (click)="onFilterApplied($event)">
               <i class="fas fa-filter"></i> Apply
@@ -52,8 +37,9 @@
         </section>
     </div>
   <div class="col-md-10" *ngIf="catalog">
-    <div class="container">
+    <div class="container" >
       <div *ngIf="catalog.data.length > 0">
+
         <div class="esh-catalog-items row">
           <div class="esh-catalog-item col-md-3" *ngFor="let product of catalog.data">
             <div class="product-card">
@@ -63,7 +49,7 @@
                   <span>{{product.productName}}</span>
                 </div>
                 <div class="esh-catalog-price">
-                  <span>{{product.skus[0].price | currency}}</span>
+                  <span>{{product.skus[0].price | currency:'VND'}}</span>
                 </div>
               </a>
             </div>

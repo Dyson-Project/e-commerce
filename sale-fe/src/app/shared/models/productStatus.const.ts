@@ -1,7 +1,7 @@
 export const EProductStatus = {
   All: '',
-  Active: 'active',
-  Sold_Out: 'sold-out',
-  Disabled: 'disable',
-  Deleted: 'deleted'
+  Active: 'ACTIVE',
+  Sold_Out: 'SOLD_OUT',
+  Disabled: 'DISABLE',
+  Deleted: 'DELETED'
 }

@@ -1,7 +1,7 @@
 import {ICategory} from '../shared/models/category.model';
 import {IPage} from '../shared/models/catalog.model';
 import {IPager} from '../shared/models/pager.model';
-import {Subscription, throwError} from 'rxjs';
+import {throwError} from 'rxjs';
 import {CatalogService} from './catalog.service';
 import {ConfigurationService} from '../shared/services/configuration.service';
 import {Component, OnInit} from '@angular/core';
@@ -29,17 +29,14 @@ export class CatalogComponent implements OnInit {
   catalog?: IPage<IProduct>;
   paginationInfo!: IPager;
   authenticated: boolean = false;
-  authSubscription?: Subscription;
   errorReceived: boolean = false;
   currentQuery: any = {
-    pageIndex: 0,
-    pageSize: 10,
+    page: 0,
+    size: 8,
     status: EProductStatus.Active,
     productName: null,
     brandId: null,
-    categoryId: null,
-    minPrice: null,
-    maxPrice: null
+    categoryId: null
   };
 
   //Fontawesome
@@ -95,21 +92,20 @@ export class CatalogComponent implements OnInit {
   }
 
   onPageChanged(value: any) {
-    this.currentQuery.pageIndex = value;
+    this.currentQuery.page = value;
     this.getCatalog(this.currentQuery);
   }
 
   getCatalog(params: { [param: string]: any }) {
     this.service.getCatalog(params)
-      .subscribe(catalog => {
-        console.log(catalog)
-        this.catalog = catalog;
+      .subscribe(catalogPage => {
+        console.log(catalogPage)
+        this.catalog = catalogPage;
         this.paginationInfo = {
-          actualPage: catalog.number,
-          itemsPage: catalog.size,
-          totalItems: catalog.totalElements,
-          items: catalog.size,
-          totalPages: catalog.totalPages
+          items: catalogPage.size,
+          totalItems: catalogPage.totalElements,
+          totalPages: catalogPage.totalPages,
+          actualPage: catalogPage.number,
         }
       })
   }

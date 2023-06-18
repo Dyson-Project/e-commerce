@@ -8,13 +8,13 @@ import {ICartItem} from '../shared/models/cartItem.model';
 import {Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ModalComponent} from '../shared/components/modal/modal.component';
-import {SecurityService} from '../shared/services/security.service';
 import {EPaymentMethod} from '../shared/models/paymentMethod.const';
-import {IAddress} from '../../../../cms-fee/src/app/shared/models/address.model';
 import {IOrder} from '../shared/models/order.model';
 import {DateFormat} from '../shared/util/date.format';
 import {EOrderStatus} from '../shared/models/orderStatus.const';
 import {IOrderItem} from '../shared/models/orderItem.model';
+import {IAddress} from "../shared/models/address.model";
+import {HttpErrorResponse, HttpStatusCode} from "@angular/common/http";
 
 @Component({
   selector: 'app-cart',
@@ -48,47 +48,31 @@ export class CartComponent implements OnInit {
     private configurationService: ConfigurationService,
     private cartWrapper: CartWrapperService,
     private modalService: NgbModal,
-    private securityService: SecurityService
   ) {
   }
 
   ngOnInit(): void {
-    if (!this.securityService.IsAuthorized) {
-      this.securityService.GoToLoginPage();
-    }
-
-    if (this.configurationService.isReady) {
-      this.loadData();
-    } else {
-      this.configurationService.settingLoaded$.subscribe(x => {
-        this.loadData();
-      });
-    }
+    this.loadData();
   }
 
   loadData() {
-    // Guard address
-    this.securityService.getUser(this.securityService.UserData.id).subscribe({
-      next: res => {
-        if (res.address.length == 0) {
-          this.router.navigate(['/account/address'])
-          alert('You need to have a address');
-        }
-      }
-    })
-
-    let promiseAddress = () => Promise.all([
-      this.getAddress(),
-      this.service.getAddress().toPromise()
-    ]);
-    promiseAddress().then(() => this.getCart());
-
+    console.log("load data cart")
+    this.getCart();
   }
 
   getCart(): any {
-    this.service.getCart().subscribe(cart => {
-      this.cart = cart;
-      this.calculateTotalPrice();
+    this.service.getCart().subscribe({
+      next: cart => {
+        this.cart = cart;
+        this.calculateTotalPrice();
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("not found cart, create new one" + err.status)
+        if (err.status == HttpStatusCode.NotFound) {
+          this.service.newCart();
+        }
+        console.error(err)
+      }
     });
   }
 
@@ -158,7 +142,6 @@ export class CartComponent implements OnInit {
         next: res => {
           this.cartItems = [];
           this.getCart();
-          this.cartWrapper.updateBadge();
           this.loadData();
         }
       });

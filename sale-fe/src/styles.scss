@@ -7,15 +7,23 @@
 @import 'bootstrap/scss/mixins';
 
 :root {
-  a:hover,
   a:active {
     color: $color-secondary-darker;
     text-decoration: none;
     outline: none;
   }
-  a {
-    color: $color-foreground-dark;
+
+  a:link {
+    text-decoration: none;
   }
+
+  a:visited {
+    text-decoration: none;
+  }
+
+  a:hover {
+  }
+
   img {
     width: 100%;
     height: auto;

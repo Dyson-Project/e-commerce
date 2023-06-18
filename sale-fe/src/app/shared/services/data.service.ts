@@ -28,7 +28,7 @@ export class DataService {
   //   return this.doPost(url, data, true, params);
   // }
 
-  post(url: string, data: any, params?: any): Observable<Response> {
+  post(url: string, data: any, params?: any): Observable<any> {
     console.log('post', url, data);
     return this.doPost(url, data, false, params);
   }

@@ -20,9 +20,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(registry ->
                 registry
                     .requestMatchers(HttpMethod.GET,
-                        "/products",
-                        "/categories**",
-                        "/brands"
+                        "/products/**",
+                        "/categories/**",
+                        "/brands/**",
+                        "/customer/cart/**"
                     ).permitAll()
                     .requestMatchers("/",
                         "/api-docs/**",

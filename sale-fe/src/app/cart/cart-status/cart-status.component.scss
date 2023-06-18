@@ -10,32 +10,32 @@
 }
 
 .cartstatus-image {
-    position: absolute;
-    background-size: cover;
-    width: 29px;
-    height: 26px;
-    left: 50%;
-    top: 50%;
-    margin: -12px 0 0 -14px;
-    font-size: 1.5rem;
-    color: $color-primary-bright;
+  position: absolute;
+  background-size: cover;
+  width: 29px;
+  height: 26px;
+  left: 50%;
+  top: 50%;
+  margin: -12px 0 0 -14px;
+  font-size: 1.5rem;
+  color: $color-background-dark;
 }
 
 .cartstatus-badge {
-    position: absolute;
-    background: $color-secondary-dark;
-    color: $color-primary-darker;
-    font-weight: 300;
-    box-shadow: 2px 2px 5px grey;
-    top: 0px;
-    font-weight: 400;
-    right: 2px;
-    text-align: center;
-    border: 3px solid $color-secondary-dark;
-    font-size: 13px;
-    min-width: 14px;
-    line-height: 14px;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
+  position: absolute;
+  background: $color-background-dark;
+  color: $color-background-bright;
+  font-weight: 300;
+  box-shadow: 2px 2px 5px grey;
+  top: 0px;
+  font-weight: 400;
+  right: 2px;
+  text-align: center;
+  border: 3px solid $color-background-dark;
+  font-size: 13px;
+  min-width: 14px;
+  line-height: 14px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
 }
