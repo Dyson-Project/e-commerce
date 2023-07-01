@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sale-fe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sale-fe
+  template:
+    metadata:
+      labels:
+        app: sale-fe
+    spec:
+      imagePullSecrets:
+        - name: rd-registry
+      containers:
+        - name: sale-fe
+          image: tiktzuki/sale-fe:latest
+          ports:
+            - name: http
+              containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 120
+            timeoutSeconds: 1
+            periodSeconds: 60
+          envFrom:
+            - configMapRef:
+                name: sale-fe-config

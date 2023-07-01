@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sale-fe-config
+data:
+  ENV_PREFIX: 'FAB_'
+  FAB_HOST: 'http://sale-fe.fnb:3000'
