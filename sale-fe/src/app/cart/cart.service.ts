@@ -142,10 +142,12 @@ export class CartService {
 
   getAddress(): Observable<IAddress[]> {
     const url = '/address?customerId=' + this.cart.customerId;
-    return this.securityService.getUser(this.securityService.UserData.id)
-      .pipe<IAddress[]>(map((res: any) => {
-        return res.address;
-      }))
+    return new Observable<IAddress[]>();
+    // return this.securityService.getUser(this.securityService.UserData.id)
+    //   .pipe<IAddress[]>(map((res: any) => {
+    //     return res.address;
+    //   }))
+
     // return this.service.get(url).pipe<IAddress[]>(tap(
     //   {
     //     next: (res: any) => {

@@ -1,13 +1,9 @@
 <div class="esh-identity">
     <div *ngIf="!authenticated" class="esh-identity-unauthenticate">
-<!--        <div class="identity-content-block">-->
-<!--            <a routerLink="/sign-up">-->
-<!--              Sign-up <i class="fas fa-user"></i>-->
-<!--            </a>-->
-<!--        </div>-->
       <div class="identity-content-block">
-        <button (click)="login()">
-          Login <i class="fas fa-sign-in-alt"></i>
+        <button class="btn btn-ghost" href="#" role="button" (click)="login()">
+          Đăng nhập
+          <fa-icon icon="sign-in-alt"/>
         </button>
       </div>
     </div>
@@ -16,7 +12,7 @@
             <a [routerLink]="'account/orders'" style="display: flex;">
                 <div class="esh-identity-name">Hello, {{customer?.name}}</div>
                 <p>
-                    <i class="fas fa-user"></i>
+                  <fa-icon icon="user"/>
                 </p>
             </a>
         </section>
@@ -24,7 +20,7 @@
             <div class="esh-identity-item identity-content-block" (click)="logout()">
                 <div class="esh-identity-name esh-identity-name--upper">Log out</div>
                 <p>
-                    <i class="fas fa-sign-out-alt"></i>
+                  <fa-icon icon="sign-out-alt"/>
                 </p>
             </div>
         </section>

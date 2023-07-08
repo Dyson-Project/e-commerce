@@ -29,8 +29,6 @@ interface ICurrentAddress {
   styleUrls: ['./address.component.scss']
 })
 export class AddressComponent implements OnInit {
-  authenticated: boolean;
-  authSubscription: any;
   address: IAddress[] = [];
   currentAddress?: ICurrentAddress;
   addressList: IAddressJson1[] = [];
@@ -43,64 +41,50 @@ export class AddressComponent implements OnInit {
     private securityService: SecurityService,
     private service: AccountService,
     private modalService: NgbModal) {
-    this.authenticated = securityService.IsAuthorized;
     this.addressForm = new FormGroup({
       street: new FormControl('', [Validators.required]),
       address1: new FormControl('', [Validators.required]),
       address2: new FormControl('', [Validators.required]),
       address3: new FormControl('', [Validators.required]),
       isDefault: new FormControl(false),
-      customerId: new FormControl(this.securityService.UserData.id),
+      customerId: new FormControl(''),
       id: new FormControl(0)
     })
   }
 
   ngOnInit() {
-      this.loadData();
-
-    this.authSubscription = this.securityService.authenticationChallenge$.subscribe({
-      next: res => {
-        this.authenticated = res;
-      }
-    })
   }
 
-  loadData() {
-    this.getUser();
-  }
-
-  getUser() {
-    this.service.getUser(this.securityService.UserData.id).subscribe({
-      next: user => {
-        console.log(user);
-        this.user = user;
-      }
-    })
-  }
 
   loadAddressForm(address?: IAddress) {
-    if (address) {
-      this.addressForm = new FormGroup({
-        street: new FormControl(address.street, [Validators.required]),
-        address1: new FormControl(address.address1, [Validators.required]),
-        address2: new FormControl(address.address2, [Validators.required]),
-        address3: new FormControl(address.address3, [Validators.required]),
-        isDefault: new FormControl(address.isDefault),
-        customerId: new FormControl(address.customerId),
-        id: new FormControl(address.id)
-      })
-      console.log(this.addressForm);
-    } else {
-      this.addressForm = new FormGroup({
-        street: new FormControl('', [Validators.required]),
-        address1: new FormControl('', [Validators.required]),
-        address2: new FormControl('', [Validators.required]),
-        address3: new FormControl('', [Validators.required]),
-        isDefault: new FormControl(false),
-        customerId: new FormControl(this.securityService.UserData.id),
-        id: new FormControl(0)
-      })
-    }
+    this.securityService.UserData$.subscribe({
+      next: user => {
+        if (address) {
+
+          this.addressForm = new FormGroup({
+            street: new FormControl(address.street, [Validators.required]),
+            address1: new FormControl(address.address1, [Validators.required]),
+            address2: new FormControl(address.address2, [Validators.required]),
+            address3: new FormControl(address.address3, [Validators.required]),
+            isDefault: new FormControl(address.isDefault),
+            customerId: new FormControl(user.id),
+            id: new FormControl(address.id)
+          })
+          console.log(this.addressForm);
+        } else {
+          this.addressForm = new FormGroup({
+            street: new FormControl('', [Validators.required]),
+            address1: new FormControl('', [Validators.required]),
+            address2: new FormControl('', [Validators.required]),
+            address3: new FormControl('', [Validators.required]),
+            isDefault: new FormControl(false),
+            customerId: new FormControl(user.id),
+            id: new FormControl(0)
+          })
+        }
+
+      }
+    })
   }
 
   async setAsDefault(addressId: number) {
@@ -126,7 +110,8 @@ export class AddressComponent implements OnInit {
       let promiseAddress = () => Promise.all([
         this.saveAddress().toPromise()
       ]);
-      promiseAddress().then(() => this.loadData());
+      promiseAddress().then(() => {
+      });
     }, (reason) => {
     });
   }

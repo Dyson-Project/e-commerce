@@ -25,15 +25,8 @@ export class AccountService {
   ) {
   }
 
-  getUser(userId: number): Observable<ICustomer> {
-    return this.service.get(this.accountUrl + '/' + userId)
-      .pipe<ICustomer>(tap((res: any) => {
-        return res
-      }));
-  }
-
   getAddress(): Observable<IAddress[]> {
-    let url = this.addressUrl + '?customerId=' + this.securityService.UserData.id;
+    let url = this.addressUrl + '?customerId=' + this.securityService.userData.id;
     return this.service.get(url).pipe<IAddress[]>(tap((res: any) => {
       return res;
     }));
@@ -70,14 +63,14 @@ export class AccountService {
   }
 
   getProfile(): Observable<ICustomer> {
-    let url = this.accountUrl + '/' + this.securityService.UserData.id;
+    let url = this.accountUrl + '/' + this.securityService.userData.id;
     return this.service.get(url).pipe<ICustomer>(tap((res: any) => {
       return res;
     }))
   }
 
   updatePassword(oldPwd: string, newPwd: string) {
-    let url = this.accountUrl + '/' + this.securityService.UserData.id;
+    let url = this.accountUrl + '/' + this.securityService.userData.id;
     let requestChangePwd = {
       oldPwd,
       newPwd
@@ -88,14 +81,14 @@ export class AccountService {
   }
 
   updateProfile(profile?: ICustomer) {
-    let url = `${this.accountUrl}/${this.securityService.UserData.id}`;
+    let url = `${this.accountUrl}/${this.securityService.userData.id}`;
     return this.service.put(url, profile).pipe<any>(tap((res: any) => {
       return res;
     }));
   }
 
   getOrderCatalog(params: { [param: string]: any }): Observable<IPage<IOrder>> {
-    let url = `${this.orderUrl}?customerId=${this.securityService.UserData.id}`;
+    let url = `${this.orderUrl}?customerId=${this.securityService.userData.id}`;
     if (params && Object.values(params).some(value => value)) {
       url += '&';
       for (const [key, value] of Object.entries(params)) {

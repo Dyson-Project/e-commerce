@@ -12,27 +12,21 @@ import {environment} from "../environments/environment";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  Authenticated: boolean = false;
-  subscription!: Subscription;
 
   constructor(
     private titleService: Title,
     private securityService: SecurityService,
     private configurationService: ConfigurationService,
-    private toastr: ToastrService,
-    vcr: ViewContainerRef
   ) {
-    this.Authenticated = this.securityService.IsAuthorized;
   }
 
   ngOnInit(): void {
-    console.log("------------> ",environment.API_HOST)
+    console.log("------------> ",environment.API_HOST, environment.production)
     if (environment.production) {
       console.log('Production!');
     } else {
       console.log('Development!');
     }
-    this.subscription = this.securityService.authenticationChallenge$.subscribe(res => this.Authenticated = res);
     this.configurationService.load();
   }
 

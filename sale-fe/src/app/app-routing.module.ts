@@ -7,10 +7,11 @@ import {CheckOutComponent} from "./cart/check-out/check-out.component";
 import {PaymentsuccessComponent} from "./cart/check-out/paymentsuccess/paymentsuccess.component";
 import {ShippingComponent} from "./shipping/shipping.component";
 import {AccountComponent} from "./account/account.component";
-import {AddressComponent} from "./account/address/address.component";
 import {ProfileComponent} from "./account/info/info.component";
 import {OrderComponent} from "./account/order/order.component";
 import {PageNotFoundComponent} from "./shared/components/page-not-found/page-not-found.component";
+import {AddressComponent} from "./account/address/address.component";
+import {AuthGuard} from "./guard/auth.guard";
 
 // import { ProductDetailsComponent } from './product-details/product-details.component';
 // import { ShippingComponent } from './shipping/shipping.component';
@@ -39,7 +40,8 @@ export const routes: Routes = [
       {path: 'address', component: AddressComponent},
       {path: 'profile', component: ProfileComponent},
       {path: 'orders', component: OrderComponent}
-    ]
+    ],
+    canActivate: [AuthGuard]
   },
   // { path: 'address', component: AddressComponent },
   { path: '404', component: PageNotFoundComponent },

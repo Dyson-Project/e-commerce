@@ -74,7 +74,7 @@ export class LoginComponent implements OnInit {
         phone: this.usernameLogin.value,
         password: this.passwordLogin.value
       };
-      this.securityService.Authorize(this.authRequest)
+      this.securityService.login().then();
     }
   }
 

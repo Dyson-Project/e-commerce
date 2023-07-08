@@ -17,7 +17,6 @@ import {ProductService} from "../shared/services/product.service";
   styleUrls: ['./product-details.component.scss']
 })
 export class ProductDetailsComponent implements OnInit {
-  authenticated: boolean;
   product!: IProduct;
   selectedSku!: ISku;
   selectedImageUrl!: string;
@@ -40,8 +39,6 @@ export class ProductDetailsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private sercurityService: SecurityService,
     private ngbCarouselConfig: NgbCarouselConfig) {
-
-    this.authenticated = sercurityService.IsAuthorized;
     this.ngbCarouselConfig.interval = 5000;
     this.ngbCarouselConfig.wrap = true;
     this.ngbCarouselConfig.keyboard = false;

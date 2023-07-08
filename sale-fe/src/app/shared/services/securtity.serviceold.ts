@@ -1,30 +1,24 @@
-
-import { StorageService } from './storage.service';
-import { Subject, Observable } from 'rxjs';
-import { ConfigurationService } from './configuration.service';
-import { error } from 'protractor';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
-import { HttpClient, HttpHeaderResponse, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { encode } from 'node:punycode';
-import jwtDecode from 'jwt-decode';
+import {StorageService} from './storage.service';
+import {Observable, Subject} from 'rxjs';
+import {ConfigurationService} from './configuration.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 class SecurityService {
-  private actionUrl!: string;
   private headers: HttpHeaders;
   private storage: StorageService;
   private authenticationSource = new Subject<boolean>();
   authenticationChallenge$ = this.authenticationSource.asObservable();
-  private authorityUrl = '';
 
   public UserData: any;
   public IsAuthorized!: boolean;
   constructor(
-    private _http: HttpClient, 
+    private _http: HttpClient,
     private _router: Router,
     private route: ActivatedRoute,
     private _configurationService: ConfigurationService,
@@ -36,10 +30,6 @@ class SecurityService {
     this.headers.append('Accept', 'application/json');
     this.storage = _storageService;
 
-    this._configurationService.settingLoaded$.subscribe(x => {
-      this.authorityUrl = this._configurationService.serverSettings.identityUrl;
-      this.storage.store('IdentityUrl', this.authorityUrl);
-    });
     if (this.storage.retrieve('IsAuthorized') !== '') {
       this.IsAuthorized = this.storage.retrieve('IsAuthorized');
       this.authenticationSource.next(true);
@@ -87,7 +77,7 @@ class SecurityService {
 
   public Authorize() {
     this.ResetAuthorizationData();
-    let authorizationUrl = this.authorityUrl + '/connect/authorize';
+    let authorizationUrl = `${environment.API_HOST}/connect/authorize`;
     let client_id = 'js';
     let redirect_uri = location.origin + '/';
     let response_type = 'id_token token';
@@ -107,7 +97,7 @@ class SecurityService {
       'nonce=' + encodeURI(nonce) + '&' +
       'state=' + encodeURI(state);
     console.log(url);
-    
+
     window.location.href = url;
   }
 
@@ -163,7 +153,7 @@ class SecurityService {
   }
 
   public Logoff() {
-    let authorizationUrl = this.authorityUrl + '/coonect/endssion';
+    let authorizationUrl = `${environment.authHost}/conect/endssion`;
     let id_token_hint = this.storage.retrieve('authorizationDataIdToken');
     let post_logout_redirect_uri = location.origin + '/';
 
@@ -219,20 +209,16 @@ class SecurityService {
     return data;
   }
 
-  private getUserData = (): Observable<string[]> =>{
-    if(this.authorityUrl === ''){
-      this.authorityUrl = this.storage.retrieve('IdentityUrl');
-    }
-
+  private getUserData = (): Observable<string[]> => {
     /**
      * options = {
      * headers: "HttpHeaders()"
      * }
      */
     const options = this.setHeaders();
-
-    return this._http.get<string[]>(`${this.authorityUrl}/connect/userinfo`, options)
-    .pipe<string[]>((info:any) => info);
+    const url = `${environment.authHost}/connect/userinfo`
+    return this._http.get<string[]>(url, options)
+      .pipe<string[]>((info: any) => info);
   }
 
   private setHeaders():any {

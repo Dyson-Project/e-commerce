@@ -15,13 +15,14 @@ import {ProductDetailsModule} from "./product-details/productDetails.module";
 import {SlickCarouselModule} from 'ngx-slick-carousel';
 import {ToastrModule} from 'ngx-toastr';
 import {SharedModule} from "./shared/shared.module";
-import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
+import {KeycloakAngularModule} from "keycloak-angular";
 import {CommonModule} from "@angular/common";
 import {fas} from '@fortawesome/free-solid-svg-icons';
 import {far} from '@fortawesome/free-regular-svg-icons';
 import {environment} from "../environments/environment";
+import {SecurityService} from "./shared/services/security.service";
 
-function initializeKeycloak(keycloak: KeycloakService) {
+function initializeKeycloak(keycloak: SecurityService) {
   return () =>
     keycloak.init({
       config: {
@@ -63,7 +64,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
       provide: APP_INITIALIZER,
       useFactory: initializeKeycloak,
       multi: true,
-      deps: [KeycloakService]
+      deps: [SecurityService]
     }
   ],
   bootstrap: [AppComponent],

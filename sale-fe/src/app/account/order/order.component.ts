@@ -1,7 +1,7 @@
 import {ConfigurationService} from '../../shared/services/configuration.service';
 import {SecurityService} from '../../shared/services/security.service';
 import {AccountService} from '../account.service';
-import {Subscription} from 'rxjs';
+import {from, Subscription} from 'rxjs';
 import {IOrder} from '../../shared/models/order.model';
 import {EOrderStatus} from '../../shared/models/orderStatus.const';
 import {IPager} from '../../shared/models/pager.model';
@@ -59,7 +59,7 @@ export class OrderComponent implements OnInit {
       this.loadData();
 
 
-    this.authSubscription = this.securityService.authenticationChallenge$.subscribe({
+    this.authSubscription = from(this.securityService.isLoggedIn()).subscribe({
       next: res => {
         this.authenticated = res;
       }

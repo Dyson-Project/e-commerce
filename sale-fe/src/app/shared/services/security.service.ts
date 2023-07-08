@@ -1,107 +1,69 @@
 import {StorageService} from './storage.service';
-import {Observable, Subject} from 'rxjs';
+import {from, Observable, Subject} from 'rxjs';
 import {ConfigurationService} from './configuration.service';
-// import { error } from 'protractor';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-// import { encode } from 'node:punycode';
 import {IAuthorizeRequest} from '../models/authorizeRequest.model';
-import {tap} from 'rxjs/operators';
-// import { RSA_NO_PADDING } from 'node:constants';
+import {map, tap} from 'rxjs/operators';
 import {IRegistingRequest} from '../models/registingCustomerRequest.model';
 import {ICustomer} from "../models/customer.model";
+import {environment} from "../../../environments/environment";
+import {KeycloakService} from "keycloak-angular";
+import {KeycloakLoginOptions, KeycloakProfile} from "keycloak-js";
 
 @Injectable({
   providedIn: 'root'
 })
-export class SecurityService {
-  private actionUrl!: string;
+export class SecurityService extends KeycloakService {
   private headers: HttpHeaders;
-  private authenticationSource = new Subject<boolean>();
-  authenticationChallenge$ = this.authenticationSource.asObservable();
-  private identityUrl = '';
   private storage;
+  public UserData$: Subject<ICustomer> = new Subject<ICustomer>();
+  public userData!:ICustomer;
 
-  public UserData!: ICustomer;
-  public IsAuthorized!: boolean;
   constructor(
-    private _http: HttpClient,
-    private _router: Router,
-    private route: ActivatedRoute,
-    private configurationService: ConfigurationService,
-    private _storageService: StorageService,
+      private _http: HttpClient,
+      private _router: Router,
+      private route: ActivatedRoute,
+      private configurationService: ConfigurationService,
+      private _storageService: StorageService,
   ) {
+    super();
     this.headers = new HttpHeaders();
     this.headers.append('Content-Type', 'application/json');
     this.headers.append('Accept', 'application/json');
     this.storage = _storageService;
-
-    this.configurationService.settingLoaded$.subscribe(serverConfig => {
-      this.identityUrl = serverConfig.identityUrl;
-      this.storage.store('identityUrl', this.identityUrl);
-    });
-
-    if (this.storage.retrieve('isAuthorized') !== '') {
-      this.IsAuthorized = this.storage.retrieve('isAuthorized');
-      this.UserData = this.storage.retrieve('userData');
-      this.authenticationSource.next(true);
-      console.log(this.UserData);
-    }
   }
 
-  public GoToLoginPage(){
+  public override login(option?: KeycloakLoginOptions): Promise<void> {
+    return super.login(option).then(value => {
+      this.getUserProfile().subscribe(user => {
+        this.UserData$.next(user);
+        this.userData = user;
+      })
+    });
+  }
+
+  public GoToLoginPage() {
     this._router.navigate(['/sign-in']);
   }
 
-  public Authorize(authorizedRequest: IAuthorizeRequest){
-    this.ResetAuthorizationData();
-    const url = this.identityUrl.endsWith('/') ? this.identityUrl : `${this.identityUrl}/api/authenticate/login`;
-    console.log(authorizedRequest, url);
+  public Authorize(authorizedRequest: IAuthorizeRequest) {
+    const url = `${environment.API_HOST}/api/authenticate/login`;
     this._http.post(url, JSON.stringify(authorizedRequest), this.setHeaders()).pipe<IAuthorizeResponseSuccess>(
-      tap((res: any) => {
+        tap((res: any) => {
           return res;
-      })
+        })
     ).subscribe({
       next: res => {
-        if(res.token){
-          this.SetAuthorizationData(res.token, res.refreshToken);
-        }
+
       },
-      error: err=>{
+      error: err => {
         alert("wrong input!!!");
       }
     });
   }
 
-  public SetAuthorizationData(token: any, idToken: any) {
-    this.storage.store('accessToken', token);
-    this.storage.store('refreshToken', idToken);
-    this.IsAuthorized = true;
-    this.storage.store('isAuthorized', true);
-
-    // TODO: replace for get user data
-    // this.UserData = this.storage.retrieve('userData');
-    let tokenData: any = this.getDataFromToken(token);
-    this.getUserData()
-      .pipe<ICustomer>(tap((res: any) => res))
-      .subscribe({
-        next: data => {
-          this.UserData = data;
-          this.storage.store('userData', data);
-          //emit observable
-          this.authenticationSource.next(true);
-          window.location.href = location.origin;
-        },
-        error: this.HandleError
-      });
-  }
-
-  public Logoff() {
-    this.ResetAuthorizationData();
-    this.authenticationSource.next(false);
-    window.location.href = location.origin;
-  }
 
   public HandleError(error: any) {
     console.log(error);
@@ -135,38 +97,31 @@ export class SecurityService {
 
     if (typeof token !== 'undefined') {
       let encoded = token.split('.')[1];
-      /*
-{
-"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": "0931421322",
-  "jti": "26bc8655-2028-498f-8fc3-428e19db83db",
-  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "customer",
-  "exp": 1619705815,
-  "iss": "http://localhost:5001",
-  "aud": "http://localhost:4200"
-}
-       */
       data = JSON.parse(this.urlBase64Decode(encoded));
     }
     return data;
   }
 
-  private getUserData(): Observable<ICustomer[]>{
-    if(this.identityUrl === ''){
-      this.identityUrl = this.storage.retrieve('IdentityUrl');
-    }
-
-    const options = this.setHeaders();
-
-    return this._http.get<string[]>(`${this.identityUrl}/api/customers/info`, options)
-    .pipe<ICustomer[]>((info:any) => info);
+  public getUserProfile(): Observable<ICustomer> {
+    return from(this.loadUserProfile()).pipe(map<KeycloakProfile, ICustomer>(value => {
+      return {
+        id: value.id!,
+        email: value.email!,
+        name: value.lastName!,
+        phoneNumber: value.email!,
+        address: []
+      }
+    }))
   }
 
   getUser(userId: number): Observable<ICustomer> {
-    return this._http.get(this.identityUrl + '/api/customers/' + userId)
-      .pipe<ICustomer>(tap((res: any) => { return res }));
+    return this._http.get(`${environment.API_HOST}/api/customers/${userId}`)
+        .pipe<ICustomer>(tap((res: any) => {
+          return res
+        }));
   }
 
-  private setHeaders():any {
+  private setHeaders(): any {
     console.log("set header");
     const httpOptions = {
       headers: new HttpHeaders()
@@ -183,18 +138,12 @@ export class SecurityService {
     return httpOptions;
   }
 
-  public ResetAuthorizationData() {
-    this.IsAuthorized = false;
-    this.storage.store('isAuthorized', this.IsAuthorized);
-    this.storage.store('userData', this.UserData);
-  }
-
   GetToken(): any {
     return this.storage.retrieve('accessToken');
   }
 
   public Register(registingRequest: IRegistingRequest){
-    const url = this.identityUrl.endsWith('/') ? `${this.identityUrl}api/authenticate/register` : `${this.identityUrl}/api/authenticate/register`;
+    const url = `${environment.API_HOST}api/authenticate/register`;
     console.log(registingRequest, url);
     this._http.post(url, JSON.stringify(registingRequest), this.setHeaders()).pipe<IAuthorizeResponseSuccess>(
       tap((res:any)=>{

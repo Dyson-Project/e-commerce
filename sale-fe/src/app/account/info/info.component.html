@@ -15,13 +15,6 @@
         </label>
         <input disabled type="text" name="phone" id="phone" class="form-control" [(ngModel)]="profile.phoneNumber">
       </div>
-      <div class="form-group">
-        <label for="select-gender"> Gender </label>
-        <select id="select-gender" class="form-control" [(ngModel)]="profile.gender">
-          <option value="male" [selected]="(profile.gender=='male')">Male</option>
-          <option value="female" [selected]="(profile.gender=='female')">Female</option>
-        </select>
-      </div>
     </div>
   </div>
   <div class="col-md-12 d-flex justify-content-center update-profile">
