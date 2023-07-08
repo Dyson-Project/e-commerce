@@ -20,11 +20,9 @@ export class CatalogService {
     private service: DataService,
     private configurationService: ConfigurationService
   ) {
-    this.configurationService.settingLoaded$.subscribe(settings => {
       this.catalogUrl = '/api/products/search/catalog';
       this.categoryUrl = '/api/categories';
       this.brandUrl = '/api/brands';
-    });
   }
 
   getCatalog(params?: { [param: string]: any }): Observable<IPage<IProduct>> {

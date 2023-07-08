@@ -41,13 +41,8 @@ export class CheckOutComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    if (this.configurationService.isReady) {
       this.getOrder();
-    } else {
-      this.configurationService.settingLoaded$.subscribe(x => {
-        this.getOrder();
-      });
-    }
+
   }
 
   ngAfterViewInit(): void {

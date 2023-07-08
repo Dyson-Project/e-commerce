@@ -3,7 +3,7 @@ import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule, routing} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {FaIconLibrary, FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
@@ -17,13 +17,16 @@ import {ToastrModule} from 'ngx-toastr';
 import {SharedModule} from "./shared/shared.module";
 import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
 import {CommonModule} from "@angular/common";
+import {fas} from '@fortawesome/free-solid-svg-icons';
+import {far} from '@fortawesome/free-regular-svg-icons';
+import {environment} from "../environments/environment";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
     keycloak.init({
       config: {
         realm: 'ecommerce',
-        url: 'https://keycloak.tiktzuki.com',
+        url: environment.authHost,
         clientId: 'sale-frontend'
       },
       initOptions: {
@@ -71,4 +74,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
   ]
 })
 export class AppModule {
+  constructor(library: FaIconLibrary) {
+    library.addIconPacks(fas, far);
+  }
 }

@@ -56,13 +56,8 @@ export class OrderComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.configurationService.isReady) {
       this.loadData();
-    } else {
-      this.configurationService.settingLoaded$.subscribe(x => {
-        this.loadData();
-      })
-    }
+
 
     this.authSubscription = this.securityService.authenticationChallenge$.subscribe({
       next: res => {

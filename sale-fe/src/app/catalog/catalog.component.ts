@@ -50,11 +50,6 @@ export class CatalogComponent implements OnInit {
     if (this.configurationService.isReady) {
       this.loadData();
     }
-    else {
-      this.configurationService.settingLoaded$.subscribe(x => {
-        this.loadData();
-      });
-    }
   }
 
   loadData(){

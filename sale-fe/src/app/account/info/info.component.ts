@@ -37,13 +37,7 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.configurationService.isReady) {
       this.loadData();
-    } else {
-      this.configurationService.settingLoaded$.subscribe(x => {
-        this.loadData();
-      })
-    }
   }
 
   loadData() {

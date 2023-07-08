@@ -14,6 +14,7 @@ spring:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/fnb}
     username: ${DATABASE_USER:postgres}
     password: ${DATABASE_PASSWORD:P@ssword789}
+
   data:
     redis:
       host: ${REDIS_HOST:localhost}
@@ -30,6 +31,9 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${KEYCLOAK_ISSUER_URI:https://keycloak.tiktzuki.com/realms/ecommerce}
+  jpa:
+    hibernate:
+      ddl-auto: update
 keycloak:
   auth-server-url: ${KEYCLOAK_HOST:https://keycloak.tiktzuki.com}
   realm: ${KEYCLOAK_REALM:fnb-cms}

@@ -13,9 +13,6 @@ export class ProductDetailService {
     private service: DataService,
     private configurationService: ConfigurationService
   ) {
-    configurationService.settingLoaded$.subscribe(settings => {
-
-    })
   }
 
 

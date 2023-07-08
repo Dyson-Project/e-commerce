@@ -4,8 +4,9 @@
 
 export const environment = {
   production: false,
-  purchaseUrl: 'https://localhost:5001/',
-  publishableKey: 'pk_test_51IlDyBB8Uv4yEiL6mlRODinitXh3fY8q3LQyAqChQdVRfgTTbPJWZJFd50vrzAQWpmqc446lAHx9vVdrkaeDC2BI00VEUFjaew'
+  API_HOST: 'https://localhost:8080',
+  publishableKey: 'pk_test_51IlDyBB8Uv4yEiL6mlRODinitXh3fY8q3LQyAqChQdVRfgTTbPJWZJFd50vrzAQWpmqc446lAHx9vVdrkaeDC2BI00VEUFjaew',
+  authHost: 'https://keycloak.tiktzuki.com'
 };
 
 /*

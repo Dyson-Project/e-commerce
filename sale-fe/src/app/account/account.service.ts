@@ -23,9 +23,6 @@ export class AccountService {
     private configurationService: ConfigurationService,
     private securityService: SecurityService
   ) {
-    this.configurationService.settingLoaded$.subscribe(setting => {
-
-    })
   }
 
   getUser(userId: number): Observable<ICustomer> {
