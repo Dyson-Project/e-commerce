@@ -17,7 +17,8 @@ export class Identity implements OnInit {
   }
 
   ngOnInit(): void {
-    this.service.UserData$.subscribe(value => {
+    this.service.getUserProfile().subscribe(value => {
+      console.log(value)
       this.authenticated = true;
       this.customer = value;
     });
@@ -25,7 +26,7 @@ export class Identity implements OnInit {
 
 
   login(): void {
-    this.service.login({}).then(value => {
+    this.service.login().then(value => {
     })
   }
 

@@ -8,6 +8,7 @@ import org.dyson.ecommerce.sale.controller.ProductRestRepository;
 import org.dyson.ecommerce.sale.entities.Brand;
 import org.dyson.ecommerce.sale.entities.Category;
 import org.dyson.ecommerce.sale.entities.Product;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,8 @@ import java.util.Arrays;
 @Component
 public class CommandLine implements CommandLineRunner {
     private final ObjectMapper mapper;
+    @Value("${MOCK:false}")
+    private Boolean mock;
     private final String brandResourceName = "data/brands.json";
     private final String categoriesResourceName = "data/categories.json";
     private final String productResourceName = "data/products.json";
@@ -29,6 +32,7 @@ public class CommandLine implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        if (!mock) return;
         loadResource(brandResourceName, brandRestRepository, Brand[].class);
         loadResource(categoriesResourceName, categoryRestRepository, Category[].class);
         loadResource(productResourceName, productRestRepository, Product[].class);

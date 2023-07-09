@@ -27,9 +27,10 @@ export class ProductDetailsComponent implements OnInit {
     slidesToScroll: 1,
     // "nextArrow": "<div class='nav-btn next-slide'></div>",
     // "prevArrow": "<div class='nav-btn prev-slide'></div>",
-  //  dots: true,
+    //  dots: true,
     // infinite: false
   };
+
   constructor(
     private route: ActivatedRoute,
     // private service: ProductDetailService,
@@ -79,36 +80,35 @@ export class ProductDetailsComponent implements OnInit {
   addToCart(event: any) {
     const cartItem: ICartItem = JSON.parse(this.skuForm.value.byParams);
     this.cartEventService.addItemToCart(cartItem);
-
   }
 
   onSkuChanged(event: any, value: ISku) {
     this.selectedSku = value;
   }
 
-  onImageSelected(event:any, value: string){
+  onImageSelected(event: any, value: string) {
     this.selectedImageUrl = value;
   }
 
   onQuantityChanged() {
-    if(this.quantity > this.selectedSku.available){
+    if (this.quantity > this.selectedSku.available) {
       this.quantity = this.selectedSku.available;
       this.quantity = this.selectedSku.available;
     }
     this.loadSkuForm();
   }
 
-  onQuantityChangedUp(){
-    this.quantity +=1;
+  onQuantityChangedUp() {
+    this.quantity += 1;
     this.onQuantityChanged();
   }
 
   onQuantityChangedDown() {
-    this.quantity -=1;
+    this.quantity -= 1;
     this.onQuantityChanged();
   }
 
-  numberOnly(event: any){
+  numberOnly(event: any) {
     return numberOnly(event);
   }
 }

@@ -83,7 +83,7 @@ export class CatalogComponent implements OnInit {
   onCategoryFilterChanged(event: Event) {
     const value = Number((event.target as HTMLInputElement).value)
     this.categorySelected = value;
-    this.currentQuery.brandId = value;
+    this.currentQuery.categoryId = value;
   }
 
   onPageChanged(value: any) {

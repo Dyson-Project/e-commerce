@@ -35,15 +35,6 @@ export class SecurityService extends KeycloakService {
     this.storage = _storageService;
   }
 
-  public override login(option?: KeycloakLoginOptions): Promise<void> {
-    return super.login(option).then(value => {
-      this.getUserProfile().subscribe(user => {
-        this.UserData$.next(user);
-        this.userData = user;
-      })
-    });
-  }
-
   public GoToLoginPage() {
     this._router.navigate(['/sign-in']);
   }

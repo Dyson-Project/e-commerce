@@ -1,10 +1,10 @@
 <div class="cartstatus" [ngClass]="(badge<1)?'is-disabled':''">
-    <a [routerLink]="['cart']">
+  <a [routerLink]="['cart']">
         <span class="cartstatus-image">
         <fa-icon icon="shopping-cart"></fa-icon>
     </span>
-        <span class="cartstatus-badge">
-        {{badge}}
+    <span class="cartstatus-badge">
+          {{badge}}
     </span>
-    </a>
+  </a>
 </div>

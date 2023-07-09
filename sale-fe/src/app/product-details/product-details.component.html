@@ -1,91 +1,100 @@
 <div class="container" *ngIf="product">
-    <div class="esh-product-detail row">
-        <div class="gallery col-md-4 col-sm-12">
+  <div class="esh-product-detail row">
+    <div class="gallery col-md-4 col-sm-12">
 
-            <ngb-carousel *ngIf="selectedSku">
-                <ng-template ngbSlide *ngFor="let image of selectedSku.images">
-                    <div class="picsum-img-wrapper">
-                        <img class="magnifiedImg zoom" [src]="image">
-                    </div>
-                </ng-template>
-            </ngb-carousel>
+      <ngb-carousel *ngIf="selectedSku">
+        <ng-template ngbSlide *ngFor="let image of selectedSku.images">
+          <div class="picsum-img-wrapper">
+            <img class="magnifiedImg zoom" [src]="image">
+          </div>
+        </ng-template>
+      </ngb-carousel>
 
-        </div>
-        <!-- Product detail -->
-      <div class="product-detail col-md-8 col-sm-12">
-        <h1 class="new-product-title">
-          {{product.productName}}
-        </h1>
-        <p> Brand: {{product.brand.name}}</p>
-        <div class="row">
-          <div class="product-info col-md-6 col-sm-12">
-            <div class="module-price">
+    </div>
+    <!-- Product detail -->
+    <div class="product-detail col-md-8 col-sm-12">
+      <h1 class="new-product-title">
+        {{product.productName}}
+      </h1>
+      <p> Brand: {{product.brand.name}}</p>
+      <div class="row">
+        <div class="product-info col-md-6 col-sm-12">
+          <div class="module-price">
                         <span class="sku-price">
                         <h3>{{selectedSku.price | currency:'VND'}}</h3>
                         </span>
-            </div>
-            <div class="module-sku-select">
-              <div id="module_sku_select" class="pdp-block module">
-                            <div class="sku-selector">
-                                <h6 class="section-title">
-                                  Màu
-                                </h6>
-                                <div class="sku-content-header">
+          </div>
+          <div class="module-sku-select">
+            <div id="module_sku_select" class="pdp-block module">
+              <div class="sku-selector">
+                <h6 class="section-title">
+                  Màu
+                </h6>
+                <div class="sku-content-header">
                                     <span class="sku-name">
                                         {{selectedSku.color}}-Size:{{selectedSku.size}}
                                     </span>
-                                </div>
-                                <div class="sku-content">
-                                    <span *ngFor="let sku of product.skus" (click)="onSkuChanged($event, sku)" [ngClass]="(sku==selectedSku)?'sku-variable-img-wrap-selected':''" class="sku-variable-img-wrap">
+                </div>
+                <div class="sku-content">
+                                    <span *ngFor="let sku of product.skus" (click)="onSkuChanged($event, sku)"
+                                          [ngClass]="(sku==selectedSku)?'sku-variable-img-wrap-selected':''"
+                                          class="sku-variable-img-wrap">
                                         <img src="{{sku.images[0] }}" class="sku-image-wrap">
                                     </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="module-quantity-input">
-                        <div class="section-content">
-                          <label class="section-title">Tạm tính</label>
-                            <div class="quantity-picker">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="module-quantity-input">
+            <div class="section-content">
+              <label class="section-title">Tạm tính</label>
+              <div class="quantity-picker">
                                 <span>
                                 <a class="next-number-picker-handler next-number-picker-handler-up">
-                                    <button class="btn btn-light next-number-pick-handler-up-inner" [disabled]="(quantity<=0)" (click)="onQuantityChangedDown()">
+                                    <button class="btn btn-light next-number-pick-handler-up-inner"
+                                            [disabled]="(quantity<=0)" (click)="onQuantityChangedDown()">
                                       <fa-icon icon="minus"></fa-icon>
                                     </button>
                                 </a>
                                 </span>
-                                <input type="text" class="input-stock" [disabled]="selectedSku.available > 0 ? false : true" (keypress)="numberOnly($event)" (keyup)="onQuantityChanged()" [(ngModel)]="quantity" name="sku-quantity">
-                                <span>
+                <input type="text" class="input-stock" [disabled]="selectedSku.available<=0"
+                       (keydown)="numberOnly($event)"
+                       (keyup)="onQuantityChanged()"
+                       [(ngModel)]="quantity"
+                       name="sku-quantity">
+                <span>
                                 <a class="next-number-picker-handler next-number-picker-handler-down">
-                                    <button class="btn btn-light next-number-pick-handler-down-inner" [disabled]="(quantity==selectedSku.available)" (click)="onQuantityChangedUp()">
+                                    <button class="btn btn-light next-number-pick-handler-down-inner"
+                                            [disabled]="(quantity==selectedSku.available)"
+                                            (click)="onQuantityChangedUp()">
                                       <fa-icon icon="plus"></fa-icon>
                                     </button>
                                 </a>
                                 </span>
-                            </div>
-                          <span *ngIf="(selectedSku.available <= 0)" class="quantity-cotent-warning">Đã hết hàng</span>
-                        </div>
-                    </div>
-                    <div class="module-add-to-cart">
-                        <button [disabled]="!(quantity > 0)" class="btn btn-success add-to-cart" (click)="addToCart($event)">
+              </div>
+              <span *ngIf="(selectedSku.available <= 0)" class="quantity-cotent-warning">Đã hết hàng</span>
+            </div>
+          </div>
+          <div class="module-add-to-cart">
+            <button [disabled]="!(quantity > 0)" class="btn btn-success" (click)="addToCart($event)">
                             <span>
                                Thêm vào giỏ
                             </span>
-                        </button>
-                        <form [formGroup]="skuForm" name="skuForm" action method="post">
-                            <input name="byParams" type="hidden" formControlName="byParams">
-                        </form>
-                    </div>
-                </div>
-            </div>
-
+            </button>
+            <form [formGroup]="skuForm" name="skuForm" action method="post">
+              <input name="byParams" type="hidden" formControlName="byParams">
+            </form>
+          </div>
         </div>
+      </div>
 
-        <div class="product-description col-12">
-          <h3>Thông tin sản phẩm<span class="active"></span></h3>
-            <div [innerHtml]="product.description"></div>
-        </div>
     </div>
+
+    <div class="product-description col-12">
+      <h3>Thông tin sản phẩm<span class="active"></span></h3>
+      <div [innerHtml]="product.description"></div>
+    </div>
+  </div>
 </div>
 <!-- value="'{&quot;items&quot;: [ {&quot;skuId&quot;:&quot;'
           +selectedSku.id

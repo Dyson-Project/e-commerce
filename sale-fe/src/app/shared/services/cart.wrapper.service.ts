@@ -7,7 +7,6 @@ import {ICart} from '../models/cart.model';
   providedIn: 'root'
 })
 export class CartWrapperService {
-  public cart?: ICart;
 
   constructor() {
   }
@@ -23,6 +22,7 @@ export class CartWrapperService {
 
   addItemToCart(item: ICartItem) {
     this.addItemToCartSource.next(item);
+    this.updateBadge(item.quantity);
   }
 
   updateBadge(itemCount: number) {

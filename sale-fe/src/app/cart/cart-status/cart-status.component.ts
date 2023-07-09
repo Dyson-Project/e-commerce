@@ -22,9 +22,10 @@ export class CartStatusComponent implements OnInit {
     // Subcibe to Add Basket Observable:
     console.log('init cart status');
     this.updateCartSubscription = this.cartWrapperService.updateBadge$.subscribe(
-      (badge: number) => {
-        console.log('removed item from cart');
-        this.badge = badge
+      (changeNumber: number) => {
+        const newBadge: number = parseInt(this.badge.toString()) + changeNumber;
+        console.log(`update item count from cart ${newBadge} ${parseInt(this.badge.toString())} ${changeNumber}`);
+        this.badge = newBadge;
       }
     );
 

@@ -1,28 +1,23 @@
 <div class="esh-identity">
-    <div *ngIf="!authenticated" class="esh-identity-unauthenticate">
-      <div class="identity-content-block">
-        <button class="btn btn-ghost" href="#" role="button" (click)="login()">
-          Đăng nhập
-          <fa-icon icon="sign-in-alt"/>
-        </button>
-      </div>
+  <div *ngIf="!authenticated" class="esh-identity-unauthenticate">
+    <div class="identity-content-block">
+      <button class="btn btn-ghost" href="#" role="button" (click)="login()">
+        Đăng nhập
+        <fa-icon icon="sign-in-alt"/>
+      </button>
     </div>
-    <ng-container *ngIf="authenticated">
-        <section class="esh-identity-section identity-content-block">
-            <a [routerLink]="'account/orders'" style="display: flex;">
-                <div class="esh-identity-name">Hello, {{customer?.name}}</div>
-                <p>
-                  <fa-icon icon="user"/>
-                </p>
-            </a>
-        </section>
-        <section class="identity-content-block">
-            <div class="esh-identity-item identity-content-block" (click)="logout()">
-                <div class="esh-identity-name esh-identity-name--upper">Log out</div>
-                <p>
-                  <fa-icon icon="sign-out-alt"/>
-                </p>
-            </div>
-        </section>
-    </ng-container>
+  </div>
+  <ng-container *ngIf="authenticated">
+    <section class="esh-identity-section identity-content-block">
+      <button class="btn btn-ghost " role="link" [routerLink]="['account/orders']">
+        Tài khoản
+        <fa-icon icon="user"/>
+      </button>
+    </section>
+    <section class="esh-identity-section">
+      <button class="btn btn-ghost" (click)="logout()">
+        <fa-icon icon="sign-out-alt"/>
+      </button>
+    </section>
+  </ng-container>
 </div>
